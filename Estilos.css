@@ -1,0 +1,47 @@
+#map {
+    height: 600px;
+    width: 100%;
+    margin-bottom: 200px;
+}
+
+.checkbox-container {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+}
+.checkbox-container label {
+    margin: 5px 0;
+    cursor: pointer;
+}
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.legend {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.legend-item:last-child {
+    margin-bottom: 0;
+}
+.legend-color {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
+.legend-green {
+    background-color: green;
+}
+.legend-blue {
+    background-color: blue;
+}
