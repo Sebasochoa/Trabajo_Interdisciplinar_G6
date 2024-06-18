@@ -1511,8 +1511,8 @@ var paradas2Ruta18 = [
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
-            lat: -16.4061580,
-            lng: -71.5245889
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
         };
 
         ubicacion = new google.maps.Marker({
