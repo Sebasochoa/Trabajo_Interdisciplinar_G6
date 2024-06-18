@@ -1,4 +1,5 @@
 var mapa;
+var ubicacion;
 var servicioDirecciones;
 var renderizadores = {};
 var marcadores = {};
@@ -127,7 +128,7 @@ function toggleRuta(ruta) {
             mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
         } else if (ruta === 'Ruta5') {
             mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
-            mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
+        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
         } else if (ruta === 'Ruta6') {
             mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
             mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
@@ -164,9 +165,16 @@ function toggleRuta(ruta) {
         } else if (ruta === 'Ruta18') {
             mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
             mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
-        } 
+        }
     } else {
         limpiarRuta(ruta);
+    }
+}
+
+function mostrarRutas(ruta) {
+    if (ruta === 'Ruta5') {
+        mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
+        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
     }
 }
 
@@ -682,6 +690,9 @@ var solicitud2Ruta9 = {
         { location: { lat: -16.39413, lng: -71.50298 }, stopover: true },
         { location: { lat: -16.39651, lng: -71.50832 }, stopover: true },
         { location: { lat: -16.39212, lng: -71.51385 }, stopover: true },
+        { location: { lat: -16.390510, lng: -71.5183179 }, stopover: true },
+        { location: { lat: -16.394208, lng: -71.5214306 }, stopover: true },
+        { location: { lat: -16.3934248, lng: -71.5225910 }, stopover: true },
         { location: { lat: -16.40197, lng: -71.52699 }, stopover: true },
         { location: { lat: -16.41209, lng: -71.53527 }, stopover: true },
         { location: { lat: -16.41591, lng: -71.53386 }, stopover: true },
@@ -1500,11 +1511,11 @@ var paradas2Ruta18 = [
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lat: -16.4061580,
+            lng: -71.5245889
         };
 
-        var marker = new google.maps.Marker({
+        ubicacion = new google.maps.Marker({
             position: pos,
             map: mapa // Cambiar de map a mapa
         });
@@ -1563,27 +1574,46 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
 }
 
 function get_paraderocercano() {
-    if (destinoMarcador) {
-        posicion = destinoMarcador.getPosition();
-        closestCoordinate = null;
-        shortestDistance = Infinity;
+    if (destinoMarcador && ubicacion) {
+        let posicionDestino = destinoMarcador.getPosition();
+        let paraderoscercanos = ["Ruta0"];
 
+        // Buscar paraderos cercanos a la posición del destinoMarcador
         for (let ruta in paraderos) {
-            //let paraderosRuta = paraderos[ruta];
-            paraderos[ruta].forEach(function (marcador) {
-                const distance = haversineDistance(posicion.lat(), posicion.lng(), marcador.lat, marcador.lng);
-                if (distance < shortestDistance) {
-                    shortestDistance = distance;
-                    closestCoordinate = marcador;
-                }
-            });
+            if (paraderos.hasOwnProperty(ruta)) {
+                paraderos[ruta].forEach((marcador) => {
+                    const distance = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), marcador.lat, marcador.lng);
+                    if (distance < 0.2) {
+                        paraderoscercanos.push(ruta);
+                    }
+                });
+            }
         }
+        // Mostrar paraderos cercanos que también están cerca de la ubicación
+        paraderoscercanos.forEach(function (ruta) {
+            if (paraderos.hasOwnProperty(ruta)) {
+                paraderos[ruta].forEach((marcador) => {
+                    const distance = haversineDistance(ubicacion.getPosition().lat(), ubicacion.getPosition().lng(), marcador.lat, marcador.lng);
+                    if (distance < 0.5) {
+                        mostrarRutas(ruta);
+                    }
+                });
+            }
+        });
     }
 }
+
+
+
+
 
 function mostrarRuta(solicitud, color, ruta, paraderos) {
     if (!renderizadores[ruta]) {
         renderizadores[ruta] = [];
+    }
+
+    if (!marcadores[ruta]) {
+        marcadores[ruta] = [];
     }
 
     var renderizador = new google.maps.DirectionsRenderer({
@@ -1616,7 +1646,6 @@ function cargarParaderos(paradasAutobus, ruta) {
         var marcador = parada;
         paraderos[ruta].push(marcador); // Almacenar el marcador en el array de la ruta
     });
-    console.log('Marcadores agregados para la ruta ' + ruta + ':', paraderos[ruta]);
 }
 
 function createMarker(parada) {
