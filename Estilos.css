@@ -4,19 +4,6 @@
     margin-bottom: 200px;
 }
 
-.checkbox-container {
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
-}
-.checkbox-container label {
-    margin: 5px 0;
-    cursor: pointer;
-}
-input[type="checkbox"] {
-    margin-right: 10px;
-}
-
 .legend {
     position: fixed;
     bottom: 20px;

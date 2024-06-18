@@ -5,6 +5,7 @@ var renderizadores = {};
 var marcadores = {};
 var paraderos = {};
 var destinoMarcador;
+
 function loadGoogleMaps() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -17,7 +18,6 @@ function loadGoogleMaps() {
 }
 
 loadGoogleMaps().then(() => {
-    // Aquí puedes llamar a funciones que dependen de initMap
 }).catch((error) => {
     console.error('Error al cargar Google Maps:', error);
 });
@@ -60,167 +60,58 @@ function initMap() {
     cargarParaderos(paradas2Ruta17, "Ruta17");
     cargarParaderos(paradas1Ruta18, "Ruta18");
     cargarParaderos(paradas2Ruta18, "Ruta18");
-
-}
-
-function handleCheckboxChange(ruta) {
-    if (ruta === 'Ruta1') {
-        toggleRuta('Ruta1');
-    } else if (ruta === 'Ruta2') {
-        toggleRuta('Ruta2');
-    } else if (ruta === 'Ruta3') {
-        toggleRuta('Ruta3');
-    } else if (ruta === 'Ruta4') {
-        toggleRuta('Ruta4');
-    } else if (ruta === 'Ruta5') {
-        toggleRuta('Ruta5');
-    } else if (ruta === 'Ruta6') {
-        toggleRuta('Ruta6');
-    } else if (ruta === 'Ruta7') {
-        toggleRuta('Ruta7');
-    } else if (ruta === 'Ruta8') {
-        toggleRuta('Ruta8');
-    } else if (ruta === 'Ruta9') {
-        toggleRuta('Ruta9');
-    } else if (ruta === 'Ruta10') {
-        toggleRuta('Ruta10');
-    } else if (ruta === 'Ruta11') {
-        toggleRuta('Ruta11');
-    } else if (ruta === 'Ruta12') {
-        toggleRuta('Ruta12');
-    } else if (ruta === 'Ruta13') {
-        toggleRuta('Ruta13');
-    } else if (ruta === 'Ruta14') {
-        toggleRuta('Ruta14');
-    } else if (ruta === 'Ruta15') {
-        toggleRuta('Ruta15');
-    } else if (ruta === 'Ruta16') {
-        toggleRuta('Ruta16');
-    } else if (ruta === 'Ruta17') {
-        toggleRuta('Ruta17');
-    } else if (ruta === 'Ruta18') {
-        toggleRuta('Ruta18');
-    } else if (ruta === 'Ruta19') {
-        toggleRuta('Ruta19');
-    }
-}
-
-
-function toggleRuta(ruta) {
-    if (!renderizadores[ruta]) {
-        renderizadores[ruta] = [];
-    }
-    if (!marcadores[ruta]) {
-        marcadores[ruta] = [];
-    }
-
-    var checkBox = document.getElementById(`checkbox${ruta.replace('Ruta', '')}`);
-    if (checkBox.checked) {
-        if (ruta === 'Ruta1') {
-            mostrarRuta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
-            mostrarRuta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
-        } else if (ruta === 'Ruta2') {
-
-        } else if (ruta === 'Ruta3') {
-            mostrarRuta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
-        } else if (ruta === 'Ruta4') {
-            mostrarRuta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
-            mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
-        } else if (ruta === 'Ruta5') {
-            mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
-        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
-        } else if (ruta === 'Ruta6') {
-            mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
-            mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
-        } else if (ruta === 'Ruta7') {
-            mostrarRuta7();
-        } else if (ruta === 'Ruta8') {
-            mostrarRuta8();
-        } else if (ruta === 'Ruta9') {
-            mostrarRuta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
-            mostrarRuta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
-        } else if (ruta === 'Ruta10') {
-            mostrarRuta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
-            mostrarRuta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
-        } else if (ruta === 'Ruta11') {
-            mostrarRuta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
-        } else if (ruta === 'Ruta12') {
-            mostrarRuta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
-            mostrarRuta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
-        } else if (ruta === 'Ruta13') {
-            mostrarRuta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
-            mostrarRuta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
-        } else if (ruta === 'Ruta14') {
-            mostrarRuta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
-            mostrarRuta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
-        } else if (ruta === 'Ruta15') {
-            mostrarRuta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
-            mostrarRuta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
-        } else if (ruta === 'Ruta16') {
-            mostrarRuta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
-            mostrarRuta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
-        } else if (ruta === 'Ruta17') {
-            mostrarRuta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
-            mostrarRuta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
-        } else if (ruta === 'Ruta18') {
-            mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
-            mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
-        }
-    } else {
-        limpiarRuta(ruta);
-    }
 }
 
 function mostrarRutas(ruta) {
     if (ruta === 'Ruta1') {
-        mostrarRuta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
-        mostrarRuta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
+        Ruta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
+        Ruta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
     } else if (ruta === 'Ruta2') {
 
     } else if (ruta === 'Ruta3') {
-        mostrarRuta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
+        Ruta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
     } else if (ruta === 'Ruta4') {
-        mostrarRuta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
-        mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
+        Ruta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
+        Ruta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
     } else if (ruta === 'Ruta5') {
-        mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
-        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
+        Ruta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
+        Ruta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
     } else if (ruta === 'Ruta6') {
-        mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
-        mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
+        Ruta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
+        Ruta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
     } else if (ruta === 'Ruta7') {
         mostrarRuta7();
     } else if (ruta === 'Ruta8') {
         mostrarRuta8();
     } else if (ruta === 'Ruta9') {
-        mostrarRuta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
-        mostrarRuta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
+        Ruta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
+        Ruta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
     } else if (ruta === 'Ruta10') {
-        mostrarRuta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
-        mostrarRuta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
+        Ruta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
+        Ruta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
     } else if (ruta === 'Ruta11') {
-        mostrarRuta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
+        Ruta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
     } else if (ruta === 'Ruta12') {
-        mostrarRuta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
-        mostrarRuta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
+        Ruta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
+        Ruta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
     } else if (ruta === 'Ruta13') {
-        mostrarRuta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
-        mostrarRuta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
+        Ruta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
+        Ruta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
     } else if (ruta === 'Ruta14') {
-        mostrarRuta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
-        mostrarRuta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
+        Ruta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
+        Ruta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
     } else if (ruta === 'Ruta15') {
-        mostrarRuta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
-        mostrarRuta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
+        Ruta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
+        Ruta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
     } else if (ruta === 'Ruta16') {
-        mostrarRuta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
-        mostrarRuta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
+        Ruta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
+        Ruta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
     } else if (ruta === 'Ruta17') {
-        mostrarRuta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
-        mostrarRuta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
+        Ruta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
+        Ruta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
     } else if (ruta === 'Ruta18') {
-        mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
-        mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
+        Ruta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
+        Ruta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
     }
 }
 
@@ -235,6 +126,152 @@ function limpiarRuta(ruta) {
     });
     marcadores[ruta] = [];
 }
+
+
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+        var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+        };
+
+        ubicacion = new google.maps.Marker({
+            position: pos,
+            map: mapa
+        });
+
+        mapa.setCenter(pos);
+    }, function () {
+        handleLocationError(true, mapa);
+    });
+} else {
+    handleLocationError(false, mapa);
+}
+
+function handleLocationError(browserHasGeolocation, pos) {
+    var infoWindow = new google.maps.InfoWindow({ map: pos }); 
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+        'Error: The Geolocation service failed.' :
+        'Error: Your browser doesn\'t support geolocation.');
+}
+
+function agregarDestino(latLng) {
+    if (destinoMarcador) {
+        destinoMarcador.setMap(null);
+    }
+
+    destinoMarcador = new google.maps.Marker({
+        position: latLng,
+        map: mapa,
+        title: 'Destino',
+        icon: {
+            url: 'destino.png',
+            scaledSize: new google.maps.Size(30, 30)
+        }
+    });
+
+    mapa.setCenter(latLng);
+    Get_Ruta_a_Seguir();
+}
+
+function Grados_a_Radianes(grados) {
+    return grados * Math.PI / 180;
+}
+
+function DistanciaHaversine(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = Grados_a_Radianes(lat2 - lat1);
+    const dLon = Grados_a_Radianes(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(Grados_a_Radianes(lat1)) * Math.cos(Grados_a_Radianes(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+}
+
+function Get_Ruta_a_Seguir() {
+    if (destinoMarcador && ubicacion) {
+        let posicionDestino = destinoMarcador.getPosition();
+        let paraderoscercanos = ["Ruta0"];
+
+        for (let ruta in paraderos) {
+            if (paraderos.hasOwnProperty(ruta)) {
+                paraderos[ruta].forEach((marcador) => {
+                    const distance = DistanciaHaversine(posicionDestino.lat(), posicionDestino.lng(), marcador.lat, marcador.lng);
+                    if (distance < 0.2) {
+                        paraderoscercanos.push(ruta);
+                    }
+                });
+            }
+        }
+
+        paraderoscercanos.forEach(function (ruta) {
+            if (paraderos.hasOwnProperty(ruta)) {
+                paraderos[ruta].forEach((marcador) => {
+                    const distance = DistanciaHaversine(ubicacion.getPosition().lat(), ubicacion.getPosition().lng(), marcador.lat, marcador.lng);
+                    if (distance < 0.5) {
+                        mostrarRutas(ruta);
+                    }
+                });
+            }
+        });
+    }
+}
+
+function Ruta(solicitud, color, ruta, paraderos) {
+    if (!renderizadores[ruta]) {
+        renderizadores[ruta] = [];
+    }
+
+    if (!marcadores[ruta]) {
+        marcadores[ruta] = [];
+    }
+
+    var renderizador = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: color
+        },
+        suppressMarkers: true
+    });
+    renderizador.setMap(mapa);
+    servicioDirecciones.route(solicitud, function (resultado, estado) {
+        if (estado === 'OK') {
+            renderizador.setDirections(resultado);
+            paraderos.forEach(function (parada) {
+                var marcador = createMarker(parada);
+                marcadores[ruta].push(marcador);
+            });
+        } else {
+            window.alert('Error al obtener la ruta: ' + estado);
+        }
+    });
+    renderizadores[ruta].push(renderizador);
+}
+
+function cargarParaderos(paradasAutobus, ruta) {
+    if (!paraderos[ruta]) {
+        paraderos[ruta] = [];
+    }
+
+    paradasAutobus.forEach(function (parada) {
+        var marcador = parada;
+        paraderos[ruta].push(marcador);
+    });
+}
+
+function createMarker(parada) {
+    return new google.maps.Marker({
+        position: parada,
+        map: mapa,
+        title: 'Parada de Autobús',
+        icon: {
+            url: 'paradero.png',
+            scaledSize: new google.maps.Size(15, 20)
+        }
+    });
+}
+
 
 
 var solicitud1Ruta1 = {
@@ -911,7 +948,7 @@ var solicitud1Ruta11 = {
         { location: { lat: -16.416715, lng: -71.533292 }, stopover: true }]
 };
 var solicitud2Ruta11 = {
-    origin:{ lat: -16.423153, lng: -71.542591 },
+    origin: { lat: -16.423153, lng: -71.542591 },
     destination: { lat: -16.359427, lng: -71.509089 },
     travelMode: 'DRIVING',
     waypoints: [
@@ -1566,162 +1603,6 @@ var paradas2Ruta18 = [
 
 
 ];
-
-
-
-
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
-
-        ubicacion = new google.maps.Marker({
-            position: pos,
-            map: mapa // Cambiar de map a mapa
-        });
-
-        mapa.setCenter(pos); // Cambiar de map a mapa
-    }, function () {
-        handleLocationError(true, mapa); // Cambiar de map a mapa
-    });
-} else {
-    handleLocationError(false, mapa); // Cambiar de map a mapa
-}
-
-// Manejo de errores de geolocalización
-function handleLocationError(browserHasGeolocation, pos) {
-    var infoWindow = new google.maps.InfoWindow({ map: pos }); // Cambiar de map a pos
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-}
-function agregarDestino(latLng) {
-    // Eliminar el marcador existente del destino, si existe
-    if (destinoMarcador) {
-        destinoMarcador.setMap(null);
-    }
-
-    // Crear un marcador para el nuevo destino
-    destinoMarcador = new google.maps.Marker({
-        position: latLng,
-        map: mapa,
-        title: 'Destino',
-        icon: {
-            url: 'destino.png', // URL de la imagen del marcador de destino
-            scaledSize: new google.maps.Size(30, 30) // Tamaño del marcador de destino
-        }
-    });
-
-    // Centrar el mapa en la nueva ubicación del destino
-    mapa.setCenter(latLng);
-    get_paraderocercano();
-}
-
-function degreesToRadians(degrees) {
-    return degrees * Math.PI / 180;
-}
-
-function haversineDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radio de la Tierra en kilómetros
-    const dLat = degreesToRadians(lat2 - lat1);
-    const dLon = degreesToRadians(lon2 - lon1);
-    const a = Math.sin(dLat / 2) ** 2 +
-        Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
-        Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-}
-
-function get_paraderocercano() {
-    if (destinoMarcador && ubicacion) {
-        let posicionDestino = destinoMarcador.getPosition();
-        let paraderoscercanos = ["Ruta0"];
-
-        // Buscar paraderos cercanos a la posición del destinoMarcador
-        for (let ruta in paraderos) {
-            if (paraderos.hasOwnProperty(ruta)) {
-                paraderos[ruta].forEach((marcador) => {
-                    const distance = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), marcador.lat, marcador.lng);
-                    if (distance < 0.2) {
-                        paraderoscercanos.push(ruta);
-                    }
-                });
-            }
-        }
-        // Mostrar paraderos cercanos que también están cerca de la ubicación
-        paraderoscercanos.forEach(function (ruta) {
-            if (paraderos.hasOwnProperty(ruta)) {
-                paraderos[ruta].forEach((marcador) => {
-                    const distance = haversineDistance(ubicacion.getPosition().lat(), ubicacion.getPosition().lng(), marcador.lat, marcador.lng);
-                    if (distance < 0.5) {
-                        mostrarRutas(ruta);
-                    }
-                });
-            }
-        });
-    }
-}
-
-
-
-
-
-function mostrarRuta(solicitud, color, ruta, paraderos) {
-    if (!renderizadores[ruta]) {
-        renderizadores[ruta] = [];
-    }
-
-    if (!marcadores[ruta]) {
-        marcadores[ruta] = [];
-    }
-
-    var renderizador = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-            strokeColor: color
-        },
-        suppressMarkers: true
-    });
-    renderizador.setMap(mapa);
-    servicioDirecciones.route(solicitud, function (resultado, estado) {
-        if (estado === 'OK') {
-            renderizador.setDirections(resultado);
-            paraderos.forEach(function (parada) {
-                var marcador = createMarker(parada);
-                marcadores[ruta].push(marcador); // Almacenar el marcador en el array de la ruta
-            });
-        } else {
-            window.alert('Error al obtener la ruta: ' + estado);
-        }
-    });
-    renderizadores[ruta].push(renderizador); // Almacenar el renderizador en el array de la ruta
-}
-
-function cargarParaderos(paradasAutobus, ruta) {
-    if (!paraderos[ruta]) {
-        paraderos[ruta] = [];
-    }
-
-    paradasAutobus.forEach(function (parada) {
-        var marcador = parada;
-        paraderos[ruta].push(marcador); // Almacenar el marcador en el array de la ruta
-    });
-}
-
-function createMarker(parada) {
-    return new google.maps.Marker({
-        position: parada,
-        map: mapa,
-        title: 'Parada de Autobús',
-        icon: {
-            url: 'paradero.png',
-            scaledSize: new google.maps.Size(15, 20)
-        }
-    });
-}
-
 
 
 
