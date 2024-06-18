@@ -172,9 +172,55 @@ function toggleRuta(ruta) {
 }
 
 function mostrarRutas(ruta) {
-    if (ruta === 'Ruta5') {
+    if (ruta === 'Ruta1') {
+        mostrarRuta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
+        mostrarRuta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
+    } else if (ruta === 'Ruta2') {
+
+    } else if (ruta === 'Ruta3') {
+        mostrarRuta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
+    } else if (ruta === 'Ruta4') {
+        mostrarRuta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
+        mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
+    } else if (ruta === 'Ruta5') {
         mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
         mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
+    } else if (ruta === 'Ruta6') {
+        mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
+        mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
+    } else if (ruta === 'Ruta7') {
+        mostrarRuta7();
+    } else if (ruta === 'Ruta8') {
+        mostrarRuta8();
+    } else if (ruta === 'Ruta9') {
+        mostrarRuta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
+        mostrarRuta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
+    } else if (ruta === 'Ruta10') {
+        mostrarRuta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
+        mostrarRuta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
+    } else if (ruta === 'Ruta11') {
+        mostrarRuta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
+    } else if (ruta === 'Ruta12') {
+        mostrarRuta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
+        mostrarRuta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
+    } else if (ruta === 'Ruta13') {
+        mostrarRuta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
+        mostrarRuta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
+    } else if (ruta === 'Ruta14') {
+        mostrarRuta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
+        mostrarRuta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
+    } else if (ruta === 'Ruta15') {
+        mostrarRuta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
+        mostrarRuta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
+    } else if (ruta === 'Ruta16') {
+        mostrarRuta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
+        mostrarRuta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
+    } else if (ruta === 'Ruta17') {
+        mostrarRuta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
+        mostrarRuta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
+    } else if (ruta === 'Ruta18') {
+        mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
+        mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
     }
 }
 
@@ -840,9 +886,6 @@ var paradas2Ruta10 = [
 ];
 
 
-
-
-
 var solicitud1Ruta11 = {
     origin: { lat: -16.359427, lng: -71.509089 },
     destination: { lat: -16.423153, lng: -71.542591 },
@@ -866,6 +909,25 @@ var solicitud1Ruta11 = {
         { location: { lat: -16.405797, lng: -71.529284 }, stopover: true },
         { location: { lat: -16.410839, lng: -71.535171 }, stopover: true },
         { location: { lat: -16.416715, lng: -71.533292 }, stopover: true }]
+};
+var solicitud2Ruta11 = {
+    origin:{ lat: -16.423153, lng: -71.542591 },
+    destination: { lat: -16.359427, lng: -71.509089 },
+    travelMode: 'DRIVING',
+    waypoints: [
+        { location: { lat: -16.39413, lng: -71.50298 }, stopover: true },
+        { location: { lat: -16.39651, lng: -71.50832 }, stopover: true },
+        { location: { lat: -16.39212, lng: -71.51385 }, stopover: true },
+        { location: { lat: -16.390510, lng: -71.5183179 }, stopover: true },
+        { location: { lat: -16.394208, lng: -71.5214306 }, stopover: true },
+        { location: { lat: -16.3934248, lng: -71.5225910 }, stopover: true },
+        { location: { lat: -16.40197, lng: -71.52699 }, stopover: true },
+        { location: { lat: -16.41209, lng: -71.53527 }, stopover: true },
+        { location: { lat: -16.41591, lng: -71.53386 }, stopover: true },
+        { location: { lat: -16.43031, lng: -71.53444 }, stopover: true },
+        { location: { lat: -16.44169, lng: -71.52904 }, stopover: true },
+        { location: { lat: -16.44345, lng: -71.51847 }, stopover: true },
+        { location: { lat: -16.45541, lng: -71.51644 }, stopover: true },]
 };
 
 var paradas1Ruta11 = [
