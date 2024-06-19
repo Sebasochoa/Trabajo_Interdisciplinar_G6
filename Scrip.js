@@ -131,8 +131,10 @@ function limpiarRuta(ruta) {
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+            /*lat: position.coords.latitude,
+            lng: position.coords.longitude*/
+            lat: -16.4541006,
+            lng: -71.5520165
         };
 
         ubicacion = new google.maps.Marker({
@@ -149,7 +151,7 @@ if (navigator.geolocation) {
 }
 
 function handleLocationError(browserHasGeolocation, pos) {
-    var infoWindow = new google.maps.InfoWindow({ map: pos }); 
+    var infoWindow = new google.maps.InfoWindow({ map: pos });
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
@@ -190,32 +192,80 @@ function DistanciaHaversine(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+function agregarSiNoExiste(array, elemento) {
+    if (!array.has(elemento)) {
+        array.add(elemento);
+    }
+}
+
+function containsAny(setA, setB) {
+    for (let elem of setB) {
+        if (setA.has(elem)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function Get_Ruta_a_Seguir() {
     if (destinoMarcador && ubicacion) {
         let posicionDestino = destinoMarcador.getPosition();
-        let paraderoscercanos = ["Ruta0"];
+        let paraderosubicacion = new Set();
+        let paraderosdestino = new Set();
 
         for (let ruta in paraderos) {
             if (paraderos.hasOwnProperty(ruta)) {
-                paraderos[ruta].forEach((marcador) => {
-                    const distance = DistanciaHaversine(posicionDestino.lat(), posicionDestino.lng(), marcador.lat, marcador.lng);
-                    if (distance < 0.2) {
-                        paraderoscercanos.push(ruta);
+                paraderos[ruta].forEach((coordenada) => {
+                    const distance = DistanciaHaversine(ubicacion.getPosition().lat(), ubicacion.getPosition().lng(), coordenada.lat, coordenada.lng);
+                    if (distance < 0.5) {
+                        agregarSiNoExiste(paraderosubicacion, ruta);
                     }
                 });
             }
         }
 
-        paraderoscercanos.forEach(function (ruta) {
+        for (let ruta in paraderos) {
             if (paraderos.hasOwnProperty(ruta)) {
-                paraderos[ruta].forEach((marcador) => {
-                    const distance = DistanciaHaversine(ubicacion.getPosition().lat(), ubicacion.getPosition().lng(), marcador.lat, marcador.lng);
+                paraderos[ruta].forEach((coordenada) => {
+                    const distance = DistanciaHaversine(posicionDestino.lat(), posicionDestino.lng(), coordenada.lat, coordenada.lng);
                     if (distance < 0.5) {
-                        mostrarRutas(ruta);
+                        agregarSiNoExiste(paraderosdestino, ruta);
                     }
-                });
+                })
             }
-        });
+        }
+
+        if (containsAny(paraderosubicacion, paraderosdestino)) {
+            for (let elem of paraderosdestino) {
+                if (paraderosubicacion.has(elem)) {
+                    mostrarRutas(elem);
+                }
+            }
+        }
+        else {
+            let distanciamascorta = Infinity;
+            let coordenadasparaderos = {};
+            paraderosubicacion.forEach((rutaubicacion) => {
+                paraderosdestino.forEach((rutadestino) => {
+                    if (paraderos.hasOwnProperty(rutaubicacion) && paraderos.hasOwnProperty(rutadestino)) {
+                        paraderos[rutaubicacion].forEach((coordenada1) => {
+                            paraderos[rutadestino].forEach((coordenada2) => {
+                                const distance = DistanciaHaversine(coordenada1.lat, coordenada1.lng, coordenada2.lat, coordenada2.lng);
+                                if (distance < 0.1 && distance < distanciamascorta) {
+                                    distanciamascorta = distance;
+                                    coordenadasparaderos = {};
+                                    coordenadasparaderos[rutaubicacion] = [coordenada1.lat, coordenada1.lng];
+                                    coordenadasparaderos[rutadestino] = [coordenada2.lat, coordenada2.lng]
+                                }
+                            });
+                        });
+                    }
+
+                });
+
+            });
+            console.log(coordenadasparaderos);
+        }
     }
 }
 
