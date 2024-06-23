@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Ruta Personalizada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&callback=initMap"
         async defer></script>
     <script src="Scrip.js"></script>
@@ -9,7 +10,12 @@
 </head>
 <body>
     <h1>Rutas</h1>
-    <div id="map"></div>
+    <main>
+        <div class="map-container">
+            <div  id="map" style="height: 500px; width: 100%;"></div>
+        </div>
+    </main>
+    <div id="ruta-nombre"></div>
     <div class="legend">
         <div class="legend-item">
             <span>Camino ida</span>
