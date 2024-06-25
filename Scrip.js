@@ -1,6 +1,5 @@
 var mapa;
 var ubicacion;
-//var ubicacion = {lat: -16.379968, lng: -71.520766};
 var servicioDirecciones;
 var renderizadores = {};
 var marcadores = {};
@@ -32,180 +31,178 @@ function initMap() {
     mapa.addListener('click', function (event) {
         agregarDestino(event.latLng);
     });
-    cargarParaderos(paradas1Ruta1, "Ruta1");
-    cargarParaderos(paradas2Ruta1, "Ruta1");
+    cargarParaderos(paradas1Ruta1, "Ruta1", "Ida");
+    cargarParaderos(paradas2Ruta1, "Ruta1", "Vuelta");
 
-    cargarParaderos(paradas1Ruta3, "Ruta3");
-    cargarParaderos(paradas1Ruta4, "Ruta4");
-    cargarParaderos(paradas2Ruta4, "Ruta4");
-    cargarParaderos(paradas1Ruta5, "Ruta5");
-    cargarParaderos(paradas2Ruta5, "Ruta5");
-    cargarParaderos(paradas1Ruta6, "Ruta6");
-    cargarParaderos(paradas2Ruta6, "Ruta6");
-    cargarParaderos(paradas1Ruta9, "Ruta9");
-    cargarParaderos(paradas2Ruta9, "Ruta9");
-    cargarParaderos(paradas1Ruta10, "Ruta10");
-    cargarParaderos(paradas2Ruta10, "Ruta10");
-    cargarParaderos(paradas1Ruta11, "Ruta11");
-    cargarParaderos(paradas1Ruta12, "Ruta12");
-    cargarParaderos(paradas2Ruta12, "Ruta12");
-    cargarParaderos(paradas1Ruta13, "Ruta13");
-    cargarParaderos(paradas2Ruta13, "Ruta13");
-    cargarParaderos(paradas1Ruta14, "Ruta14");
-    cargarParaderos(paradas2Ruta14, "Ruta14");
-    cargarParaderos(paradas1Ruta15, "Ruta15");
-    cargarParaderos(paradas2Ruta15, "Ruta15");
-    cargarParaderos(paradas1Ruta16, "Ruta16");
-    cargarParaderos(paradas2Ruta16, "Ruta16");
-    cargarParaderos(paradas1Ruta17, "Ruta17");
-    cargarParaderos(paradas2Ruta17, "Ruta17");
-    cargarParaderos(paradas1Ruta18, "Ruta18");
-    cargarParaderos(paradas2Ruta18, "Ruta18");
+    cargarParaderos(paradas1Ruta3, "Ruta3", "Ida");
+    cargarParaderos(paradas1Ruta4, "Ruta4", "Ida");
+    cargarParaderos(paradas2Ruta4, "Ruta4", "Vuelta");
+    cargarParaderos(paradas1Ruta5, "Ruta5", "Ida");
+    cargarParaderos(paradas2Ruta5, "Ruta5", "Vuelta");
+    cargarParaderos(paradas1Ruta6, "Ruta6", "Ida");
+    cargarParaderos(paradas2Ruta6, "Ruta6", "Vuelta");
+    cargarParaderos(paradas1Ruta9, "Ruta9", "Ida");
+    cargarParaderos(paradas2Ruta9, "Ruta9", "Vuelta");
+    cargarParaderos(paradas1Ruta10, "Ruta10", "Ida");
+    cargarParaderos(paradas2Ruta10, "Ruta10", "Vuelta");
+    cargarParaderos(paradas1Ruta11, "Ruta11", "Ida");
+    cargarParaderos(paradas1Ruta12, "Ruta12", "Ida");
+    cargarParaderos(paradas2Ruta12, "Ruta12", "Vuelta");
+    cargarParaderos(paradas1Ruta13, "Ruta13", "Ida");
+    cargarParaderos(paradas2Ruta13, "Ruta13", "Vuelta");
+    cargarParaderos(paradas1Ruta14, "Ruta14", "Ida");
+    cargarParaderos(paradas2Ruta14, "Ruta14", "Vuelta");
+    cargarParaderos(paradas1Ruta15, "Ruta15", "Ida");
+    cargarParaderos(paradas2Ruta15, "Ruta15", "Vuelta");
+    cargarParaderos(paradas1Ruta16, "Ruta16", "Ida");
+    cargarParaderos(paradas2Ruta16, "Ruta16", "Vuelta");
+    cargarParaderos(paradas1Ruta17, "Ruta17", "Vuelta");
+    cargarParaderos(paradas2Ruta17, "Ruta17", "Ida");
+    cargarParaderos(paradas1Ruta18, "Ruta18", "Ida");
+    cargarParaderos(paradas2Ruta18, "Ruta18", "Vuelta");
 
 }
 
 
-function toggleRuta(ruta) {
-    if (!renderizadores[ruta]) {
-        renderizadores[ruta] = [];
-    }
-    if (!marcadores[ruta]) {
-        marcadores[ruta] = [];
-    }
-
-    var checkBox = document.getElementById(`checkbox${ruta.replace('Ruta', '')}`);
-    if (checkBox.checked) {
-        if (ruta === 'Ruta1') {
-            mostrarRuta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
-            mostrarRuta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
-        } else if (ruta === 'Ruta2') {
-
-        } else if (ruta === 'Ruta3') {
-            mostrarRuta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
-        } else if (ruta === 'Ruta4') {
-            mostrarRuta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
-            mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
-        } else if (ruta === 'Ruta5') {
-            mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
-        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
-        } else if (ruta === 'Ruta6') {
-            mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
-            mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
-        } else if (ruta === 'Ruta7') {
-            mostrarRuta7();
-        } else if (ruta === 'Ruta8') {
-            mostrarRuta8();
-        } else if (ruta === 'Ruta9') {
-            mostrarRuta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
-            mostrarRuta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
-        } else if (ruta === 'Ruta10') {
-            mostrarRuta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
-            mostrarRuta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
-        } else if (ruta === 'Ruta11') {
-            mostrarRuta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
-        } else if (ruta === 'Ruta12') {
-            mostrarRuta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
-            mostrarRuta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
-        } else if (ruta === 'Ruta13') {
-            mostrarRuta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
-            mostrarRuta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
-        } else if (ruta === 'Ruta14') {
-            mostrarRuta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
-            mostrarRuta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
-        } else if (ruta === 'Ruta15') {
-            mostrarRuta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
-            mostrarRuta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
-        } else if (ruta === 'Ruta16') {
-            mostrarRuta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
-            mostrarRuta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
-        } else if (ruta === 'Ruta17') {
-            mostrarRuta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
-            mostrarRuta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
-        } else if (ruta === 'Ruta18') {
-            mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
-            mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
+function mostrarRutas(Ruta, ParaderoInicio, ParaderoFinal) {
+    if (Ruta === 'Ruta1') {
+        if (isCloserToStartorEnd(solicitud1Ruta1, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1, ParaderoInicio, ParaderoFinal);
         }
-    } else {
-        limpiarRuta(ruta);
-    }
-}
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1, ParaderoInicio, ParaderoFinal);
+        }
+    } else if (Ruta === 'Ruta2') {
 
-function mostrarRutas(ruta) {
-    if (ruta === 'Ruta1') {
-        mostrarRuta(solicitud1Ruta1, "green", "Ruta1", paradas1Ruta1);
-        mostrarRuta(solicitud2Ruta1, "blue", "Ruta1", paradas2Ruta1);
-    } else if (ruta === 'Ruta2') {
-
-    } else if (ruta === 'Ruta3') {
-        mostrarRuta(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
-    } else if (ruta === 'Ruta4') {
-        mostrarRuta(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4);
-        mostrarRuta(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4);
-    } else if (ruta === 'Ruta5') {
-        mostrarRuta(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5);
-        mostrarRuta(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5);
-    } else if (ruta === 'Ruta6') {
-        mostrarRuta(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6);
-        mostrarRuta(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6);
-    } else if (ruta === 'Ruta7') {
+    } else if (Ruta === 'Ruta3') {
+        mostrarRutap(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
+    } else if (Ruta === 'Ruta4') {
+        if (isCloserToStartorEnd(solicitud1Ruta4, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4, ParaderoInicio, ParaderoFinal)
+        } else {
+            mostrarRutapersonalizada(solicitud2Ruta4, 'blue', "Ruta4", paradas2Ruta4, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta5') {
+        if (isCloserToStartorEnd(solicitud1Ruta5, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta5, 'green', "Ruta5", paradas1Ruta5, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta5, 'blue', "Ruta5", paradas2Ruta5, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta6') {
+        if (isCloserToStartorEnd(solicitud1Ruta6, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta6, 'green', "Ruta6", paradas1Ruta6, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud1Ruta6, 'blue', "Ruta6", paradas2Ruta6, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta7') {
         mostrarRuta7();
-    } else if (ruta === 'Ruta8') {
+    } else if (Ruta === 'Ruta8') {
         mostrarRuta8();
-    } else if (ruta === 'Ruta9') {
-        mostrarRuta(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9);
-        mostrarRuta(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9);
-    } else if (ruta === 'Ruta10') {
-        mostrarRuta(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10);
-        mostrarRuta(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10);
-    } else if (ruta === 'Ruta11') {
-        mostrarRuta(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11);
-    } else if (ruta === 'Ruta12') {
-        mostrarRuta(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12);
-        mostrarRuta(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12);
-    } else if (ruta === 'Ruta13') {
-        mostrarRuta(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13);
-        mostrarRuta(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13);
-    } else if (ruta === 'Ruta14') {
-        mostrarRuta(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14);
-        mostrarRuta(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14);
-    } else if (ruta === 'Ruta15') {
-        mostrarRuta(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15);
-        mostrarRuta(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15);
-    } else if (ruta === 'Ruta16') {
-        mostrarRuta(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16);
-        mostrarRuta(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16);
-    } else if (ruta === 'Ruta17') {
-        mostrarRuta(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17);
-        mostrarRuta(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17);
-    } else if (ruta === 'Ruta18') {
-        mostrarRuta(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18);
-        mostrarRuta(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18);
+    } else if (Ruta === 'Ruta9') {
+        if (isCloserToStartorEnd(solicitud1Ruta9, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta9, 'green', "Ruta9", paradas1Ruta9, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta9, 'blue', "Ruta9", paradas2Ruta9, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta10') {
+        if (isCloserToStartorEnd(solicitud1Ruta10, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta10, 'green', "Ruta10", paradas1Ruta10, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta10, 'blue', "Ruta10", paradas2Ruta10, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta11') {
+        if (isCloserToStartorEnd(solicitud1Ruta11, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud1Ruta11, 'green', "Ruta11", paradas1Ruta11, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta12') {
+        if (isCloserToStartorEnd(solicitud1Ruta12, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta12, 'green', "Ruta12", paradas1Ruta12, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta12, 'blue', "Ruta12", paradas2Ruta12, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta13') {
+        if (isCloserToStartorEnd(solicitud1Ruta13, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta13, 'green', "Ruta13", paradas1Ruta13, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta13, 'blue', "Ruta13", paradas2Ruta13, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta14') {
+        if (isCloserToStartorEnd(solicitud1Ruta14, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta14, 'green', "Ruta14", paradas1Ruta14, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta14, 'blue', "Ruta14", paradas2Ruta14, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta15') {
+        if (isCloserToStartorEnd(solicitud1Ruta15, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta15, 'green', "Ruta15", paradas1Ruta15, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta15, 'blue', "Ruta15", paradas2Ruta15, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta16') {
+        if (isCloserToStartorEnd(solicitud1Ruta16, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta16, 'green', "Ruta16", paradas1Ruta16, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta16, 'blue', "Ruta16", paradas2Ruta16, ParaderoInicio, ParaderoFinal)
+        }
+    } else if (Ruta === 'Ruta17') {
+
+        if (isCloserToStartorEnd(solicitud1Ruta17, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta17, 'green', "Ruta17", paradas1Ruta17, ParaderoInicio, ParaderoFinal);
+        }
+        else {
+            mostrarRutapersonalizada(solicitud2Ruta17, 'blue', "Ruta17", paradas2Ruta17, ParaderoInicio, ParaderoFinal);
+        }
+    } else if (Ruta === 'Ruta18') {
+        if (isCloserToStartorEnd(solicitud1Ruta18, ParaderoInicio)) {
+            mostrarRutapersonalizada(solicitud1Ruta18, 'green', "Ruta6", paradas1Ruta18, ParaderoInicio, ParaderoFinal)
+        }
+        else {
+            mostrarRutapersonalizada(solicitud1Ruta18, 'blue', "Ruta6", paradas2Ruta18, ParaderoInicio, ParaderoFinal)
+        }
     }
 }
 
-function limpiarRuta(ruta) {
-    renderizadores[ruta].forEach(function (renderizador) {
-        renderizador.setMap(null);
+function limpiarRuta() {
+    // Iterar sobre renderizadores
+    Object.keys(renderizadores).forEach(function (ruta) {
+        renderizadores[ruta].forEach(function (renderizador) {
+            renderizador.setMap(null);
+        });
+        renderizadores[ruta] = [];
     });
-    renderizadores[ruta] = [];
 
-    marcadores[ruta].forEach(function (marcador) {
-        marcador.setMap(null);
+    // Iterar sobre marcadores
+    Object.keys(marcadores).forEach(function (ruta) {
+        marcadores[ruta].forEach(function (marcador) {
+            marcador.setMap(null);
+        });
+        marcadores[ruta] = [];
     });
-    marcadores[ruta] = [];
 }
 
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function (position) {
         var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+            lat: -16.404736,
+            lng: -71.525462
             //lat: -16.379968, lng: -71.520766    
         };
 
         ubicacion = new google.maps.Marker({
             position: pos,
-            
+
             map: mapa // Cambiar de map a mapa
         });
         mapa.setCenter(pos); // Cambiar de map a mapa
@@ -240,7 +237,7 @@ function agregarDestino(latLng) {
             scaledSize: new google.maps.Size(30, 30) // Tamaño del marcador de destino
         }
     });
-    // Centrar el mapa en la nueva ubicación del destino
+    limpiarRuta()
     get_paraderocercano();
 }
 
@@ -259,127 +256,263 @@ function haversineDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
+function addValueToMap(map, key, value) {
+    if (!map.has(key)) {
+        map.set(key, new Set());
+    }
+    map.get(key).add(value);
+}
+
 //FUNCION MEJORADA PARA MOSTRAR MAS DE UNA RUTA AL DESTINO
 function get_paraderocercano() {
     if (destinoMarcador && ubicacion) {
         let posicionDestino = destinoMarcador.getPosition();
         let posicionInicial = ubicacion.getPosition();
-        let rutasCercanasADestino = new Set();
-        let rutasCercanasAUbicacion = new Set();
+        let rutasCercanasADestino = new Map();
+        let rutasCercanasAUbicacion = new Map();
 
         // Buscar paraderos cercanos a la posición del destinoMarcador
         for (let ruta in paraderos) {
             if (paraderos.hasOwnProperty(ruta)) {
                 paraderos[ruta].forEach((marcador) => {
-                    const distance = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), marcador.lat, marcador.lng);
-                    if (distance < 0.2) {
-                        rutasCercanasADestino.add(ruta);
+                    const distance = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), marcador.parada.lat, marcador.parada.lng);
+                    if (distance < 0.5) {
+                        addValueToMap(rutasCercanasADestino, ruta, marcador.id);
                     }
                 });
             }
         }
-
         // Buscar paraderos cercanos a la ubicación inicial
         for (let ruta in paraderos) {
             if (paraderos.hasOwnProperty(ruta)) {
                 paraderos[ruta].forEach((marcador) => {
-                    const distance = haversineDistance(posicionInicial.lat(), posicionInicial.lng(), marcador.lat, marcador.lng);
+                    const distance = haversineDistance(posicionInicial.lat(), posicionInicial.lng(), marcador.parada.lat, marcador.parada.lng);
                     if (distance < 0.5) {
-                        rutasCercanasAUbicacion.add(ruta);
+                        addValueToMap(rutasCercanasAUbicacion, ruta, marcador.id);
                     }
                 });
             }
         }
 
-        let rutaEncontrada = false;
+        let result = containsAny(rutasCercanasAUbicacion, rutasCercanasADestino);
 
-        // Mostrar rutas directas si existen
-        rutasCercanasAUbicacion.forEach(function (ruta) {
-            if (rutasCercanasADestino.has(ruta)) {
-                mostrarRutas(ruta);
-                rutaEncontrada = true;
-            }
-        });
-
-        // Si no hay rutas directas, buscar rutas intermedias
-        if (!rutaEncontrada) {
-            let rutasIntermedias = new Set();
-
-            // Buscar paraderos de rutas intermedias
-            rutasCercanasAUbicacion.forEach(function (rutaInicial) {
-                if (paraderos.hasOwnProperty(rutaInicial)) {
-                    paraderos[rutaInicial].forEach((marcadorInicial) => {
-                        for (let ruta in paraderos) {
-                            if (paraderos.hasOwnProperty(ruta)) {
-                                paraderos[ruta].forEach((marcador) => {
-                                    const distance = haversineDistance(marcadorInicial.lat, marcadorInicial.lng, marcador.lat, marcador.lng);
-                                    if (distance < 0.5) {
-                                        rutasIntermedias.add(ruta);
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            });
-
-            // Buscar rutas finales desde las rutas intermedias al destino
-            rutasIntermedias.forEach(function (rutaIntermedia) {
-                if (paraderos.hasOwnProperty(rutaIntermedia)) {
-                    paraderos[rutaIntermedia].forEach((marcadorIntermedio) => {
-                        const distance = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), marcadorIntermedio.lat, marcadorIntermedio.lng);
-                        if (distance < 0.2) {
-                            mostrarRutas(rutaIntermedia);
-                            rutaEncontrada = true;
-                        }
-                    });
-                }
-            });
-
-            // Mostrar rutas desde la ubicación inicial a la ruta intermedia
-            if (rutaEncontrada) {
-                rutasCercanasAUbicacion.forEach(function (rutaInicial) {
-                    mostrarRutas(rutaInicial);
+        if (result !== null) {
+            nomruta = Object.keys(result);
+            paraderofinal = null;
+            mostrarRutas(nomruta[0], { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, paraderofinal);
+        }
+        else {
+            let distanciamascorta = Infinity;
+            let coordenadasparaderos = {};
+            let recorrido1;
+            let recorrido2;
+            rutasCercanasAUbicacion.forEach((setUbicacion, rutaubicacion) => {
+                rutasCercanasADestino.forEach((setDestino, rutadestino) => {
+                    if (paraderos.hasOwnProperty(rutaubicacion) && paraderos.hasOwnProperty(rutadestino)) {
+                        paraderos[rutaubicacion].forEach((coordenada1) => {
+                            paraderos[rutadestino].forEach((coordenada2) => {
+                                const distance = haversineDistance(coordenada1.parada.lat, coordenada1.parada.lng, coordenada2.parada.lat, coordenada2.parada.lng);
+                                if (distance < 0.1 && distance < distanciamascorta) {
+                                    distanciamascorta = distance;
+                                    coordenadasparaderos = {};
+                                    coordenadasparaderos[rutaubicacion] = { lat: coordenada1.parada.lat, lng: coordenada1.parada.lng };
+                                    coordenadasparaderos[rutadestino] = { lat: coordenada2.parada.lat, lng: coordenada2.parada.lng };
+                                    recorrido1 = coordenada1.id;
+                                    recorrido2 = coordenada2.id;
+                                }
+                            });
+                        });
+                    }
                 });
-            }
+            });
+            let rutas = Object.keys(coordenadasparaderos);
+            console.log(rutas[0]);
+            console.log(rutas[1]);
+            mostrarRutas(rutas[0], paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()), paradacercana(rutas[0], recorrido1, coordenadasparaderos[rutas[1]].lat, coordenadasparaderos[rutas[1]].lng));
+            mostrarRutas(rutas[1], coordenadasparaderos[rutas[1]], paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()));
+
         }
     }
 }
 
-// MOSTRAR RUTA AHORA TIENE UNA ALERTA CON EL NOMBRE DE LA RUTA
-function mostrarRuta(solicitud, color, nombreRuta, paraderos) {
-    if( nombreRuta == "Ruta11"){
-    window.alert(`Mostrando Ruta B-POLANCO`);}
-    // Mostrar el nombre de la ruta en algún lugar de la interfaz
-    mostrarNombreRutaEnInterfaz(nombreRuta);
-
-    if (!renderizadores[nombreRuta]) {
-        renderizadores[nombreRuta] = [];
-    }
-
-    if (!marcadores[nombreRuta]) {
-        marcadores[nombreRuta] = [];
-    }
-
-    var renderizador = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-            strokeColor: color
-        },
-        suppressMarkers: true
-    });
-    renderizador.setMap(mapa);
-    servicioDirecciones.route(solicitud, function (resultado, estado) {
-        if (estado === 'OK') {
-            renderizador.setDirections(resultado);
-            paraderos.forEach(function (parada) {
-                var marcador = createMarker(parada);
-                marcadores[nombreRuta].push(marcador); // Almacenar el marcador en el array de la ruta
-            });
-        } else {
-            window.alert('Error al obtener la ruta: ' + estado);
+function paradacercana(ruta, recorrido, lat, lng) {
+    let distanciamascorta = Infinity;
+    let coordenadasparaderos = {};
+    paraderos[ruta].forEach((marcador) => {
+        if (marcador.id === recorrido) {
+            let distance = haversineDistance(lat, lng, marcador.parada.lat, marcador.parada.lng);
+            if (distance < distanciamascorta) {
+                distanciamascorta = distance;
+                coordenadasparaderos = {};
+                coordenadasparaderos = { lat: marcador.parada.lat, lng: marcador.parada.lng };
+            }
         }
     });
-    renderizadores[nombreRuta].push(renderizador); // Almacenar el renderizador en el array de la ruta
+    return coordenadasparaderos;
+}
+
+function isCloserToStartorEnd(Solicitud, ParaderoInicio) {
+    let inicioruta = Solicitud.origin;
+    let finalruta = Solicitud.destination;
+    if (haversineDistance(inicioruta.lat, inicioruta.lng, ParaderoInicio.lat, ParaderoInicio.lng) < haversineDistance(finalruta.lat, finalruta.lng, ParaderoInicio.lat, ParaderoInicio.lng)) {
+        return true;
+    }
+    return false;
+}
+
+function containsAny(mapA, mapB) {
+    let result = {};
+
+    for (let [key, setB] of mapB) {
+        if (mapA.has(key)) {
+            let setA = mapA.get(key);
+            for (let elem of setB) {
+                if (setA.has(elem)) {
+                    if (!result[key]) {
+                        result[key] = [];
+                    }
+                    result[key].push(elem);
+                }
+            }
+        }
+    }
+
+    if (Object.keys(result).length !== 0) {
+        return result;
+    } else {
+        return null;
+    }
+}
+
+
+function calcularPuntoMedio(lat1, lon1, lat2, lon2) {
+    const lat_media = (lat1 + lat2) / 2;
+    const lon_media = (lon1 + lon2) / 2;
+    return { lat: lat_media, lng: lon_media };
+}
+
+function modificarsolicitud(solicitud, paraderoinicio, paraderofinal) {
+    let nuevoswaypoints = [];
+    distanciamaximainicio = haversineDistance(solicitud.origin.lat, solicitud.origin.lng, paraderoinicio.lat, paraderoinicio.lng);
+    distanciamaximafinal = haversineDistance(solicitud.destination.lat, solicitud.destination.lng, paraderofinal.lat, paraderofinal.lng);
+    puntomedio = calcularPuntoMedio(paraderoinicio.lat, paraderofinal.lng, paraderofinal.lat, paraderofinal.lng);
+    puntomedioaextremos = haversineDistance(paraderoinicio.lat, paraderofinal.lng, puntomedio.lat, puntomedio.lng);
+    solicitud.waypoints.forEach(function (waypoint) {
+        let distanciacoordenada1 = haversineDistance(solicitud.origin.lat, solicitud.origin.lng, waypoint.location.lat, waypoint.location.lng);
+        let distanciacoordenada2 = haversineDistance(solicitud.destination.lat, solicitud.destination.lng, waypoint.location.lat, waypoint.location.lng);
+        if ((distanciacoordenada1 > distanciamaximainicio) && (distanciacoordenada2 > distanciamaximafinal) || (haversineDistance(puntomedio.lat, puntomedio.lng, waypoint.location.lat, waypoint.location.lng) < puntomedioaextremos)) {
+            nuevoswaypoints.push(waypoint);
+        }
+    });
+
+    // Crear una copia superficial del objeto solicitud
+    let nuevasolicitud = {
+        origin: paraderoinicio,
+        destination: paraderofinal,
+        travelMode: solicitud.travelMode,
+        waypoints: nuevoswaypoints
+    };
+
+    return nuevasolicitud;
+}
+
+function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, paraderoinicio, paraderofinal) {
+    if (paraderofinal !== null) {
+        if (nombreRuta == "Ruta11") {
+            window.alert(`Mostrando Ruta B-POLANCO`);
+        }
+        // Mostrar el nombre de la ruta en algún lugar de la interfaz
+        mostrarNombreRutaEnInterfaz(nombreRuta);
+
+        if (!renderizadores[nombreRuta]) {
+            renderizadores[nombreRuta] = [];
+        }
+
+        if (!marcadores[nombreRuta]) {
+            marcadores[nombreRuta] = [];
+        }
+
+        var renderizador = new google.maps.DirectionsRenderer({
+            polylineOptions: {
+                strokeColor: color
+            },
+            suppressMarkers: true
+        });
+        console.log(solicitud);
+        nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
+        console.log(nuevasolicitud);
+        renderizador.setMap(mapa);
+        servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
+            if (estado === 'OK') {
+                renderizador.setDirections(resultado);
+                marcadores[nombreRuta].push(createMarker({ lat: paraderoinicio.lat, lng: paraderoinicio.lng }));
+                marcadores[nombreRuta].push(createMarker({ lat: paraderofinal.lat, lng: paraderofinal.lng }));
+            } else {
+                window.alert('Error al obtener la ruta: ' + estado);
+            }
+        });
+        renderizadores[nombreRuta].push(renderizador); // Almacenar el renderizador en el array de la ruta
+    }
+    else {
+        let posicionDestino = destinoMarcador.getPosition();
+        let posicionInicial = ubicacion.getPosition();
+        let distanciamascortainicio = Infinity;
+        let distanciamascortafinal = Infinity;
+        let paraderoinicior = {};
+        let paraderofinalr = {};
+        paraderos.forEach((coordenada) => {
+
+            const distanciainicio = haversineDistance(posicionInicial.lat(), posicionInicial.lng(), coordenada.lat, coordenada.lng);
+            const distanciafinal = haversineDistance(posicionDestino.lat(), posicionDestino.lng(), coordenada.lat, coordenada.lng);
+
+            if (distanciainicio < distanciamascortainicio) {
+                distanciamascortainicio = distanciainicio;
+                paraderoinicior = {};
+                paraderoinicior = { lat: coordenada.lat, lng: coordenada.lng };
+            }
+            if (distanciafinal < distanciamascortafinal) {
+                distanciamascortafinal = distanciafinal;
+                paraderofinalr = {};
+                paraderofinalr = { lat: coordenada.lat, lng: coordenada.lng };
+            }
+
+        });
+        if (nombreRuta == "Ruta11") {
+            window.alert(`Mostrando Ruta B-POLANCO`);
+        }
+        // Mostrar el nombre de la ruta en algún lugar de la interfaz
+        mostrarNombreRutaEnInterfaz(nombreRuta);
+
+        if (!renderizadores[nombreRuta]) {
+            renderizadores[nombreRuta] = [];
+        }
+
+        if (!marcadores[nombreRuta]) {
+            marcadores[nombreRuta] = [];
+        }
+
+        var renderizador = new google.maps.DirectionsRenderer({
+            polylineOptions: {
+                strokeColor: color
+            },
+            suppressMarkers: true
+        });
+        console.log(solicitud);
+        nuevasolicitud = modificarsolicitud(solicitud, paraderoinicior, paraderofinalr);
+        console.log(nuevasolicitud);
+        renderizador.setMap(mapa);
+        servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
+            if (estado === 'OK') {
+                renderizador.setDirections(resultado);
+                marcadores[nombreRuta].push(createMarker({ lat: paraderoinicior.lat, lng: paraderoinicior.lng }));
+                marcadores[nombreRuta].push(createMarker({ lat: paraderofinalr.lat, lng: paraderofinalr.lng }));
+
+            } else {
+                window.alert('Error al obtener la ruta: ' + estado);
+            }
+        });
+        renderizadores[nombreRuta].push(renderizador);
+    }
 }
 
 // Función para mostrar el nombre de la ruta en la interfaz
@@ -388,13 +521,16 @@ function mostrarNombreRutaEnInterfaz(nombreRuta) {
     rutaNombreElement.textContent = `Ruta: ${nombreRuta}`;
 }
 
-function cargarParaderos(paradasAutobus, ruta) {
+function cargarParaderos(paradasAutobus, ruta, recorrido) {
     if (!paraderos[ruta]) {
         paraderos[ruta] = [];
     }
 
     paradasAutobus.forEach(function (parada) {
-        var marcador = parada;
+        var marcador = {
+            id: recorrido,
+            parada: parada
+        }
         paraderos[ruta].push(marcador); // Almacenar el marcador en el array de la ruta
     });
 }
@@ -1084,7 +1220,7 @@ var solicitud1Ruta11 = {
         { location: { lat: -16.416715, lng: -71.533292 }, stopover: true }]
 };
 var solicitud2Ruta11 = {
-    origin:{ lat: -16.423153, lng: -71.542591 },
+    origin: { lat: -16.423153, lng: -71.542591 },
     destination: { lat: -16.359427, lng: -71.509089 },
     travelMode: 'DRIVING',
     waypoints: [
@@ -1609,6 +1745,7 @@ var solicitud2Ruta17 = {
         { location: { lat: -16.451607, lng: -71.554851 }, stopover: true },
         { location: { lat: -16.454059, lng: -71.551968 }, stopover: true },]
 };
+
 var paradas1Ruta17 = [
     { lat: -16.454059, lng: -71.551968 },
     { lat: -16.451607, lng: -71.554851 },
@@ -1624,6 +1761,7 @@ var paradas1Ruta17 = [
     { lat: -16.425467, lng: -71.556556 },
     { lat: -16.417561, lng: -71.549722 },
     { lat: -16.408094, lng: -71.541803 },
+    { lat: -16.405854, lng: -71.540103 },
     { lat: -16.407579, lng: -71.538789 },
     { lat: -16.408788, lng: -71.537813 },
     { lat: -16.407687, lng: -71.535737 },
@@ -1653,9 +1791,6 @@ var paradas2Ruta17 = [
     { lat: -16.448796, lng: -71.552552 },
     { lat: -16.450012, lng: -71.553416 },
     { lat: -16.453984, lng: -71.552040 }
-
-
-
 ];
 
 
@@ -1736,4 +1871,3 @@ var paradas2Ruta18 = [
     { lat: -16.418075, lng: -71.548850 }
 
 ];
-
