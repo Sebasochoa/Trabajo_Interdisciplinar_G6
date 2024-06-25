@@ -50,7 +50,7 @@
 
 
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f4f4f4;
     color: #333;
 }
@@ -66,12 +66,13 @@ header {
     margin-bottom: 20px;
 }
 
-header h1 {
+h1 {
     font-size: 2.5em;
     color: #4CAF50;
     border-bottom: 2px solid #4CAF50;
     display: inline-block;
     padding-bottom: 10px;
+    text-align: center;
 }
 
 main {
@@ -111,6 +112,16 @@ main {
     border-bottom: 2px solid #4CAF50;
     display: inline-block;
     padding-bottom: 5px;
+}
+
+.instrucciones{
+    width: 700px; /* Ancho estático */
+    margin: 0 auto; /* Centrar horizontalmente */
+    left: 50%; /* Centrar horizontalmente */
+    margin-top: 25px;
+    background-color: lightgray; /* Solo para visualización */
+    text-align: center; /* Alinear el texto al centro */
+    padding: 20px; /* Espaciado interno opcional */
 }
 
 #routes-list {

@@ -472,35 +472,89 @@ function mostrarrutacaminando(nombreRuta, paraderoinicio, paraderofinal) {
 }
 
 function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
-    console.log(nombreRuta);
+    let rutaAmostrar = null;
+    switch (nombreRuta) {
+        case 'Ruta1':
+            rutaAmostrar = 'Dolores San Martin ';
+            break;
+        case 'Ruta2':
+            rutaAmostrar = 'COTUM A';
+            break;
+        case 'Ruta3':
+            rutaAmostrar = ' A15-Miraflores';
+            break;
+        case 'Ruta4':
+            rutaAmostrar = 'Alto Selva Alegre';
+            break;
+        case 'Ruta5':
+            rutaAmostrar = 'C2-4D(Cono Norte)';
+            break;
+        case 'Ruta6':
+            rutaAmostrar = 'BJUANXXIII';
+            break;
+        case 'Ruta7':
+            rutaAmostrar = 'C11 COTUM B ';
+            break;
+        case 'Ruta8':
+            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
+            break;
+        case 'Ruta9':
+            rutaAmostrar = 'C - 3 de octubre';
+            break;
+        case 'Ruta10':
+            rutaAmostrar = 'C7 AqpMasivo 7-09';
+            break;
+        case 'Ruta11':
+            rutaAmostrar = 'A-Mariano Melgar';
+            break;
+        case 'Ruta12':
+            rutaAmostrar = 'B-Polanco';
+            break;
+        case 'Ruta13':
+            rutaAmostrar = 'B - 3 de octubre';
+            break;
+        case 'Ruta14':
+            rutaAmostrar = 'Cayma Enace';
+            break;
+        case 'Ruta15':
+            rutaAmostrar = 'La Perla S.R.L.T.D.A';
+            break;
+        case 'Ruta16':
+            rutaAmostrar = '15 de agosto';
+            break;
+        case 'Ruta17':
+            rutaAmostrar = 'ORIOL - A';
+            break;
+        case 'Ruta18':
+            rutaAmostrar = 'Uchumayo';
+            break;
+        default:
+            break;
+    }
     const rutaNombreContainer = document.getElementById('ruta-nombre-container');
 
     // Crear un nuevo elemento de párrafo para la nueva información
     const rutaNombreElement = document.createElement('p');
+    let nuevaRutaText = '';
+
     if (!streetName1 && streetName2) {
-        rutaNombreElement.textContent = `Debes tomar la ruta ${nombreRuta} y bajarte en "${streetName2}"`;
-    }
-    else if (streetName1 && !streetName2) {
-        rutaNombreElement.textContent = `Debes ir a "${streetName1}" tomar la ruta ${nombreRuta}"`;
-    }
-    else {
-        rutaNombreElement.textContent = `Debes ir a "${streetName1}" tomar la ruta ${nombreRuta} y bajarte en "${streetName2}"`;
+        nuevaRutaText = `Debes tomar la ruta ${rutaAmostrar} y bajarte en ${streetName2}`;
+    } else if (streetName1 && !streetName2) {
+        nuevaRutaText = `Debes ir a ${streetName1} tomar la ruta ${rutaAmostrar}`;
+    } else {
+        nuevaRutaText = `Debes ir a ${streetName1} tomar la ruta ${rutaAmostrar} y bajarte en ${streetName2}`;
     }
 
-
-    // Comprobar si el contenedor ya tiene elementos hijos
     if (rutaNombreContainer.children.length > 0) {
-        // Crear un nuevo elemento de conector
-        const conectorElement = document.createElement('span');
-        conectorElement.textContent = ' luego '; // Conector entre rutas
-
-        // Añadir el conector al contenedor
-        rutaNombreContainer.appendChild(conectorElement);
+        // Concatenar el nuevo texto con el texto existente
+        let ultimoElemento = rutaNombreContainer.lastElementChild;
+        ultimoElemento.textContent += ' luego ' + nuevaRutaText;
+    } else {
+        rutaNombreElement.textContent = nuevaRutaText;
+        rutaNombreContainer.appendChild(rutaNombreElement);
     }
-
-    // Añadir el nuevo elemento al contenedor
-    rutaNombreContainer.appendChild(rutaNombreElement);
 }
+
 
 // Función para obtener el nombre de la calle a partir de coordenadas
 function obtenerNombreCalle(lat, lng) {
@@ -583,13 +637,13 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             try {
                 calleinicio = await obtenerNombreCalle(paraderoinicio.lat, paraderoinicio.lng);
                 callefinal = await obtenerNombreCalle(paraderofinal.lat, paraderofinal.lng);
-                mostrarNombreRutaEnInterfaz(nombreRuta,calleinicio,callefinal);
+                mostrarNombreRutaEnInterfaz(nombreRuta, calleinicio, callefinal);
             } catch (error) {
                 //console.error('Error al obtener el nombre de la calle:', error);
             }
         }
-        
-        obtenerYAlmacenarNombreCalle().then(() => {});
+
+        obtenerYAlmacenarNombreCalle().then(() => { });
     }
     else {
         let posicionDestino = destinoMarcador.getPosition();
@@ -656,14 +710,14 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             try {
                 calleinicio = await obtenerNombreCalle(paraderoinicior.lat, paraderoinicior.lng);
                 callefinal = await obtenerNombreCalle(paraderofinalr.lat, paraderofinalr.lng);
-                mostrarNombreRutaEnInterfaz(nombreRuta,calleinicio,callefinal);
+                mostrarNombreRutaEnInterfaz(nombreRuta, calleinicio, callefinal);
             } catch (error) {
                 console.error('Error al obtener el nombre de la calle:', error);
-                calleinicio = null; 
+                calleinicio = null;
             }
         }
-        
-        obtenerYAlmacenarNombreCalle().then(() => {});
+
+        obtenerYAlmacenarNombreCalle().then(() => { });
 
     }
 }
