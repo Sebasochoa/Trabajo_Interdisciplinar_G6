@@ -75,7 +75,7 @@ function mostrarRutas(Ruta, ParaderoInicio, ParaderoFinal) {
     } else if (Ruta === 'Ruta2') {
 
     } else if (Ruta === 'Ruta3') {
-        mostrarRutap(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3);
+        mostrarRutapersonalizada(solicitud1Ruta3, 'green', 'Ruta3', paradas1Ruta3, ParaderoInicio, ParaderoFinal);
     } else if (Ruta === 'Ruta4') {
         if (isCloserToStartorEnd(solicitud1Ruta4, ParaderoInicio)) {
             mostrarRutapersonalizada(solicitud1Ruta4, 'green', "Ruta4", paradas1Ruta4, ParaderoInicio, ParaderoFinal)
@@ -203,7 +203,7 @@ if (navigator.geolocation) {
         ubicacion = new google.maps.Marker({
             position: pos,
 
-            map: mapa 
+            map: mapa
         });
         mapa.setCenter(pos);
     }, function () {
@@ -237,7 +237,8 @@ function agregarDestino(latLng) {
             scaledSize: new google.maps.Size(30, 30) // Tamaño del marcador de destino
         }
     });
-    limpiarRuta()
+    limpiarRuta();
+    borrarRutas();
     get_paraderocercano();
 }
 
@@ -330,7 +331,7 @@ function get_paraderocercano() {
             console.log(rutas[1]);
             mostrarRutas(rutas[0], paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()), paradacercana(rutas[0], recorrido1, coordenadasparaderos[rutas[1]].lat, coordenadasparaderos[rutas[1]].lng));
             mostrarRutas(rutas[1], coordenadasparaderos[rutas[1]], paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()));
-            mostrarrutacaminando(rutas[0]+rutas[1],paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()),paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()))
+            mostrarrutacaminando(rutas[0] + rutas[1], paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()), paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()))
 
         }
     }
@@ -417,18 +418,16 @@ function modificarsolicitud(solicitud, paraderoinicio, paraderofinal) {
     return nuevasolicitud;
 }
 
-function mostrarrutacaminando(nombreRuta,paraderoinicio,paraderofinal)
-{
+function mostrarrutacaminando(nombreRuta, paraderoinicio, paraderofinal) {
     if (!renderizadores[nombreRuta]) {
         renderizadores[nombreRuta] = [];
     }
 
     let solicitudInicio = {
-        origin: {lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng()} ,
+        origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
         destination: { lat: paraderoinicio.lat, lng: paraderoinicio.lng },
         travelMode: 'WALKING'
     };
-    console.log(solicitudInicio);
     var renderizadorInicio = new google.maps.DirectionsRenderer({
         polylineOptions: {
             strokeColor: 'red'
@@ -450,7 +449,7 @@ function mostrarrutacaminando(nombreRuta,paraderoinicio,paraderofinal)
     // Solicitud 'walking' desde paraderofinal hasta coordenadasFinales
     let solicitudFinal = {
         origin: { lat: paraderofinal.lat, lng: paraderofinal.lng },
-        destination: {lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng()},
+        destination: { lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng() },
         travelMode: 'WALKING'
     };
 
@@ -473,30 +472,99 @@ function mostrarrutacaminando(nombreRuta,paraderoinicio,paraderofinal)
     renderizadores[nombreRuta].push(renderizadorFinal);
 }
 
+function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
+    console.log(nombreRuta);
+    const rutaNombreContainer = document.getElementById('ruta-nombre-container');
+
+    // Crear un nuevo elemento de párrafo para la nueva información
+    const rutaNombreElement = document.createElement('p');
+    if (!streetName1 && streetName2) {
+        rutaNombreElement.textContent = `Debes tomar la ruta ${nombreRuta} y bajarte en "${streetName2}"`;
+    }
+    else if (streetName1 && !streetName2) {
+        rutaNombreElement.textContent = `Debes ir a "${streetName1}" tomar la ruta ${nombreRuta}"`;
+    }
+    else {
+        rutaNombreElement.textContent = `Debes ir a "${streetName1}" tomar la ruta ${nombreRuta} y bajarte en "${streetName2}"`;
+    }
+
+
+    // Comprobar si el contenedor ya tiene elementos hijos
+    if (rutaNombreContainer.children.length > 0) {
+        // Crear un nuevo elemento de conector
+        const conectorElement = document.createElement('span');
+        conectorElement.textContent = ' luego '; // Conector entre rutas
+
+        // Añadir el conector al contenedor
+        rutaNombreContainer.appendChild(conectorElement);
+    }
+
+    // Añadir el nuevo elemento al contenedor
+    rutaNombreContainer.appendChild(rutaNombreElement);
+}
+
+// Función para obtener el nombre de la calle a partir de coordenadas
+function obtenerNombreCalle(lat, lng) {
+    return new Promise((resolve, reject) => {
+        var geocoder = new google.maps.Geocoder();
+        var latLng = new google.maps.LatLng(lat, lng);
+
+        geocoder.geocode({ 'location': latLng }, function (results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    var addressComponents = results[0].address_components;
+                    var streetName = "";
+
+                    for (var i = 0; i < addressComponents.length; i++) {
+                        if (addressComponents[i].types.includes("route")) {
+                            streetName = addressComponents[i].long_name;
+                            break;
+                        }
+                    }
+
+                    if (streetName) {
+                        resolve(streetName);
+                    } else {
+                        reject('No se encontró el nombre de la calle');
+                    }
+                } else {
+                    reject('No se encontraron resultados');
+                }
+            } else {
+                reject('Geocoder falló debido a: ' + status);
+            }
+        });
+    });
+}
+
+function borrarRutas() {
+    const rutaNombreContainer = document.getElementById('ruta-nombre-container');
+    rutaNombreContainer.innerHTML = ''; // Borra todo el contenido del contenedor
+}
+
+
+
 function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, paraderoinicio, paraderofinal) {
     if (paraderofinal !== null) {
         if (nombreRuta == "Ruta11") {
             window.alert(`Mostrando Ruta B-POLANCO`);
         }
         // Mostrar el nombre de la ruta en algún lugar de la interfaz
-        mostrarNombreRutaEnInterfaz(nombreRuta);
-    
+
         if (!renderizadores[nombreRuta]) {
             renderizadores[nombreRuta] = [];
         }
-    
+
         if (!marcadores[nombreRuta]) {
             marcadores[nombreRuta] = [];
         }
-    
+
         var renderizador = new google.maps.DirectionsRenderer({
             polylineOptions: {
                 strokeColor: color
             },
             suppressMarkers: true
         });
-        
-        // Solicitud principal
         let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
         renderizador.setMap(mapa);
         servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
@@ -509,6 +577,20 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             }
         });
         renderizadores[nombreRuta].push(renderizador); // Almacenar el renderizador en el array de la ruta
+
+        let calleinicio = null;
+        let callefinal = null
+        async function obtenerYAlmacenarNombreCalle() {
+            try {
+                calleinicio = await obtenerNombreCalle(paraderoinicio.lat, paraderoinicio.lng);
+                callefinal = await obtenerNombreCalle(paraderofinal.lat, paraderofinal.lng);
+                mostrarNombreRutaEnInterfaz(nombreRuta,calleinicio,callefinal);
+            } catch (error) {
+                //console.error('Error al obtener el nombre de la calle:', error);
+            }
+        }
+        
+        obtenerYAlmacenarNombreCalle().then(() => {});
     }
     else {
         let posicionDestino = destinoMarcador.getPosition();
@@ -538,7 +620,6 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             window.alert(`Mostrando Ruta B-POLANCO`);
         }
         // Mostrar el nombre de la ruta en algún lugar de la interfaz
-        mostrarNombreRutaEnInterfaz(nombreRuta);
 
         if (!renderizadores[nombreRuta]) {
             renderizadores[nombreRuta] = [];
@@ -547,7 +628,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
         if (!marcadores[nombreRuta]) {
             marcadores[nombreRuta] = [];
         }
-        mostrarrutacaminando(nombreRuta,paraderoinicior,paraderofinalr);
+        mostrarrutacaminando(nombreRuta, paraderoinicior, paraderofinalr);
 
         var renderizador = new google.maps.DirectionsRenderer({
             polylineOptions: {
@@ -555,9 +636,9 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             },
             suppressMarkers: true
         });
-        console.log(solicitud);
+
+
         nuevasolicitud = modificarsolicitud(solicitud, paraderoinicior, paraderofinalr);
-        console.log(nuevasolicitud);
         renderizador.setMap(mapa);
         servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
             if (estado === 'OK') {
@@ -570,14 +651,26 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
             }
         });
         renderizadores[nombreRuta].push(renderizador);
+        let calleinicio = null;
+        let callefinal = null
+        async function obtenerYAlmacenarNombreCalle() {
+            try {
+                calleinicio = await obtenerNombreCalle(paraderoinicior.lat, paraderoinicior.lng);
+                callefinal = await obtenerNombreCalle(paraderofinalr.lat, paraderofinalr.lng);
+                mostrarNombreRutaEnInterfaz(nombreRuta,calleinicio,callefinal);
+            } catch (error) {
+                console.error('Error al obtener el nombre de la calle:', error);
+                calleinicio = null; 
+            }
+        }
+        
+        obtenerYAlmacenarNombreCalle().then(() => {});
+
     }
 }
 
 // Función para mostrar el nombre de la ruta en la interfaz
-function mostrarNombreRutaEnInterfaz(nombreRuta) {
-    const rutaNombreElement = document.getElementById('ruta-nombre');
-    rutaNombreElement.textContent = `Ruta: ${nombreRuta}`;
-}
+
 
 function cargarParaderos(paradasAutobus, ruta, recorrido) {
     if (!paraderos[ruta]) {
@@ -1143,7 +1236,7 @@ var paradas2Ruta9 = [
     { lat: -16.393582, lng: -71.522671 },
     { lat: -16.397215, lng: -71.525116 },
     { lat: -16.400957, lng: -71.527633 },
-    { lat: -16.404269, lng: -71.527420 },
+    { lat: -16.404294, lng: -71.527421 },
     { lat: -16.408309, lng: -71.532270 },
     { lat: -16.411982, lng: -71.535213 },
     { lat: -16.415289, lng: -71.534190 },
