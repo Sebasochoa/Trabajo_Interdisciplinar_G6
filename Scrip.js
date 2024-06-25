@@ -203,14 +203,14 @@ if (navigator.geolocation) {
         ubicacion = new google.maps.Marker({
             position: pos,
 
-            map: mapa // Cambiar de map a mapa
+            map: mapa 
         });
-        mapa.setCenter(pos); // Cambiar de map a mapa
+        mapa.setCenter(pos);
     }, function () {
-        handleLocationError(true, mapa); // Cambiar de map a mapa
+        handleLocationError(true, mapa);
     });
 } else {
-    handleLocationError(false, mapa); // Cambiar de map a mapa
+    handleLocationError(false, mapa);
 }
 
 
@@ -330,6 +330,7 @@ function get_paraderocercano() {
             console.log(rutas[1]);
             mostrarRutas(rutas[0], paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()), paradacercana(rutas[0], recorrido1, coordenadasparaderos[rutas[1]].lat, coordenadasparaderos[rutas[1]].lng));
             mostrarRutas(rutas[1], coordenadasparaderos[rutas[1]], paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()));
+            mostrarrutacaminando(rutas[0]+rutas[1],paradacercana(rutas[0], recorrido1, posicionInicial.lat(), posicionInicial.lng()),paradacercana(rutas[1], recorrido2, posicionDestino.lat(), posicionDestino.lng()))
 
         }
     }
@@ -416,6 +417,62 @@ function modificarsolicitud(solicitud, paraderoinicio, paraderofinal) {
     return nuevasolicitud;
 }
 
+function mostrarrutacaminando(nombreRuta,paraderoinicio,paraderofinal)
+{
+    if (!renderizadores[nombreRuta]) {
+        renderizadores[nombreRuta] = [];
+    }
+
+    let solicitudInicio = {
+        origin: {lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng()} ,
+        destination: { lat: paraderoinicio.lat, lng: paraderoinicio.lng },
+        travelMode: 'WALKING'
+    };
+    console.log(solicitudInicio);
+    var renderizadorInicio = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: 'red'
+        },
+        suppressMarkers: true
+    });
+
+    renderizadorInicio.setMap(mapa);
+    servicioDirecciones.route(solicitudInicio, function (resultado, estado) {
+        if (estado === 'OK') {
+            renderizadorInicio.setDirections(resultado);
+            //marcadores[nombreRuta].push(createMarker(coordenadasIniciales));
+        } else {
+            window.alert('Error al obtener la ruta de inicio: ' + estado);
+        }
+    });
+    renderizadores[nombreRuta].push(renderizadorInicio); // Almacenar el renderizador en el array de la ruta
+
+    // Solicitud 'walking' desde paraderofinal hasta coordenadasFinales
+    let solicitudFinal = {
+        origin: { lat: paraderofinal.lat, lng: paraderofinal.lng },
+        destination: {lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng()},
+        travelMode: 'WALKING'
+    };
+
+    var renderizadorFinal = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: 'red'
+        },
+        suppressMarkers: true
+    });
+
+    renderizadorFinal.setMap(mapa);
+    servicioDirecciones.route(solicitudFinal, function (resultado, estado) {
+        if (estado === 'OK') {
+            renderizadorFinal.setDirections(resultado);
+            //marcadores[nombreRuta].push(createMarker(coordenadasFinales));
+        } else {
+            window.alert('Error al obtener la ruta final: ' + estado);
+        }
+    });
+    renderizadores[nombreRuta].push(renderizadorFinal);
+}
+
 function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, paraderoinicio, paraderofinal) {
     if (paraderofinal !== null) {
         if (nombreRuta == "Ruta11") {
@@ -423,24 +480,24 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
         }
         // Mostrar el nombre de la ruta en algún lugar de la interfaz
         mostrarNombreRutaEnInterfaz(nombreRuta);
-
+    
         if (!renderizadores[nombreRuta]) {
             renderizadores[nombreRuta] = [];
         }
-
+    
         if (!marcadores[nombreRuta]) {
             marcadores[nombreRuta] = [];
         }
-
+    
         var renderizador = new google.maps.DirectionsRenderer({
             polylineOptions: {
                 strokeColor: color
             },
             suppressMarkers: true
         });
-        console.log(solicitud);
-        nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
-        console.log(nuevasolicitud);
+        
+        // Solicitud principal
+        let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
         renderizador.setMap(mapa);
         servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
             if (estado === 'OK') {
@@ -490,6 +547,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, parad
         if (!marcadores[nombreRuta]) {
             marcadores[nombreRuta] = [];
         }
+        mostrarrutacaminando(nombreRuta,paraderoinicior,paraderofinalr);
 
         var renderizador = new google.maps.DirectionsRenderer({
             polylineOptions: {
