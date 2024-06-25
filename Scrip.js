@@ -213,32 +213,6 @@ function limpiarRuta() {
         marcadores[ruta] = [];
     });
 }
-<<<<<<< HEAD
-
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        var pos = {
-            lat: -16.404736,
-            lng: -71.525462
-            //lat: -16.379968, lng: -71.520766    
-        };
-
-        ubicacion = new google.maps.Marker({
-            position: pos,
-
-            map: mapa
-        });
-        mapa.setCenter(pos);
-    }, function () {
-        handleLocationError(true, mapa);
-    });
-} else {
-    handleLocationError(false, mapa);
-}
-
-
-=======
->>>>>>> 1acaae808bbc1da454360408776622da52199041
 // Manejo de errores de geolocalización
 function handleLocationError(browserHasGeolocation, pos) {
     var infoWindow = new google.maps.InfoWindow({ map: pos }); // Cambiar de map a pos
