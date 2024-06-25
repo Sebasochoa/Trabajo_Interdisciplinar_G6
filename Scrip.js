@@ -27,6 +27,28 @@ function initMap() {
         center: { lat: -16.386904, lng: -71.574997 },
         zoom: 12
     });
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            ubicacion = new google.maps.Marker({
+                position: pos,
+                map: mapa,
+                draggable: true, // Hacer que el marcador sea arrastrable
+                title: "Tu ubicación actual"
+            });
+
+            mapa.setCenter(pos);
+        }, function () {
+            handleLocationError(true, mapa);
+        });
+    } else {
+        handleLocationError(false, mapa);
+    }
     servicioDirecciones = new google.maps.DirectionsService();
     mapa.addListener('click', function (event) {
         agregarDestino(event.latLng);
@@ -191,29 +213,6 @@ function limpiarRuta() {
         marcadores[ruta] = [];
     });
 }
-
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        var pos = {
-            lat: -16.404736,
-            lng: -71.525462
-            //lat: -16.379968, lng: -71.520766    
-        };
-
-        ubicacion = new google.maps.Marker({
-            position: pos,
-
-            map: mapa 
-        });
-        mapa.setCenter(pos);
-    }, function () {
-        handleLocationError(true, mapa);
-    });
-} else {
-    handleLocationError(false, mapa);
-}
-
-
 // Manejo de errores de geolocalización
 function handleLocationError(browserHasGeolocation, pos) {
     var infoWindow = new google.maps.InfoWindow({ map: pos }); // Cambiar de map a pos
