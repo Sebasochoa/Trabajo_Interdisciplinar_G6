@@ -267,8 +267,7 @@ function agregarDestino(latLng) {
     });
     limpiarRuta();
     borrarRutas();
-    get_paraderocercano();
-    
+    get_paraderocercano();    
 }
 
 function degreesToRadians(degrees) {
@@ -606,7 +605,7 @@ function obtenerNombreCalle(lat, lng) {
                         resolve(streetName);
                     } else {
                         //reject('No se encontró el nombre de la calle');
-                        resolve('No se encontro');
+                        resolve("");
                     }
                 } else {
                     reject('No se encontraron resultados');
@@ -627,10 +626,6 @@ function borrarRutas() {
 
 function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderos, paraderoinicio, paraderofinal) {
     if (paraderofinal !== null) {
-        if (nombreRuta == "Ruta11") {
-            window.alert(`Mostrando Ruta B-POLANCO`);
-        }
-        // Mostrar el nombre de la ruta en algún lugar de la interfaz
 
         if (!renderizadores[nombreRuta]) {
             renderizadores[nombreRuta] = [];
@@ -842,7 +837,7 @@ var paradas1Ruta1 = [
     { lat: -16.399962, lng: -71.5705972 },
     { lat: -16.393322, lng: -71.5682076 },
     { lat: -16.392831, lng: -71.560260 },
-    { lat: -16.392710, lng: -71.556940 },//
+    { lat: -16.392922, lng: -71.557525 },
     { lat: -16.388102, lng: -71.5520456 },
     { lat: -16.389097, lng: -71.549339 },
     { lat: -16.390184, lng: -71.546413 },
@@ -862,19 +857,19 @@ var paradas1Ruta1 = [
 var paradas2Ruta1 = [
     { lat: -16.427124, lng: -71.532956 },
     { lat: -16.424925, lng: -71.533091 },
-    { lat: -16.415159, lng: -71.5340559 },
+    { lat: -16.415382, lng: -71.533968 },
     { lat: -16.412611, lng: -71.535092 },
     { lat: -16.407767, lng: -71.5385793 },
     { lat: -16.405729, lng: -71.5400113 },
-    { lat: -16.399908, lng: -71.5421171 },
+    { lat: -16.398130, lng: -71.541560 },
     { lat: -16.396656, lng: -71.545194 },
-    { lat: -16.395264, lng: -71.548209 },
-    { lat: -16.393445, lng: -71.549074 },
+    { lat: -16.395511, lng: -71.548082 },
+    { lat: -16.393473, lng: -71.549057 },
     { lat: -16.389840, lng: -71.5476133 },
     { lat: -16.390184, lng: -71.546413 },
     { lat: -16.389097, lng: -71.549339 },
     { lat: -16.388102, lng: -71.5520456 },
-    { lat: -16.392710, lng: -71.556940 },//
+    { lat: -16.392922, lng: -71.557525},
     { lat: -16.392831, lng: -71.560260 },
     { lat: -16.393322, lng: -71.5682076 },
     { lat: -16.399962, lng: -71.5705972 },
@@ -932,8 +927,8 @@ var solicitud2Ruta2 = {
     ]
 };
 var paradas1Ruta2 = [
-    { lat: -16.4570573, lng: -71.5223249 },
-    { lat: -16.4579719, lng: -71.5238137 },
+    { lat: -16.4570573, lng: -71.5223249 },//
+    { lat: -16.458569, lng: -71.524642 },//-16.458569, -71.524642
     { lat: -16.4607272, lng: -71.5256613 },
     { lat: -16.4528158, lng: -71.5308454 },
     { lat: -16.4524301, lng: -71.5310445 },
@@ -944,10 +939,10 @@ var paradas1Ruta2 = [
     { lat: -16.4328161, lng: -71.5226720 },
     { lat: -16.4290323, lng: -71.5239812 },
     { lat: -16.4280545, lng: -71.5205657 },
-    { lat: -16.4270424, lng: -71.5179394 },
+    { lat: -16.427238, lng: -71.518504 },//-16.427238, -71.518504
     { lat: -16.4256164, lng: -71.5150012 },
     { lat: -16.4199181, lng: -71.5166529 },
-    { lat: -16.4110302, lng: -71.5217163 },
+    { lat: -16.411754, lng: -71.520987 },//-16.411754, -71.520987
     { lat: -16.4074799, lng: -71.5243760 },
     { lat: -16.4043556, lng: -71.5273757 },
     { lat: -16.4055383, lng: -71.5289800 },
@@ -965,17 +960,17 @@ var paradas2Ruta2 = [
     { lat: -16.4199181, lng: -71.5166529 },
     { lat: -16.4227758, lng: -71.5162115 },
     { lat: -16.4256164, lng: -71.5150012 },
-    { lat: -16.4268601, lng: -71.5179357 },
+    { lat: -16.427173, lng: -71.518838 },//-16.427173, -71.518838
     { lat: -16.4280545, lng: -71.5205657 },
     { lat: -16.4288914, lng: -71.5236820 },
     { lat: -16.4328161, lng: -71.5226720 },
     { lat: -16.4362030, lng: -71.5213791 },
-    { lat: -16.4374828, lng: -71.5238903 },
-    { lat: -16.4381817, lng: -71.5237059 },
+    { lat: -16.439216, lng: -71.521789 },//-16.439216, -71.521789
+    { lat: -16.438675, lng: -71.525534 },//-16.438675, -71.525534
     { lat: -16.4408628, lng: -71.5256035 },
     { lat: -16.4482143, lng: -71.5326327 },
-    { lat: -16.4579719, lng: -71.5238137 },
-    { lat: -16.4570573, lng: -71.5223249 }
+    { lat: -16.458569, lng: -71.524642 },
+    { lat: -16.4570573, lng: -71.5223249 }//
 ];
 
 var solicitud1Ruta3 = {
@@ -1031,9 +1026,9 @@ var solicitud2Ruta3 = {
 };
 
 var paradas1Ruta3 = [
-    { lat: -16.3768450, lng: -71.4989621 },
-    { lat: -16.3736312, lng: -71.5012127 },
-    { lat: -16.3736940, lng: -71.5021350 },
+    { lat: -16.375502, lng: -71.499777 },//-16.375502, -71.499777
+    { lat: -16.373109, lng: -71.500145 },//-16.373109, -71.500145
+    { lat: -16.373362, lng: -71.502457 },//-16.373362, -71.502457
     { lat: -16.3730350, lng: -71.5028740 },
     { lat: -16.3742290, lng: -71.5044920 },
     { lat: -16.3758010, lng: -71.5068630 },
