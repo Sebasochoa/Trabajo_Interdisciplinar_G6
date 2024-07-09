@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ruta Personalizada</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&callback=initMap"
+        async defer></script>
+    <script src="rutas.js"></script>
+    <link rel="stylesheet" href="Estilos.css">
+</head>
+<body>
+    <h1>Rutas</h1>
+    <div class="checkbox-container">
+        <label><input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('Ruta1')"> Grupo 01_RUTA 1</label>
+        <label><input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('Ruta2')"> Grupo 01_RUTA 2</label>
+        <label><input type="checkbox" id="checkbox3" onchange="handleCheckboxChange('Ruta3')"> Grupo 02_RUTA 3</label>
+        <label><input type="checkbox" id="checkbox4" onchange="handleCheckboxChange('Ruta4')"> Grupo 02_RUTA 4</label>
+        <label><input type="checkbox" id="checkbox5" onchange="handleCheckboxChange('Ruta5')"> Grupo 03_RUTA 5</label>
+        <label><input type="checkbox" id="checkbox6" onchange="handleCheckboxChange('Ruta6')"> Grupo 03_RUTA 6</label>
+        <label><input type="checkbox" id="checkbox7" onchange="handleCheckboxChange('Ruta7')"> Grupo 04_RUTA 7</label>
+        <label><input type="checkbox" id="checkbox8" onchange="handleCheckboxChange('Ruta8')"> Grupo 04_RUTA 8</label>
+        <label><input type="checkbox" id="checkbox9" onchange="handleCheckboxChange('Ruta9')"> Grupo 05_RUTA 9</label>
+        <label><input type="checkbox" id="checkbox10" onchange="handleCheckboxChange('Ruta10')"> Grupo 05_RUTA 10</label>
+        <label><input type="checkbox" id="checkbox11" onchange="handleCheckboxChange('Ruta11')"> Grupo 06_RUTA 11</label>
+        <label><input type="checkbox" id="checkbox12" onchange="handleCheckboxChange('Ruta12')"> Grupo 06_RUTA 12</label>
+        <label><input type="checkbox" id="checkbox13" onchange="handleCheckboxChange('Ruta13')"> Grupo 07_RUTA 13</label>
+        <label><input type="checkbox" id="checkbox14" onchange="handleCheckboxChange('Ruta14')"> Grupo 07_RUTA 14</label>
+        <label><input type="checkbox" id="checkbox15" onchange="handleCheckboxChange('Ruta15')"> Grupo 08_RUTA 15</label>
+        <label><input type="checkbox" id="checkbox16" onchange="handleCheckboxChange('Ruta16')"> Grupo 08_RUTA 16</label>
+        <label><input type="checkbox" id="checkbox17" onchange="handleCheckboxChange('Ruta17')"> Grupo 09_RUTA 17</label>
+        <label><input type="checkbox" id="checkbox18" onchange="handleCheckboxChange('Ruta18')"> Grupo 09_RUTA 18</label>
+        
+    </div>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+    <div class="legend">
+        <div class="legend-item">
+            <span>Camino ida</span>
+            <div class="legend-color legend-green"></div>
+        </div>
+        <div class="legend-item">
+            <span>Camino vuelta</span>
+            <div class="legend-color legend-blue"></div>
+        </div>
+    </div>
+</body>
