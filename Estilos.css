@@ -156,3 +156,30 @@ main {
 #show-all-routes:hover {
     background-color: #45a049;
 }
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    padding: 10px;
+}
+
+.dropdown-content input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.show {
+    display: block;
+}
+.Opcion {
+    padding: 10px;
+    margin-left: 60px;
+}
