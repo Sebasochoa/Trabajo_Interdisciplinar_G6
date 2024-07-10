@@ -130,14 +130,25 @@ function addValueToMap(map, key, value) {
 }
 
 function findStops(Position, map) {
-    for (let ruta in paraderos) {
-        if (paraderos.hasOwnProperty(ruta)) {
-            paraderos[ruta].forEach((marcador) => {
-                const distance = haversineDistance(Position.lat(), Position.lng(), marcador.parada.lat, marcador.parada.lng);
-                if (distance < 0.5) {
-                    addValueToMap(map, ruta, marcador.id);
-                }
-            });
+    let increment = 0.1;
+    let maxDistance = 0.5;
+    let found = false;
+
+    while (increment <= maxDistance && !found) {
+        for (let ruta in paraderos) {
+            if (paraderos.hasOwnProperty(ruta)) {
+                paraderos[ruta].forEach((marcador) => {
+                    const distance = haversineDistance(Position.lat(), Position.lng(), marcador.parada.lat, marcador.parada.lng);
+                    if (distance < increment) {
+                        addValueToMap(map, ruta, marcador.id);
+                        found = true;
+                    }
+                });
+            }
+        }
+
+        if (!found) {
+            increment += 0.1;
         }
     }
 }
@@ -191,8 +202,6 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
         }
         return acc;
     }, 0);
-
-    // Contar la cantidad de '1's
     let countOnes = result.reduce((acc, currentValue) => {
         if (currentValue === 1) {
             acc++;
@@ -265,6 +274,23 @@ function GetNearStop(Paraderos, Coordenadas) {
     return result;
 }
 
+function ChooseRoute(Objeto, Ubicacion, Destino) {
+    const rutaKeys = Object.entries(Objeto);
+
+    for (let ruta in rutaKeys) {
+        let [rutaNombre, rutaArray] = rutaKeys[ruta];
+        if (rutaArray.length > 1) {
+            let DobleRecorrido = {};
+            DobleRecorrido[rutaNombre] = rutaArray;
+            EraseWay(DobleRecorrido, Ubicacion, Destino);
+        }
+        let objetoruta = GetRoute(rutaNombre, rutaArray[0]);
+        if (!IsApproaching(objetoruta.paradas, Ubicacion, Destino)) {
+           delete Objeto[rutaNombre];
+        }
+    }
+}
+
 function CalcularRutas() {
     if (destinoMarcador && ubicacion) {
         let posicionDestino = destinoMarcador.getPosition();
@@ -285,13 +311,15 @@ function CalcularRutas() {
                 const rutaKeys = Object.keys(result);
                 const rutaArray = result[rutaKeys[0]];
 
+                if (Array.isArray(rutaKeys)) {
+                    ChooseRoute(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
+                }
+                
                 if (Array.isArray(rutaArray) && rutaArray.length > 1) {
                     EraseWay(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
                 }
 
                 const RutaASeguir = GetRoute(rutaKeys[0], rutaArray[0]);
-                console.log(rutaKeys);
-                console.log(rutaArray);
                 const { paradas } = RutaASeguir;
 
                 let minDistanciaUbicacion = Infinity;
@@ -1241,7 +1269,6 @@ var Rutas = {
                 { location: { lat: -16.426920, lng: -71.533040 }, stopover: true },
                 { location: { lat: -16.417130, lng: -71.532670 }, stopover: true },
                 { location: { lat: -16.412530, lng: -71.535120 }, stopover: true },
-                { location: { lat: -16.407230, lng: -71.524710 }, stopover: true },
                 { location: { lat: -16.399630, lng: -71.515360 }, stopover: true },
                 { location: { lat: -16.399420, lng: -71.516680 }, stopover: true },
                 { location: { lat: -16.398370, lng: -71.515930 }, stopover: true },
@@ -1433,17 +1460,17 @@ var Rutas = {
             waypoints: [
                 { location: { lat: -16.425830, lng: -71.492770 }, stopover: true },
                 { location: { lat: -16.427835, lng: -71.502801 }, stopover: true },
-                { location: { lat: -16.410490, lng: -71.513380 }, stopover: true },
-                { location: { lat: -16.402970, lng: -71.516549 }, stopover: true },
-                { location: { lat: -16.399491, lng: -71.521671 }, stopover: true },
+                { location: { lat: -16.410468, lng: -71.513274 }, stopover: true },
+                { location: { lat: -16.403266, lng: -71.516312 }, stopover: true },
+                { location: { lat: -16.399392, lng: -71.521586 }, stopover: true },
                 { location: { lat: -16.398187, lng: -71.526713 }, stopover: true },
                 { location: { lat: -16.395463, lng: -71.530834 }, stopover: true },
                 { location: { lat: -16.393299, lng: -71.537399 }, stopover: true },
                 { location: { lat: -16.392254, lng: -71.540129 }, stopover: true },
-                { location: { lat: -16.390123, lng: -71.546528 }, stopover: true },
-                { location: { lat: -16.389280, lng: -71.548936 }, stopover: true },
-                { location: { lat: -16.384138, lng: -71.555935 }, stopover: true },
-                { location: { lat: -16.381021, lng: -71.556761 }, stopover: true },
+                { location: { lat: -16.390006, lng: -71.546472 }, stopover: true },
+                { location: { lat: -16.389147, lng: -71.548898 }, stopover: true },
+                { location: { lat: -16.384107, lng: -71.555875 }, stopover: true },
+                { location: { lat: -16.381007, lng: -71.556637 }, stopover: true },
                 { location: { lat: -16.379168, lng: -71.559184 }, stopover: true },
                 { location: { lat: -16.374349, lng: -71.561483 }, stopover: true },
                 { location: { lat: -16.375036, lng: -71.566817 }, stopover: true },
@@ -1455,17 +1482,17 @@ var Rutas = {
         },
         paradas: [
             { lat: -16.425830, lng: -71.492770 },
-            { lat: -16.410490, lng: -71.513380 },
-            { lat: -16.402970, lng: -71.516549 },
-            { lat: -16.399491, lng: -71.521671 },
+            { lat: -16.410459, lng: -71.513243 },
+            { lat: -16.403259, lng: -71.516280 },
+            { lat: -16.399392, lng: -71.521586 },
             { lat: -16.398187, lng: -71.526713 },
             { lat: -16.395463, lng: -71.530834 },
             { lat: -16.393299, lng: -71.537399 },
             { lat: -16.392254, lng: -71.540129 },
-            { lat: -16.390123, lng: -71.546528 },
-            { lat: -16.389280, lng: -71.548936 },
-            { lat: -16.384138, lng: -71.555935 },
-            { lat: -16.381021, lng: -71.556761 },
+            { lat: -16.390006, lng: -71.546472 },
+            { lat: -16.389147, lng: -71.548898 },
+            { lat: -16.384089, lng: -71.555849 },
+            { lat: -16.381005, lng: -71.556608 },
             { lat: -16.379168, lng: -71.559184 },
             { lat: -16.374349, lng: -71.561483 },
             { lat: -16.375036, lng: -71.566817 },
@@ -2573,7 +2600,7 @@ function agregarRuta(solicitud, color, paradasAutobus, ruta) {
         polylineOptions: {
             strokeColor: color
         },
-        suppressMarkers: true
+        //suppressMarkers: true
     });
     renderizador.setMap(mapa);
     servicioDirecciones.route(solicitud, function (resultado, estado) {
