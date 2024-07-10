@@ -286,7 +286,7 @@ function ChooseRoute(Objeto, Ubicacion, Destino) {
         }
         let objetoruta = GetRoute(rutaNombre, rutaArray[0]);
         if (!IsApproaching(objetoruta.paradas, Ubicacion, Destino)) {
-           delete Objeto[rutaNombre];
+            delete Objeto[rutaNombre];
         }
     }
 }
@@ -314,7 +314,7 @@ function CalcularRutas() {
                 if (Array.isArray(rutaKeys)) {
                     ChooseRoute(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
                 }
-                
+
                 if (Array.isArray(rutaArray) && rutaArray.length > 1) {
                     EraseWay(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
                 }
@@ -339,7 +339,7 @@ function CalcularRutas() {
                         paraderoDestino = coordenada;
                     }
                 });
-                mostrarRutapersonalizada(RutaASeguir.solicitud, 'green', RutaASeguir.nombre, paraderoUbicacion, paraderoDestino);
+                mostrarRutapersonalizada(RutaASeguir.solicitud, 'green', RutaASeguir.nombre, RutaASeguir.paradas, paraderoUbicacion, paraderoDestino);
             }
             else {
                 console.log(rutasCercanasAUbicacion);
@@ -403,13 +403,11 @@ function ShowCompleteRoute(Solicitud1, Solicitud2, ParaderoIntermedio1, Paradero
 
     mostrarrutacaminando(Solicitud1.nombre, paraderoinicial, paraderofinal);
 
-    //mostrarrutacaminando(Solicitud2.nombre, paraderofinal, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
-
-    mostrarRutapersonalizada(Solicitud1.solicitud, 'green', Solicitud1.nombre, paraderoinicial, ParaderoIntermedio1);
-    mostrarRutapersonalizada(Solicitud2.solicitud, 'blue', Solicitud2.nombre, ParaderoIntermedio2, paraderofinal);
+    mostrarRutapersonalizada(Solicitud1.solicitud, 'green', Solicitud1.nombre, Solicitud1.paradas, paraderoinicial, ParaderoIntermedio1);
+    mostrarRutapersonalizada(Solicitud2.solicitud, 'blue', Solicitud2.nombre, Solicitud2.paradas, ParaderoIntermedio2, paraderofinal);
 }
 
-function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderoinicio, paraderofinal) {
+function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, paraderoinicio, paraderofinal) {
     if (!renderizadores[nombreRuta]) {
         renderizadores[nombreRuta] = [];
     }
@@ -424,15 +422,20 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, paraderoinicio, 
         },
         suppressMarkers: true
     });
-    console.log(solicitud);
     let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
-    console.log(nuevasolicitud);
+    console.log(Paraderos);
+    let nuevasparadas = []
+    nuevasparadas = filterStops(Paraderos, paraderoinicio, false);
+    nuevasparadas = filterStops(nuevasparadas, paraderofinal, true);
+    console.log(nuevasparadas);
     renderizador.setMap(mapa);
     servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
         if (estado === 'OK') {
             renderizador.setDirections(resultado);
-            marcadores[nombreRuta].push(createMarker({ lat: paraderoinicio.lat, lng: paraderoinicio.lng }, color));
-            marcadores[nombreRuta].push(createMarker({ lat: paraderofinal.lat, lng: paraderofinal.lng }, color));
+
+            nuevasparadas.forEach(function (parada) {
+                marcadores[nombreRuta].push(createMarker({ lat: parada.lat, lng: parada.lng }, color));
+            });
         } else {
             window.alert('Error al obtener la ruta: ' + estado);
         }
@@ -483,6 +486,31 @@ function containsAny(mapA, mapB) {
     if (Object.keys(result).length !== 0) {
         return result;
     } else {
+        return null;
+    }
+}
+
+function filterStops(Paradas, Coordenada, Posteriores) {
+    let indiceParada = -1;
+
+    Paradas.forEach((st, indice) => {
+        if (st.lat === Coordenada.lat && st.lng === Coordenada.lng) {
+            indiceParada = indice;
+        }
+    })
+
+    if (indiceParada !== -1) {
+        let paradasfiltradas;
+        if (Posteriores) {
+            paradasfiltradas = Paradas.slice(0, indiceParada + 1);
+        }
+        else {
+            paradasfiltradas = Paradas.slice(indiceParada);
+        }
+        return paradasfiltradas;
+    }
+    else {
+        console.log('No se encontro la parada');
         return null;
     }
 }
@@ -641,7 +669,6 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
     }
     const rutaNombreContainer = document.getElementById('ruta-nombre-container');
 
-    // Crear un nuevo elemento de párrafo para la nueva información
     const rutaNombreElement = document.createElement('p');
     let nuevaRutaText = '';
 
@@ -654,7 +681,6 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
     }
 
     if (rutaNombreContainer.children.length > 0) {
-        // Concatenar el nuevo texto con el texto existente
         let ultimoElemento = rutaNombreContainer.lastElementChild;
         ultimoElemento.textContent += ' luego ' + nuevaRutaText;
     } else {
@@ -664,7 +690,6 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
 }
 
 
-// Función para obtener el nombre de la calle a partir de coordenadas
 function obtenerNombreCalle(lat, lng) {
     return new Promise((resolve, reject) => {
         var geocoder = new google.maps.Geocoder();
@@ -701,11 +726,8 @@ function obtenerNombreCalle(lat, lng) {
 
 function borrarRutas() {
     const rutaNombreContainer = document.getElementById('ruta-nombre-container');
-    rutaNombreContainer.innerHTML = ''; // Borra todo el contenido del contenedor
+    rutaNombreContainer.innerHTML = '';
 }
-
-
-// Función para mostrar el nombre de la ruta en la interfaz
 
 
 function cargarParaderos(paradasAutobus, ruta, recorrido) {
@@ -718,44 +740,36 @@ function cargarParaderos(paradasAutobus, ruta, recorrido) {
             id: recorrido,
             parada: parada
         }
-        paraderos[ruta].push(marcador); // Almacenar el marcador en el array de la ruta
+        paraderos[ruta].push(marcador);
     });
 }
 
 function cambiarColorSVG(svgString, color) {
-    // Crear un elemento div temporal para manipular el SVG como DOM
     const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = svgString.trim(); // Eliminar espacios en blanco al inicio y final
+    tempDiv.innerHTML = svgString.trim();
 
-    // Obtener todos los elementos path dentro del SVG
     const pathElements = tempDiv.querySelectorAll('path');
 
-    // Iterar sobre cada path y aplicar el color al atributo fill o stroke
     pathElements.forEach(pathElement => {
         const originalFill = pathElement.getAttribute('fill');
         const originalStroke = pathElement.getAttribute('stroke');
 
-        // Modificar fill si tiene el color original, o establecer el nuevo color si está en blanco o nulo
         if (originalFill === '#FFFFFF' || !originalFill) {
             pathElement.setAttribute('fill', color);
         }
 
-        // Modificar stroke si tiene el color original, o establecer el nuevo color si está en blanco o nulo
         if (originalStroke === '#FFFFFF' || !originalStroke) {
             pathElement.setAttribute('stroke', color);
         }
     });
 
-    // Convertir el SVG modificado a una cadena de datos (data URI)
     const svgData = new XMLSerializer().serializeToString(tempDiv.firstChild);
     const svgEncoded = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgData)}`;
 
-    // Devolver el SVG modificado como una URL de datos
     return svgEncoded;
 }
 
 
-// Ejemplo de uso:
 const svgOriginal = `
 
 <svg version="1.1" id="svg8" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
