@@ -129,26 +129,16 @@ function addValueToMap(map, key, value) {
     map.get(key).add(value);
 }
 
-function findStops(Position, map) {
-    let increment = 0.1;
-    let maxDistance = 0.5;
-    let found = false;
+function findStops(Position, Map, ComparativeDistance) {
 
-    while (increment <= maxDistance && !found) {
-        for (let ruta in paraderos) {
-            if (paraderos.hasOwnProperty(ruta)) {
-                paraderos[ruta].forEach((marcador) => {
-                    const distance = haversineDistance(Position.lat(), Position.lng(), marcador.parada.lat, marcador.parada.lng);
-                    if (distance < increment) {
-                        addValueToMap(map, ruta, marcador.id);
-                        found = true;
-                    }
-                });
-            }
-        }
-
-        if (!found) {
-            increment += 0.1;
+    for (let ruta in paraderos) {
+        if (paraderos.hasOwnProperty(ruta)) {
+            paraderos[ruta].forEach((marcador) => {
+                const distance = haversineDistance(Position.lat(), Position.lng(), marcador.parada.lat, marcador.parada.lng);
+                if (distance < ComparativeDistance) {
+                    addValueToMap(Map, ruta, marcador.id);
+                }
+            });
         }
     }
 }
@@ -208,6 +198,7 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
         }
         return acc;
     }, 0);
+    console.log(result);
     if (countOnes > countZeros) {
         return true;
     } else {
@@ -291,6 +282,47 @@ function ChooseRoute(Objeto, Ubicacion, Destino) {
     }
 }
 
+function ManageNearRoutes(CercanasADestino, CercanasAUbicacion, PosicionInicial, PosicionDestino) {
+    let increment = 0.1;
+    let maxDistance = 0.5;
+    let found = false;
+    let result = null;
+
+    while (increment <= maxDistance && !found) {
+        console.log(increment);
+        findStops(PosicionDestino, CercanasADestino, increment);
+        findStops(PosicionInicial, CercanasAUbicacion, increment);
+        console.log(CercanasADestino);
+        console.log(CercanasAUbicacion);
+        let rutaCercana = containsAny(CercanasAUbicacion, CercanasADestino);
+
+        if (rutaCercana !== null) {
+            const rutaKeys = Object.keys(rutaCercana);
+            const rutaArray = rutaCercana[rutaKeys[0]];
+
+            if (Array.isArray(rutaKeys)) {
+                ChooseRoute(rutaCercana, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() });
+            }
+
+            if (Array.isArray(rutaArray) && rutaArray.length > 1) {
+                EraseWay(rutaCercana, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() });
+            }
+            const RutaASeguir = GetRoute(rutaKeys[0], rutaArray[0]);
+            const { paradas } = RutaASeguir;
+            if (IsApproaching(paradas, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() })) {
+                result = rutaCercana;
+                found = true;
+            }
+            else {
+                increment += 0.1;
+            }
+        } else {
+            increment += 0.1;
+        }
+    }
+    return result;
+}
+
 function CalcularRutas() {
     if (destinoMarcador && ubicacion) {
         let posicionDestino = destinoMarcador.getPosition();
@@ -298,15 +330,11 @@ function CalcularRutas() {
         let rutasCercanasADestino = new Map();
         let rutasCercanasAUbicacion = new Map();
 
-        // Buscar paraderos cercanos a la posición del destinoMarcador
-        findStops(posicionDestino, rutasCercanasADestino);
+        let result = ManageNearRoutes(rutasCercanasADestino, rutasCercanasAUbicacion, posicionInicial, posicionDestino);
 
-        // Buscar paraderos cercanos a la ubicación inicial
-        findStops(posicionInicial, rutasCercanasAUbicacion);
 
         if (rutasCercanasADestino.size !== 0 && rutasCercanasAUbicacion.size !== 0) {
-            let result = containsAny(rutasCercanasAUbicacion, rutasCercanasADestino);
-
+            
             if (result !== null) {
                 const rutaKeys = Object.keys(result);
                 const rutaArray = result[rutaKeys[0]];
@@ -420,7 +448,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
         polylineOptions: {
             strokeColor: color
         },
-        suppressMarkers: true
+        //suppressMarkers: true
     });
     let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
     console.log(Paraderos);
@@ -491,6 +519,9 @@ function containsAny(mapA, mapB) {
 }
 
 function filterStops(Paradas, Coordenada, Posteriores) {
+    console.log('filterStops');
+    console.log(Paradas);
+    console.log(Coordenada);
     let indiceParada = -1;
 
     Paradas.forEach((st, indice) => {
