@@ -4,7 +4,7 @@
 <head>
     <title>Ruta Personalizada</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&libraries=places&callback=initMap"
         async defer></script>
     <script src="Scrip.js"></script>
     <link rel="stylesheet" href="Estilos.css">
@@ -59,6 +59,10 @@
                 18</label><br>
         </div>
     </div>
+    <input type="text" id="pac-input" placeholder="Buscar ubicación">
+    <input type="checkbox" id="checkbox">
+    <label for="checkbox">No utilizar tu ubicacion</label>
+    <input type="text" id="pac-input-2" placeholder="Buscar otra ubicación">
     <main>
         <div class="map-container">
             <div id="map" style="height: 500px; width: 100%;"></div>

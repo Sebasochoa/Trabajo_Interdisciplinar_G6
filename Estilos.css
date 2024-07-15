@@ -12,15 +12,19 @@
     border: 1px solid black;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 5px; /* Añadir bordes redondeados */
-    z-index: 1000; /* Ajustar según sea necesario */
+    border-radius: 5px;
+    /* Añadir bordes redondeados */
+    z-index: 1000;
+    /* Ajustar según sea necesario */
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    margin-bottom: 10px; /* Aumentar el espacio entre elementos */
-    color: #333; /* Color de texto más oscuro para mejor legibilidad */
+    margin-bottom: 10px;
+    /* Aumentar el espacio entre elementos */
+    color: #333;
+    /* Color de texto más oscuro para mejor legibilidad */
 }
 
 .legend-item:last-child {
@@ -31,7 +35,8 @@
     width: 20px;
     height: 20px;
     margin-left: 10px;
-    border-radius: 50%; /* Hacer el cuadro de color redondeado */
+    border-radius: 50%;
+    /* Hacer el cuadro de color redondeado */
 }
 
 .legend-green {
@@ -154,7 +159,7 @@ main {
     background: #e0e0e0;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #map {
@@ -168,7 +173,7 @@ main {
     background: white;
     border-radius: 10px;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .routes-container h2 {
@@ -180,14 +185,20 @@ main {
     padding-bottom: 5px;
 }
 
-.instrucciones{
-    width: 700px; /* Ancho estático */
-    margin: 0 auto; /* Centrar horizontalmente */
-    left: 50%; /* Centrar horizontalmente */
+.instrucciones {
+    width: 700px;
+    /* Ancho estático */
+    margin: 0 auto;
+    /* Centrar horizontalmente */
+    left: 50%;
+    /* Centrar horizontalmente */
     margin-top: 25px;
-    background-color: lightgray; /* Solo para visualización */
-    text-align: center; /* Alinear el texto al centro */
-    padding: 20px; /* Espaciado interno opcional */
+    background-color: lightgray;
+    /* Solo para visualización */
+    text-align: center;
+    /* Alinear el texto al centro */
+    padding: 20px;
+    /* Espaciado interno opcional */
 }
 
 #routes-list {
@@ -245,7 +256,32 @@ main {
 .show {
     display: block;
 }
+
 .Opcion {
     padding: 10px;
     margin-left: 60px;
+}
+
+#pac-input {
+    margin-top: 10px;
+    padding: 5px;
+    width: 300px;
+
+}
+
+#pac-input-2 {
+    margin-top: 10px;
+    padding: 5px;
+    width: 300px;
+    display: none;
+}
+
+#map {
+    height: 500px;
+    width: 100%;
+}
+
+/* Mostrar el segundo input cuando el checkbox esté marcado */
+#checkbox:checked~#pac-input-2 {
+    display: inline-block;
 }

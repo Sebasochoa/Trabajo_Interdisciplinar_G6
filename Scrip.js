@@ -5,6 +5,7 @@ var renderizadores = {};
 var marcadores = {};
 var paraderos = {};
 var destinoMarcador;
+let searchBox1, searchBox2;
 function loadGoogleMaps() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -38,7 +39,7 @@ function initMap() {
             ubicacion = new google.maps.Marker({
                 position: pos,
                 map: mapa,
-                draggable: true, // Hacer que el marcador sea arrastrable
+                draggable: true,
                 title: "Tu ubicación actual"
             });
 
@@ -60,6 +61,91 @@ function initMap() {
             cargarParaderos(ruta.paradas, rutaNombre, ruta.recorrido);
         }
     }
+
+    // Inicializar las barras de búsqueda
+    const input1 = document.getElementById("pac-input");
+    input1.style.display = 'inline-block';
+    searchBox1 = new google.maps.places.SearchBox(input1);
+    const input2 = document.getElementById("pac-input-2");
+    searchBox2 = new google.maps.places.SearchBox(input2);
+
+    mapa.addListener("bounds_changed", () => {
+        searchBox1.setBounds(mapa.getBounds());
+        searchBox2.setBounds(mapa.getBounds());
+    });
+
+    searchBox1.addListener("places_changed", () => {
+        handlePlacesChanged(searchBox1, true);
+    });
+
+    searchBox2.addListener("places_changed", () => {
+        handlePlacesChanged(searchBox2, false);
+    });
+    document.getElementById('checkbox').addEventListener('change', (event) => {
+        if (!event.target.checked) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                actualizarUbicacion({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                });
+            }, function () {
+                handleLocationError(true, mapa);
+            });
+
+        }
+
+    });
+}
+
+
+function handlePlacesChanged(searchBox, isPrimary) {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+        return;
+    }
+
+
+    const bounds = new google.maps.LatLngBounds();
+    places.forEach((place) => {
+        if (!place.geometry || !place.geometry.location) {
+            console.log("Returned place contains no geometry");
+            return;
+        }
+
+        const marker = new google.maps.Marker({
+            map: mapa,
+            title: place.name,
+            position: place.geometry.location,
+        });
+
+        if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+        } else {
+            bounds.extend(place.geometry.location);
+        }
+
+        if (isPrimary) {
+            agregarDestino(place.geometry.location);
+        } else {
+            actualizarUbicacion(place.geometry.location);
+        }
+    });
+    mapa.fitBounds(bounds);
+}
+
+
+function actualizarUbicacion(latLng) {
+    if (ubicacion) {
+        ubicacion.setMap(null);
+    }
+    ubicacion = new google.maps.Marker({
+        position: latLng,
+        map: mapa,
+        draggable: true,
+        title: "Tu ubicacion actual"
+    });
+    mapa.setCenter(latLng);
 }
 
 function limpiarRutas() {
@@ -87,6 +173,7 @@ function handleLocationError(browserHasGeolocation, pos) {
         'Error: The Geolocation service failed.' :
         'Error: Your browser doesn\'t support geolocation.');
 }
+
 function agregarDestino(latLng) {
     // Eliminar el marcador existente del destino, si existe
     if (destinoMarcador) {
@@ -334,7 +421,7 @@ function CalcularRutas() {
 
 
         if (rutasCercanasADestino.size !== 0 && rutasCercanasAUbicacion.size !== 0) {
-            
+
             if (result !== null) {
                 const rutaKeys = Object.keys(result);
                 const rutaArray = result[rutaKeys[0]];
