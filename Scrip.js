@@ -40,7 +40,7 @@ function initMap() {
                 position: pos,
                 map: mapa,
                 draggable: true,
-                title: "Tu ubicación actual"
+                title: "Tu ubicacion actual"
             });
 
             mapa.setCenter(pos);
@@ -141,7 +141,7 @@ function actualizarUbicacion(latLng) {
             position: latLng,
             map: mapa,
             draggable: true,
-            title: "Tu ubicación actual"
+            title: "Tu ubicacion actual"
         });
     }
     mapa.setCenter(latLng);
