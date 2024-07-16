@@ -530,7 +530,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
         polylineOptions: {
             strokeColor: color
         },
-        //suppressMarkers: true
+        suppressMarkers: true
     });
     let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
     let nuevasparadas = []
@@ -683,14 +683,12 @@ function mostrarrutacaminando(nombreRuta, paraderoinicio, paraderofinal) {
     servicioDirecciones.route(solicitudInicio, function (resultado, estado) {
         if (estado === 'OK') {
             renderizadorInicio.setDirections(resultado);
-            //marcadores[nombreRuta].push(createMarker(coordenadasIniciales));
         } else {
             window.alert('Error al obtener la ruta de inicio: ' + estado);
         }
     });
-    renderizadores[nombreRuta].push(renderizadorInicio); // Almacenar el renderizador en el array de la ruta
+    renderizadores[nombreRuta].push(renderizadorInicio);
 
-    // Solicitud 'walking' desde paraderofinal hasta coordenadasFinales
     let solicitudFinal = {
         origin: { lat: paraderofinal.lat, lng: paraderofinal.lng },
         destination: { lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng() },
@@ -750,10 +748,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
             rutaAmostrar = 'C7 AqpMasivo 7-09';
             break;
         case 'Ruta11':
-            rutaAmostrar = 'A-Mariano Melgar';
+            rutaAmostrar = 'B-Polanco';
             break;
         case 'Ruta12':
-            rutaAmostrar = 'B-Polanco';
+            rutaAmostrar = 'A-Mariano Melgar';
             break;
         case 'Ruta13':
             rutaAmostrar = 'B - 3 de octubre';
@@ -820,7 +818,6 @@ function obtenerNombreCalle(lat, lng) {
                     if (streetName) {
                         resolve(streetName);
                     } else {
-                        //reject('No se encontró el nombre de la calle');
                         resolve("");
                     }
                 } else {
