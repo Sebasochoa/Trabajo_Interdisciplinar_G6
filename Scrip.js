@@ -18,7 +18,6 @@ function loadGoogleMaps() {
 }
 
 loadGoogleMaps().then(() => {
-    // Aquí puedes llamar a funciones que dependen de initMap
 }).catch((error) => {
     console.error('Error al cargar Google Maps:', error);
 });
@@ -50,6 +49,7 @@ function initMap() {
     } else {
         handleLocationError(false, mapa);
     }
+    
     servicioDirecciones = new google.maps.DirectionsService();
     mapa.addListener('click', function (event) {
         agregarDestino(event.latLng);
@@ -108,7 +108,6 @@ function handlePlacesChanged(searchBox, isPrimary) {
     if (places.length == 0) {
         return;
     }
-
 
     const bounds = new google.maps.LatLngBounds();
     places.forEach((place) => {
@@ -530,7 +529,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
         polylineOptions: {
             strokeColor: color
         },
-        suppressMarkers: true
+        //suppressMarkers: true
     });
     let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
     let nuevasparadas = []
@@ -748,10 +747,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
             rutaAmostrar = 'C7 AqpMasivo 7-09';
             break;
         case 'Ruta11':
-            rutaAmostrar = 'B-Polanco';
+            rutaAmostrar = 'A-Mariano Melgar';
             break;
         case 'Ruta12':
-            rutaAmostrar = 'A-Mariano Melgar';
+            rutaAmostrar = 'B-Polanco';
             break;
         case 'Ruta13':
             rutaAmostrar = 'B - 3 de octubre';
