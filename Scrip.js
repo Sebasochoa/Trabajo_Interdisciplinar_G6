@@ -1450,7 +1450,11 @@ var Rutas = {
                 { location: { lat: -16.40642, lng: -71.52317 }, stopover: true },
                 { location: { lat: -16.40812, lng: -71.52674 }, stopover: true },
                 { location: { lat: -16.41276, lng: -71.53690 }, stopover: true },
-                { location: { lat: -16.41343, lng: -71.53896 }, stopover: true },
+                //
+                { location: { lat: -16.413523, lng: -71.539138 }, stopover: true }, 
+
+
+
                 { location: { lat: -16.41409, lng: -71.54284 }, stopover: true },
                 { location: { lat: -16.42055, lng: -71.53899 }, stopover: true },
                 { location: { lat: -16.42220, lng: -71.54407 }, stopover: true }
@@ -1470,6 +1474,9 @@ var Rutas = {
             { lat: -16.40642, lng: -71.52317 },
             { lat: -16.40812, lng: -71.52674 },
             { lat: -16.41276, lng: -71.53690 },
+
+            { lat: -16.413523, lng: -71.539138 },
+
             { lat: -16.41343, lng: -71.53896 },
 
         ],
