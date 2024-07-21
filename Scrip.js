@@ -717,10 +717,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
     let rutaAmostrar = null;
     switch (nombreRuta) {
         case 'Ruta1':
-            rutaAmostrar = 'Dolores San Martin ';
+            rutaAmostrar = 'COTUM A';
             break;
         case 'Ruta2':
-            rutaAmostrar = 'COTUM A';
+            rutaAmostrar = 'Dolores San Martin';
             break;
         case 'Ruta3':
             rutaAmostrar = ' A15-Miraflores';
@@ -735,10 +735,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
             rutaAmostrar = 'BJUANXXIII';
             break;
         case 'Ruta7':
-            rutaAmostrar = 'C11 COTUM B ';
+            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
             break;
         case 'Ruta8':
-            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
+            rutaAmostrar = 'C11 COTUM B';
             break;
         case 'Ruta9':
             rutaAmostrar = 'C - 3 de octubre';
@@ -922,7 +922,7 @@ var Rutas = {
             destination: { lat: -16.430473, lng: -71.532604 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.394060, lng: -71.574582 }, stopover: true },
+                { location: { lat: -16.389253, lng: -71.574946 }, stopover: true },
                 { location: { lat: -16.397709, lng: -71.575106 }, stopover: true },
                 { location: { lat: -16.402060, lng: -71.573212 }, stopover: true },
                 { location: { lat: -16.403633, lng: -71.568295 }, stopover: true },
@@ -982,21 +982,21 @@ var Rutas = {
                 { location: { lat: -16.424925, lng: -71.53309 }, stopover: true },
                 { location: { lat: -16.415159, lng: -71.534055 }, stopover: true },
                 { location: { lat: -16.412611, lng: -71.53509 }, stopover: true },
-                { location: { lat: -16.407767, lng: -71.538579 }, stopover: true },
+                { location: { lat: -16.411804, lng: -71.535438 }, stopover: true },
                 { location: { lat: -16.405729, lng: -71.540011 }, stopover: true },
                 { location: { lat: -16.399908, lng: -71.542117 }, stopover: true },
-                { location: { lat: -16.396656, lng: -71.54519 }, stopover: true },
-                { location: { lat: -16.395530, lng: -71.545978 }, stopover: true },
+                { location: { lat: -16.396656, lng: -71.54519 }, stopover: true }, 
+                { location: { lat: -16.395860, lng: -71.546859 }, stopover: true },
                 { location: { lat: -16.395264, lng: -71.54820 }, stopover: true },
                 { location: { lat: -16.393445, lng: -71.54907 }, stopover: true },
-                { location: { lat: -16.389840, lng: -71.547613 }, stopover: true },
-                { location: { lat: -16.390184, lng: -71.54641 }, stopover: true },
-                { location: { lat: -16.389097, lng: -71.54933 }, stopover: true },
+                { location: { lat: -16.389840, lng: -71.547613 }, stopover: true },               
+                { location: { lat: -16.389005, lng: -71.549278 }, stopover: true },
                 { location: { lat: -16.388102, lng: -71.552045 }, stopover: true },
                 { location: { lat: -16.392710, lng: -71.55694 }, stopover: true },
                 { location: { lat: -16.392772, lng: -71.560269 }, stopover: true },
                 { location: { lat: -16.393322, lng: -71.568207 }, stopover: true },
                 { location: { lat: -16.399962, lng: -71.570597 }, stopover: true },
+                { location: { lat: -16.403169, lng: -71.568374 }, stopover: true },
                 { location: { lat: -16.397699, lng: -71.57509 }, stopover: true },
             ]
         },
@@ -1006,7 +1006,7 @@ var Rutas = {
             { lat: -16.415382, lng: -71.533968 },
             { lat: -16.412611, lng: -71.535092 },
             { lat: -16.407767, lng: -71.5385793 },
-            { lat: -16.405729, lng: -71.5400113 },//
+            { lat: -16.405729, lng: -71.5400113 },
             { lat: -16.398130, lng: -71.541560 },
             { lat: -16.396656, lng: -71.545194 },
             { lat: -16.395511, lng: -71.548082 },
@@ -1244,8 +1244,7 @@ var Rutas = {
                 { location: { lat: -16.391750, lng: -71.533061 }, stopover: true },
                 { location: { lat: -16.393594, lng: -71.537316 }, stopover: true },
                 { location: { lat: -16.393594, lng: -71.537316 }, stopover: true },
-                { location: { lat: -16.399565, lng: -71.540153 }, stopover: true }, 
-                { location: { lat: -16.402394, lng: -71.538948 }, stopover: true },
+                { location: { lat: -16.402460, lng: -71.538958 }, stopover: true },
                 { location: { lat: -16.405606, lng: -71.539917 }, stopover: true }
             ]
         },
@@ -1266,7 +1265,7 @@ var Rutas = {
             { lat: -16.393594, lng: -71.537316 },
             { lat: -16.393594, lng: -71.537316 },
             { lat: -16.394764, lng: -71.537791 },
-            { lat: -16.399454, lng: -71.540110 },
+            { lat: -16.399281, lng: -71.539981 },
             { lat: -16.402460, lng: -71.538958 },
             { lat: -16.405708, lng: -71.540099 },
             { lat: -16.408392, lng: -71.542020 }
@@ -1333,47 +1332,49 @@ var Rutas = {
 
     Ruta5_Ida: {
         solicitud: {
-            origin: { lat: -16.37982, lng: -71.49182 },
-            destination: { lat: -16.42560, lng: -71.53457 },
+            origin: { lat: -16.297320, lng: -71.626220 },
+            destination: { lat: -16.424118, lng: -71.539080 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.378560, lng: -71.493560 }, stopover: true },
-                { location: { lat: -16.378510, lng: -71.496630 }, stopover: true },
-                { location: { lat: -16.382060, lng: -71.500450 }, stopover: true },
-                { location: { lat: -16.381270, lng: -71.505370 }, stopover: true },
-                { location: { lat: -16.380960, lng: -71.508440 }, stopover: true },
-                { location: { lat: -16.380180, lng: -71.509590 }, stopover: true },
-                { location: { lat: -16.391050, lng: -71.518790 }, stopover: true },
-                { location: { lat: -16.394250, lng: -71.521530 }, stopover: true },
-                { location: { lat: -16.394360, lng: -71.521460 }, stopover: true },
-                { location: { lat: -16.396470, lng: -71.518750 }, stopover: true },
-                { location: { lat: -16.399500, lng: -71.516820 }, stopover: true },
-                { location: { lat: -16.414260, lng: -71.543610 }, stopover: true },
-                { location: { lat: -16.420170, lng: -71.538210 }, stopover: true },
-                { location: { lat: -16.423100, lng: -71.541820 }, stopover: true }
+                { location:{ lat: -16.297320, lng: -71.626220 },stopover: true },
+                { location:{ lat: -16.301394, lng: -71.621098 },stopover: true },
+                { location:{ lat: -16.315399, lng: -71.606523 },stopover: true },
+                { location:{ lat: -16.326934, lng: -71.594971 },stopover: true },
+                { location:{ lat: -16.339920, lng: -71.589154 },stopover: true },
+                { location:{ lat: -16.342666, lng: -71.583527 },stopover: true },
+                { location:{ lat: -16.368955, lng: -71.576690 },stopover: true },
+                { location:{ lat: -16.379029, lng: -71.574627 },stopover: true },
+                { location:{ lat: -16.381517, lng: -71.576632 },stopover: true },
+                { location:{ lat: -16.390009, lng: -71.582931 },stopover: true },
+                { location:{ lat: -16.395416, lng: -71.583624 },stopover: true },
+                { location:{ lat: -16.403446, lng: -71.584704 },stopover: true },
+                { location:{ lat: -16.415909, lng: -71.551347 },stopover: true },
+                { location:{ lat: -16.419219, lng: -71.547918 },stopover: true },
+                { location:{ lat: -16.420255, lng: -71.546773 },stopover: true },
+                { location:{ lat: -16.420255, lng: -71.546773 },stopover: true },
+                { location:{ lat: -16.424118, lng: -71.539080 },stopover: true }            
             ]
         },
         paradas: [
-            { lat: -16.379800, lng: -71.491760 },
-            { lat: -16.378560, lng: -71.493560 },
-            { lat: -16.379330, lng: -71.498630 },
-            { lat: -16.381320, lng: -71.502340 },
-            { lat: -16.380690, lng: -71.508840 },
-            { lat: -16.382810, lng: -71.511820 },
-            { lat: -16.398680, lng: -71.546860 },
-            { lat: -16.391050, lng: -71.518790 },
-            { lat: -16.394190, lng: -71.521470 },
-            { lat: -16.397850, lng: -71.516780 },
-            { lat: -16.400220, lng: -71.516010 },
-            { lat: -16.405330, lng: -71.521530 },
-            { lat: -16.406420, lng: -71.523170 },
-            { lat: -16.408120, lng: -71.526740 },
-            { lat: -16.412760, lng: -71.536900 },
-            { lat: -16.413430, lng: -71.538960 },
-            { lat: -16.414090, lng: -71.542840 },
-            { lat: -16.420550, lng: -71.538990 },
-            { lat: -16.422200, lng: -71.544070 },
-            { lat: -16.422470, lng: -71.544230 }
+            { lat: -16.297320, lng: -71.626220 },
+            { lat: -16.301394, lng: -71.621098 },
+            { lat: -16.315399, lng: -71.606523 },
+            { lat: -16.326934, lng: -71.594971 },
+            { lat: -16.339920, lng: -71.589154 },
+            { lat: -16.342666, lng: -71.583527 },
+            { lat: -16.342657, lng: -71.582462 },
+            { lat: -16.368955, lng: -71.576690 },
+            { lat: -16.379029, lng: -71.574627 },
+            { lat: -16.381517, lng: -71.576632 },
+            { lat: -16.382509, lng: -71.577458 },
+            { lat: -16.390009, lng: -71.582931 },
+            { lat: -16.395416, lng: -71.583624 },
+            { lat: -16.404319, lng: -71.584712 },
+            { lat: -16.415909, lng: -71.551347 },
+            { lat: -16.419219, lng: -71.547918 },
+            { lat: -16.420255, lng: -71.546773 },
+            { lat: -16.420255, lng: -71.546773 },
+            { lat: -16.424118, lng: -71.539080 }            
         ],
         recorrido: 'Ida',
         nombre: 'Ruta5'
@@ -1381,47 +1382,52 @@ var Rutas = {
 
     Ruta5_Vuelta: {
         solicitud: {
-            origin: { lat: -16.42560, lng: -71.53457 },
-            destination: { lat: -16.37982, lng: -71.49182 },
+            origin: { lat: -16.424118, lng: -71.539080 },
+            destination: { lat: -16.297320, lng: -71.626220 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.426250, lng: -71.533750 }, stopover: true },
-                { location: { lat: -16.426920, lng: -71.533040 }, stopover: true },
-                { location: { lat: -16.417130, lng: -71.532670 }, stopover: true },
-                { location: { lat: -16.412530, lng: -71.535120 }, stopover: true },
-                { location: { lat: -16.399630, lng: -71.515360 }, stopover: true },
-                { location: { lat: -16.399420, lng: -71.516680 }, stopover: true },
-                { location: { lat: -16.398370, lng: -71.515930 }, stopover: true },
-                { location: { lat: -16.394260, lng: -71.521400 }, stopover: true },
-                { location: { lat: -16.380960, lng: -71.508440 }, stopover: true },
-                { location: { lat: -16.381260, lng: -71.505380 }, stopover: true },
-                { location: { lat: -16.382050, lng: -71.500610 }, stopover: true },
-                { location: { lat: -16.378700, lng: -71.497590 }, stopover: true },
-                { location: { lat: -16.378390, lng: -71.496310 }, stopover: true },
-                { location: { lat: -16.378540, lng: -71.493530 }, stopover: true }
+                { location:{ lat: -16.424118, lng: -71.539080 },stopover: true },
+                { location:{ lat: -16.420255, lng: -71.546773 },stopover: true },
+                { location:{ lat: -16.420255, lng: -71.546773 },stopover: true },
+                { location:{ lat: -16.419219, lng: -71.547918 },stopover: true },
+                { location:{ lat: -16.415909, lng: -71.551347 },stopover: true },
+                { location:{ lat: -16.404319, lng: -71.584712 },stopover: true },
+                { location:{ lat: -16.395416, lng: -71.583624 },stopover: true },
+                { location:{ lat: -16.390009, lng: -71.582931 },stopover: true },
+                { location:{ lat: -16.382509, lng: -71.577458 },stopover: true },
+                { location:{ lat: -16.381517, lng: -71.576632 },stopover: true },
+                { location:{ lat: -16.379029, lng: -71.574627 },stopover: true },
+                { location:{ lat: -16.368955, lng: -71.576690 },stopover: true },
+                { location:{ lat: -16.342657, lng: -71.582462 },stopover: true },
+                { location:{ lat: -16.342666, lng: -71.583527 },stopover: true },
+                { location:{ lat: -16.339920, lng: -71.589154 },stopover: true },
+                { location:{ lat: -16.326934, lng: -71.594971 },stopover: true },
+                { location:{ lat: -16.315399, lng: -71.606523 },stopover: true },
+                { location:{ lat: -16.301394, lng: -71.621098 },stopover: true },
+                { location:{ lat: -16.297320, lng: -71.626220 },stopover: true }
+                
             ]
         },
         paradas: [
-            { lat: -16.426740, lng: -71.533890 },
-            { lat: -16.425730, lng: -71.533040 },
-            { lat: -16.416750, lng: -71.532930 },
-            { lat: -16.416030, lng: -71.533550 },
-            { lat: -16.413660, lng: -71.534750 },
-            { lat: -16.410490, lng: -71.532660 },
-            { lat: -16.408220, lng: -71.526630 },
-            { lat: -16.406280, lng: -71.522810 },
-            { lat: -16.405340, lng: -71.521290 },
-            { lat: -16.402930, lng: -71.517940 },
-            { lat: -16.401240, lng: -71.516600 },
-            { lat: -16.398380, lng: -71.515930 },
-            { lat: -16.394310, lng: -71.521340 },
-            { lat: -16.390580, lng: -71.518280 },
-            { lat: -16.382860, lng: -71.511770 },
-            { lat: -16.380690, lng: -71.508840 },
-            { lat: -16.381410, lng: -71.502170 },
-            { lat: -16.379330, lng: -71.498630 },
-            { lat: -16.378560, lng: -71.493560 },
-            { lat: -16.379800, lng: -71.491760 }
+            { lat: -16.424118, lng: -71.539080 },
+            { lat: -16.420255, lng: -71.546773 },
+            { lat: -16.420255, lng: -71.546773 },
+            { lat: -16.419219, lng: -71.547918 },
+            { lat: -16.415909, lng: -71.551347 },
+            { lat: -16.404319, lng: -71.584712 },
+            { lat: -16.395416, lng: -71.583624 },
+            { lat: -16.390009, lng: -71.582931 },
+            { lat: -16.382509, lng: -71.577458 },
+            { lat: -16.381517, lng: -71.576632 },
+            { lat: -16.379029, lng: -71.574627 },
+            { lat: -16.368955, lng: -71.576690 },
+            { lat: -16.342657, lng: -71.582462 },
+            { lat: -16.342666, lng: -71.583527 },
+            { lat: -16.339920, lng: -71.589154 },
+            { lat: -16.326934, lng: -71.594971 },
+            { lat: -16.315399, lng: -71.606523 },
+            { lat: -16.301394, lng: -71.621098 },
+            { lat: -16.297320, lng: -71.626220 }            
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta5'
@@ -1652,20 +1658,25 @@ var Rutas = {
         },
         paradas: [
             { lat: -16.387058, lng: -71.575015 },
-            { lat: -16.403220, lng: -71.573008 },
+            { lat: -16.392649, lng: -71.574616 },
+            { lat: -16.40322, lng: -71.573008 },
             { lat: -16.404376, lng: -71.573231 },
-            { lat: -16.403220, lng: -71.568348 },
+            { lat: -16.40322, lng: -71.568348 },
             { lat: -16.400683, lng: -71.569132 },
             { lat: -16.394982, lng: -71.569286 },
             { lat: -16.392581, lng: -71.565814 },
             { lat: -16.392562, lng: -71.556064 },
-            { lat: -16.388926, lng: -71.555101 },
-            { lat: -16.389280, lng: -71.548936 },
+            { lat: -16388926, lng: -71.555101 },
+            { lat: -16.38928, lng: -71.548936 },
             { lat: -16.391946, lng: -71.548793 },
             { lat: -16.397905, lng: -71.545947 },
-            { lat: -16.403500, lng: -71.547666 },
+            { lat: -16.4035, lng: -71.547666 },
             { lat: -16.404721, lng: -71.542879 },
             { lat: -16.416222, lng: -71.533643 },
+            { lat: -16.421498, lng: -71.531358 },
+            { lat: -16.425209, lng: -71.533374 },
+            { lat: -16.428147, lng: -71.534175 },
+            { lat: -16.430168, lng: -71.534405 }                        
         ],
         recorrido: 'Ida',
         nombre: 'Ruta8'
@@ -1681,12 +1692,13 @@ var Rutas = {
                 { location: { lat: -16.426127, lng: -71.515727 }, stopover: true },
                 { location: { lat: -16.417877, lng: -71.515813 }, stopover: true },
                 { location: { lat: -16.411832, lng: -71.512688 }, stopover: true },
-                { location: { lat: -16.399491, lng: -71.521671 }, stopover: true },
+                { location: { lat: -16.399471, lng: -71.521504 }, stopover: true },
                 { location: { lat: -16.398187, lng: -71.526713 }, stopover: true },
                 { location: { lat: -16.395463, lng: -71.530834 }, stopover: true },
                 { location: { lat: -16.393299, lng: -71.537399 }, stopover: true },
                 { location: { lat: -16.392254, lng: -71.540129 }, stopover: true },
-                { location: { lat: -16.389280, lng: -71.548936 }, stopover: true },
+                { location: { lat: -16.388605, lng: -71.550432 }, stopover: true },
+                { location: { lat: -16.388898, lng: -71.553676 }, stopover: true }, 
                 { location: { lat: -16.390889, lng: -71.552762 }, stopover: true },
                 { location: { lat: -16.392562, lng: -71.556064 }, stopover: true },
                 { location: { lat: -16.392581, lng: -71.565814 }, stopover: true },
@@ -1701,6 +1713,7 @@ var Rutas = {
         },
         paradas: [
             { lat: -16.430168, lng: -71.534405 },
+            { lat: -16.426127, lng: -71.515727 },
             { lat: -16.417877, lng: -71.515813 },
             { lat: -16.411832, lng: -71.512688 },
             { lat: -16.399491, lng: -71.521671 },
@@ -1708,13 +1721,17 @@ var Rutas = {
             { lat: -16.395463, lng: -71.530834 },
             { lat: -16.393299, lng: -71.537399 },
             { lat: -16.392254, lng: -71.540129 },
-            { lat: -16.389280, lng: -71.548936 },
+            { lat: -16.38928, lng: -71.548936 },
             { lat: -16.390889, lng: -71.552762 },
             { lat: -16.392562, lng: -71.556064 },
             { lat: -16.392581, lng: -71.565814 },
             { lat: -16.394982, lng: -71.569286 },
             { lat: -16.400683, lng: -71.569132 },
-            { lat: -16.403220, lng: -71.568348 },
+            { lat: -16.40322, lng: -71.568348 },
+            { lat: -16.404376, lng: -71.573231 },
+            { lat: -16.40322, lng: -71.573008 },
+            { lat: -16.392649, lng: -71.574616 },
+            { lat: -16.387058, lng: -71.575015 }            
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta8'
