@@ -717,10 +717,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
     let rutaAmostrar = null;
     switch (nombreRuta) {
         case 'Ruta1':
-            rutaAmostrar = 'Dolores San Martin ';
+            rutaAmostrar = 'COTUM A';
             break;
         case 'Ruta2':
-            rutaAmostrar = 'COTUM A';
+            rutaAmostrar = 'Dolores San Martin';
             break;
         case 'Ruta3':
             rutaAmostrar = ' A15-Miraflores';
@@ -735,10 +735,10 @@ function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
             rutaAmostrar = 'BJUANXXIII';
             break;
         case 'Ruta7':
-            rutaAmostrar = 'C11 COTUM B ';
+            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
             break;
         case 'Ruta8':
-            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
+            rutaAmostrar = 'C11 COTUM B';
             break;
         case 'Ruta9':
             rutaAmostrar = 'C - 3 de octubre';
@@ -922,7 +922,7 @@ var Rutas = {
             destination: { lat: -16.430473, lng: -71.532604 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.394060, lng: -71.574582 }, stopover: true },
+                { location: { lat: -16.389253, lng: -71.574946 }, stopover: true },
                 { location: { lat: -16.397709, lng: -71.575106 }, stopover: true },
                 { location: { lat: -16.402060, lng: -71.573212 }, stopover: true },
                 { location: { lat: -16.403633, lng: -71.568295 }, stopover: true },
@@ -982,21 +982,21 @@ var Rutas = {
                 { location: { lat: -16.424925, lng: -71.53309 }, stopover: true },
                 { location: { lat: -16.415159, lng: -71.534055 }, stopover: true },
                 { location: { lat: -16.412611, lng: -71.53509 }, stopover: true },
-                { location: { lat: -16.407767, lng: -71.538579 }, stopover: true },
+                { location: { lat: -16.411804, lng: -71.535438 }, stopover: true },
                 { location: { lat: -16.405729, lng: -71.540011 }, stopover: true },
                 { location: { lat: -16.399908, lng: -71.542117 }, stopover: true },
-                { location: { lat: -16.396656, lng: -71.54519 }, stopover: true },
-                { location: { lat: -16.395530, lng: -71.545978 }, stopover: true },
+                { location: { lat: -16.396656, lng: -71.54519 }, stopover: true }, 
+                { location: { lat: -16.395860, lng: -71.546859 }, stopover: true },
                 { location: { lat: -16.395264, lng: -71.54820 }, stopover: true },
                 { location: { lat: -16.393445, lng: -71.54907 }, stopover: true },
-                { location: { lat: -16.389840, lng: -71.547613 }, stopover: true },
-                { location: { lat: -16.390184, lng: -71.54641 }, stopover: true },
-                { location: { lat: -16.389097, lng: -71.54933 }, stopover: true },
+                { location: { lat: -16.389840, lng: -71.547613 }, stopover: true },               
+                { location: { lat: -16.389005, lng: -71.549278 }, stopover: true },
                 { location: { lat: -16.388102, lng: -71.552045 }, stopover: true },
                 { location: { lat: -16.392710, lng: -71.55694 }, stopover: true },
                 { location: { lat: -16.392772, lng: -71.560269 }, stopover: true },
                 { location: { lat: -16.393322, lng: -71.568207 }, stopover: true },
                 { location: { lat: -16.399962, lng: -71.570597 }, stopover: true },
+                { location: { lat: -16.403169, lng: -71.568374 }, stopover: true },
                 { location: { lat: -16.397699, lng: -71.57509 }, stopover: true },
             ]
         },
@@ -1006,7 +1006,7 @@ var Rutas = {
             { lat: -16.415382, lng: -71.533968 },
             { lat: -16.412611, lng: -71.535092 },
             { lat: -16.407767, lng: -71.5385793 },
-            { lat: -16.405729, lng: -71.5400113 },//
+            { lat: -16.405729, lng: -71.5400113 },
             { lat: -16.398130, lng: -71.541560 },
             { lat: -16.396656, lng: -71.545194 },
             { lat: -16.395511, lng: -71.548082 },
@@ -1244,8 +1244,7 @@ var Rutas = {
                 { location: { lat: -16.391750, lng: -71.533061 }, stopover: true },
                 { location: { lat: -16.393594, lng: -71.537316 }, stopover: true },
                 { location: { lat: -16.393594, lng: -71.537316 }, stopover: true },
-                { location: { lat: -16.399565, lng: -71.540153 }, stopover: true },
-                { location: { lat: -16.402394, lng: -71.538948 }, stopover: true },
+                { location: { lat: -16.402460, lng: -71.538958 }, stopover: true },
                 { location: { lat: -16.405606, lng: -71.539917 }, stopover: true }
             ]
         },
@@ -1266,7 +1265,7 @@ var Rutas = {
             { lat: -16.393594, lng: -71.537316 },
             { lat: -16.393594, lng: -71.537316 },
             { lat: -16.394764, lng: -71.537791 },
-            { lat: -16.399454, lng: -71.540110 },
+            { lat: -16.399281, lng: -71.539981 },
             { lat: -16.402460, lng: -71.538958 },
             { lat: -16.405708, lng: -71.540099 },
             { lat: -16.408392, lng: -71.542020 }
@@ -1331,7 +1330,7 @@ var Rutas = {
         nombre: 'Ruta4'
     },
 
-    Ruta5_Ida: {
+     Ruta5_Ida: {
         solicitud: {
             origin: { lat: -16.37982, lng: -71.49182 },
             destination: { lat: -16.42560, lng: -71.53457 },
@@ -1373,6 +1372,10 @@ var Rutas = {
             { lat: -16.414090, lng: -71.542840 },
             { lat: -16.420550, lng: -71.538990 },
             { lat: -16.422200, lng: -71.544070 },
+            //
+            { lat: -16.400887, lng: -71.516323 },
+            { lat: -16.394509, lng: -71.522573 },
+             
             { lat: -16.422470, lng: -71.544230 }
         ],
         recorrido: 'Ida',
@@ -1616,7 +1619,14 @@ var Rutas = {
             { lat: -16.379168, lng: -71.559184 },
             { lat: -16.374349, lng: -71.561483 },
             { lat: -16.375036, lng: -71.566817 },
+            //
+            { lat: -16.393949, lng: -71.535655 },
+            { lat: -16.394723, lng: -71.533352 },
+            { lat: -16.395082, lng: -71.532254 },
+             
+             
             { lat: -16.375233, lng: -71.567978 },
+            
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta7'
@@ -1714,6 +1724,13 @@ var Rutas = {
             { lat: -16.392581, lng: -71.565814 },
             { lat: -16.394982, lng: -71.569286 },
             { lat: -16.400683, lng: -71.569132 },
+            //
+            { lat: -16.393949, lng: -71.535655 },
+            { lat: -16.394723, lng: -71.533352 },
+            { lat: -16.395082, lng: -71.532254 },
+
+            { lat: -16.401146, lng: -71.523436 },
+             
             { lat: -16.403220, lng: -71.568348 },
         ],
         recorrido: 'Vuelta',
@@ -1780,13 +1797,19 @@ var Rutas = {
             destination: { lat: -16.46169, lng: -71.52431 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.394130, lng: -71.502980 }, stopover: true },
+                //{ location: { lat: -16.394130, lng: -71.502980 }, stopover: true },
                 { location: { lat: -16.396510, lng: -71.508320 }, stopover: true },
+                // 
+                { location: { lat: -16.392934, lng: -71.509574 }, stopover: true }, 
+
                 { location: { lat: -16.392120, lng: -71.513850 }, stopover: true },
                 { location: { lat: -16.390510, lng: -71.518317 }, stopover: true },
                 { location: { lat: -16.394208, lng: -71.521430 }, stopover: true },
                 { location: { lat: -16.393424, lng: -71.522591 }, stopover: true },
                 { location: { lat: -16.401970, lng: -71.526990 }, stopover: true },
+                //I
+                { location: { lat: -16.404230, lng: -71.527332 }, stopover: true },      
+
                 { location: { lat: -16.412090, lng: -71.535270 }, stopover: true },
                 { location: { lat: -16.415910, lng: -71.533860 }, stopover: true },
                 { location: { lat: -16.430310, lng: -71.534440 }, stopover: true },
@@ -1815,12 +1838,15 @@ var Rutas = {
             { lat: -16.447208, lng: -71.516246 },
             { lat: -16.449907, lng: -71.512435 },
             { lat: -16.456454, lng: -71.517489 },
+            //
+            { lat: -16.456454, lng: -71.517489 },
+
             { lat: -16.461628, lng: -71.524270 }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta9'
     },
-
+	
     Ruta10_Ida: {
         solicitud: {
             origin: { lat: -16.42929, lng: -71.491115 },
