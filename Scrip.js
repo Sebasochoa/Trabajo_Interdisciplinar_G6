@@ -1877,42 +1877,40 @@ var Rutas = {
         nombre: 'Ruta9'
     },
 
-    Ruta10_Ida: {
+       Ruta10_Ida: {
         solicitud: {
             origin: { lat: -16.42929, lng: -71.491115 },
             destination: { lat: -16.40194, lng: -71.54705 },
             travelMode: 'DRIVING',
             waypoints: [
-
-
-                { location: { lat: -16.429721, lng: -71.499832 }, stopover: true },
-                { location: { lat: -16.42716, lng: -71.50338 }, stopover: true },
-                { location: { lat: -16.422069, lng: -71.507479 }, stopover: true },
-                { location: { lat: -16.417157, lng: -71.510228 }, stopover: true },
-                { location: { lat: -16.41195, lng: -71.51262 }, stopover: true },
-                { location: { lat: -16.41175, lng: -71.50887 }, stopover: true },
-                { location: { lat: -16.41063, lng: -71.50555 }, stopover: true },
-                { location: { lat: -16.40829, lng: -71.50806 }, stopover: true },
+                { location: { lat: -16.429331, lng: -71.496263 }, stopover: true },
+                { location: { lat: -16.429756, lng:-71.499702 }, stopover: true },
+                { location: { lat: -16.428722, lng: -71.502831 }, stopover: true },
+                { location: { lat: -16.422136, lng: -71.507444 }, stopover: true },
+                { location: { lat: -16.417278, lng: -71.510184   }, stopover: true },
+                { location: { lat: -16.412010, lng: -71.512590}, stopover: true },
+                { location: { lat: -16.411874, lng:-71.506238}, stopover: true },
+                { location: { lat: -16.410248, lng:-71.505025}, stopover: true },
                 { location: { lat: -16.40534, lng: -71.51252 }, stopover: true },
-                { location: { lat: -16.40301, lng: -71.51618 }, stopover: true },
-                { location: { lat: -16.40187, lng: -71.51789 }, stopover: true },
-                { location: { lat: -16.39768, lng: -71.51695 }, stopover: true },
-                { location: { lat: -16.39272, lng: -71.52345 }, stopover: true },
-                { location: { lat: -16.394383, lng: -71.530902 }, stopover: true },
+                { location: { lat: -16.403328, lng: -71.515660 }, stopover: true },
+                { location: { lat: -16.401605, lng: -71.518252 }, stopover: true },
+                { location: { lat: -16.398378, lng: -71.515936 }, stopover: true },
+                { location: { lat: -16.391949, lng:-71.524430 }, stopover: true },
                 { location: { lat: -16.39509, lng: -71.53233 }, stopover: true },
-                { location: { lat: -16.393928, lng: -71.535768 }, stopover: true },
-                { location: { lat: -16.394104, lng: -71.537599 }, stopover: true },
-                { location: { lat: -16.39843, lng: -71.53954 }, stopover: true },
+                { location: { lat:-16.393570, lng:-71.536698}, stopover: true },
+                { location: { lat: -16.398722, lng:-71.538709 }, stopover: true },
+                { location: { lat: -16.396088, lng: -71.544949 }, stopover: true },
                 { location: { lat: -16.40194, lng: -71.54705 }, stopover: true }
             ]
         },
         paradas: [
-            { lat: -16.429287, lng: -71.491159 },
+            { lat: -16.429262, lng: -71.491125 },
             { lat: -16.429747, lng: -71.499679 },
+            { lat: -16.428697, lng: -71.502789 },
             { lat: -16.422173, lng: -71.507363 },
             { lat: -16.417256, lng: -71.510156 },
             { lat: -16.412197, lng: -71.512481 },
-            { lat: -16.405062, lng: -71.514790 },
+            { lat: -16.405368, lng: -71.512428  },
             { lat: -16.403309, lng: -71.515654 },
             { lat: -16.397842, lng: -71.516621 },
             { lat: -16.393912, lng: -71.521913 },
@@ -1920,13 +1918,13 @@ var Rutas = {
             { lat: -16.394195, lng: -71.530874 },
             { lat: -16.395081, lng: -71.532306 },
             { lat: -16.393937, lng: -71.535667 },
-            { lat: -16.394046, lng: -71.537575 },
-            { lat: -16.396436, lng: -71.538469 },
-            { lat: -16.398393, lng: -71.539554 },
+            { lat: -16.394113, lng: -71.536919 },
+            { lat: -16.396761, lng: -71.537960 },
+            { lat: -16.398671, lng: -71.538730 },
             { lat: -16.396775, lng: -71.543658 },
             { lat: -16.397163, lng: -71.545397 },
             { lat: -16.399461, lng: -71.546338 },
-            { lat: -16.403615, lng: -71.547722 }
+            { lat: -16.401929, lng: -71.547093 }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta10'
