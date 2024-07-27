@@ -28,7 +28,9 @@ function initMap() {
         zoom: 12
     });
 
-    if (navigator.geolocation) {
+    const permisoUbicacion = getCookie('permisoUbicacion') || localStorage.getItem('permisoUbicacion');
+
+    if (permisoUbicacion) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
                 lat: position.coords.latitude,
@@ -43,6 +45,26 @@ function initMap() {
             });
 
             mapa.setCenter(pos);
+        }, function () {
+            handleLocationError(true, mapa);
+        });
+    } else if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            ubicacion = new google.maps.Marker({
+                position: pos,
+                map: mapa,
+                draggable: true,
+                title: "Tu ubicacion actual"
+            });
+
+            mapa.setCenter(pos);
+            setCookie('permisoUbicacion', 'true', 365);
+            localStorage.setItem('permisoUbicacion', 'true');
         }, function () {
             handleLocationError(true, mapa);
         });
@@ -62,7 +84,6 @@ function initMap() {
         }
     }
 
-    // Inicializar las barras de búsqueda
     const input1 = document.getElementById("pac-input");
     input1.style.display = 'inline-block';
     searchBox1 = new google.maps.places.SearchBox(input1);
@@ -99,6 +120,24 @@ function initMap() {
         limpiarRutas();
     });
 
+}
+function setCookie(name, value, days) {
+    const d = new Date();
+    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + d.toUTCString();
+    console.log(name);
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
 }
 
 
@@ -147,7 +186,6 @@ function actualizarUbicacion(latLng) {
 }
 
 function limpiarRutas() {
-    // Iterar sobre renderizadores
     Object.keys(renderizadores).forEach(function (ruta) {
         renderizadores[ruta].forEach(function (renderizador) {
             renderizador.setMap(null);
@@ -155,7 +193,6 @@ function limpiarRutas() {
         renderizadores[ruta] = [];
     });
 
-    // Iterar sobre marcadores
     Object.keys(marcadores).forEach(function (ruta) {
         marcadores[ruta].forEach(function (marcador) {
             marcador.setMap(null);
@@ -165,7 +202,7 @@ function limpiarRutas() {
 }
 // Manejo de errores de geolocalización
 function handleLocationError(browserHasGeolocation, pos) {
-    var infoWindow = new google.maps.InfoWindow({ map: pos }); // Cambiar de map a pos
+    var infoWindow = new google.maps.InfoWindow({ map: pos });
     infoWindow.setPosition(pos);
     infoWindow.setContent(browserHasGeolocation ?
         'Error: The Geolocation service failed.' :
@@ -173,18 +210,16 @@ function handleLocationError(browserHasGeolocation, pos) {
 }
 
 function agregarDestino(latLng) {
-    // Eliminar el marcador existente del destino, si existe
     if (destinoMarcador) {
         destinoMarcador.setMap(null);
     }
-    // Crear un marcador para el nuevo destino
     destinoMarcador = new google.maps.Marker({
         position: latLng,
         map: mapa,
         title: 'Destino',
         icon: {
-            url: 'destino.png', // URL de la imagen del marcador de destino
-            scaledSize: new google.maps.Size(30, 30) // Tamaño del marcador de destino
+            url: 'destino.png',
+            scaledSize: new google.maps.Size(30, 30)
         }
     });
     limpiarRutas();
@@ -215,7 +250,6 @@ function addValueToMap(map, key, value) {
 }
 
 function findStops(Position, Map, ComparativeDistance) {
-
     for (let ruta in paraderos) {
         if (paraderos.hasOwnProperty(ruta)) {
             paraderos[ruta].forEach((marcador) => {
@@ -232,7 +266,7 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
     let DistanciaMin = Infinity;
     let indiceCercanoDest = -1;
     Paraderos.forEach((parada, indice) => {
-        const distance = haversineDistance(parada.lat, parada.lng, Destino.lat, Destino.lng);
+        const distance = haversineDistance(parada.coordenadas.lat, parada.coordenadas.lng, Destino.lat, Destino.lng);
         if (distance < DistanciaMin) {
             DistanciaMin = distance;
             indiceCercanoDest = indice;
@@ -242,7 +276,7 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
     let indiceCercanoUbi = -1;
 
     Paraderos.forEach((parada, indice) => {
-        const distance = haversineDistance(parada.lat, parada.lng, Ubicacion.lat, Ubicacion.lng);
+        const distance = haversineDistance(parada.coordenadas.lat, parada.coordenadas.lng, Ubicacion.lat, Ubicacion.lng);
         if (distance < DistanciaMin) {
             DistanciaMin = distance;
             indiceCercanoUbi = indice;
@@ -340,10 +374,10 @@ function GetNearStop(Paraderos, Coordenadas) {
     let DistanciaMin = Infinity;
     let result;
     Paraderos.forEach((parada) => {
-        const distance = haversineDistance(parada.lat, parada.lng, Coordenadas.lat, Coordenadas.lng);
+        const distance = haversineDistance(parada.coordenadas.lat, parada.coordenadas.lng, Coordenadas.lat, Coordenadas.lng);
         if (distance < DistanciaMin) {
             DistanciaMin = distance;
-            result = { lat: parada.lat, lng: parada.lng };
+            result = { lat: parada.coordenadas.lat, lng: parada.coordenadas.lng };
         }
     });
     return result;
@@ -437,15 +471,15 @@ function CalcularRutas() {
                 let paraderoDestino;
 
                 paradas.forEach((coordenada) => {
-                    let distanciaUbicacion = haversineDistance(coordenada.lat, coordenada.lng, posicionInicial.lat(), posicionInicial.lng());
-                    let distanciaDestino = haversineDistance(coordenada.lat, coordenada.lng, posicionDestino.lat(), posicionDestino.lng());
+                    let distanciaUbicacion = haversineDistance(coordenada.coordenadas.lat, coordenada.coordenadas.lng, posicionInicial.lat(), posicionInicial.lng());
+                    let distanciaDestino = haversineDistance(coordenada.coordenadas.lat, coordenada.coordenadas.lng, posicionDestino.lat(), posicionDestino.lng());
                     if (distanciaUbicacion < minDistanciaUbicacion) {
                         minDistanciaUbicacion = distanciaUbicacion;
-                        paraderoUbicacion = coordenada;
+                        paraderoUbicacion = coordenada.coordenadas;
                     }
                     if (distanciaDestino < minDistanciaDestino) {
                         minDistanciaDestino = distanciaDestino;
-                        paraderoDestino = coordenada;
+                        paraderoDestino = coordenada.coordenadas;
                     }
                 });
                 mostrarRutapersonalizada(RutaASeguir.solicitud, 'green', RutaASeguir.nombre, RutaASeguir.paradas, paraderoUbicacion, paraderoDestino);
@@ -469,15 +503,16 @@ function CalcularRutas() {
                             for (let recorridoD of recorridodestino) {
                                 let objetoDestino = GetRoute(rutadestino, recorridoD);
                                 const paradasD = objetoDestino.paradas;
+
                                 paradasU.forEach((paradaU) => {
                                     paradasD.forEach((paradaD) => {
-                                        const distanciaEntreParaderos = haversineDistance(paradaU.lat, paradaU.lng, paradaD.lat, paradaD.lng);
-                                        if ((distanciaEntreParaderos < distanciamascorta) && (IsApproaching(paradasU, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: paradaU.lat, lng: paradaU.lng })) && (IsApproaching(paradasD, { lat: paradaD.lat, lng: paradaD.lng }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() }))) {
+                                        const distanciaEntreParaderos = haversineDistance(paradaU.coordenadas.lat, paradaU.coordenadas.lng, paradaD.coordenadas.lat, paradaD.coordenadas.lng);
+                                        if ((distanciaEntreParaderos < distanciamascorta) && (IsApproaching(paradasU, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng })) && (IsApproaching(paradasD, { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() }))) {
                                             distanciamascorta = distanciaEntreParaderos;
                                             RutaASeguir1 = objetoUbicacion;
                                             RutaASeguir2 = objetoDestino;
-                                            paraderoIntermedio1 = { lat: paradaU.lat, lng: paradaU.lng };
-                                            paraderoIntermedio2 = { lat: paradaD.lat, lng: paradaD.lng }
+                                            paraderoIntermedio1 = { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng };
+                                            paraderoIntermedio2 = { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }
                                         }
                                     });
                                 });
@@ -535,14 +570,13 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
     let nuevasparadas = []
     nuevasparadas = filterStops(Paraderos, paraderoinicio, false);
     nuevasparadas = filterStops(nuevasparadas, paraderofinal, true);
-    console.log(nuevasparadas);
     renderizador.setMap(mapa);
     servicioDirecciones.route(nuevasolicitud, function (resultado, estado) {
         if (estado === 'OK') {
             renderizador.setDirections(resultado);
 
             nuevasparadas.forEach(function (parada) {
-                marcadores[nombreRuta].push(createMarker({ lat: parada.lat, lng: parada.lng }, color));
+                marcadores[nombreRuta].push(createMarker({ lat: parada.coordenadas.lat, lng: parada.coordenadas.lng }, color));
             });
         } else {
             window.alert('Error al obtener la ruta: ' + estado);
@@ -602,7 +636,7 @@ function filterStops(Paradas, Coordenada, Posteriores) {
     let indiceParada = -1;
 
     Paradas.forEach((st, indice) => {
-        if (st.lat === Coordenada.lat && st.lng === Coordenada.lng) {
+        if (st.coordenadas.lat === Coordenada.lat && st.coordenadas.lng === Coordenada.lng) {
             indiceParada = indice;
         }
     })
@@ -843,7 +877,7 @@ function cargarParaderos(paradasAutobus, ruta, recorrido) {
     paradasAutobus.forEach(function (parada) {
         var marcador = {
             id: recorrido,
-            parada: parada
+            parada: parada.coordenadas
         }
         paraderos[ruta].push(marcador);
     });
@@ -948,25 +982,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.389402, lng: -71.574932 },
-            { lat: -16.397699, lng: -71.575094 },
-            { lat: -16.399962, lng: -71.570597 },
-            { lat: -16.393322, lng: -71.568207 },
-            { lat: -16.392772, lng: -71.560269 },
-            { lat: -16.392710, lng: -71.556940 },
-            { lat: -16.388102, lng: -71.552045 },
-            { lat: -16.389097, lng: -71.549339 },
-            { lat: -16.390184, lng: -71.546413 },
-            { lat: -16.392248, lng: -71.540735 },
-            { lat: -16.393023, lng: -71.536599 },
-            { lat: -16.393349, lng: -71.535529 },
-            { lat: -16.391902, lng: 71.5324266 },
-            { lat: -16.394210, lng: -71.530851 },
-            { lat: -16.399398, lng: -71.521790 },
-            { lat: -16.402912, lng: -71.516663 },
-            { lat: -16.415587, lng: -71.515251 },
-            { lat: -16.425626, lng: -71.514997 },
-            { lat: -16.430518, lng: -71.532659 }            
+            { coordenadas: { lat: -16.389402, lng: -71.574932 }, nombre: '' },
+            { coordenadas: { lat: -16.397699, lng: -71.575094 }, nombre: '' },
+            { coordenadas: { lat: -16.399962, lng: -71.570597 }, nombre: '' },
+            { coordenadas: { lat: -16.393322, lng: -71.568207 }, nombre: '' },
+            { coordenadas: { lat: -16.392772, lng: -71.560269 }, nombre: '' },
+            { coordenadas: { lat: -16.392710, lng: -71.556940 }, nombre: '' },
+            { coordenadas: { lat: -16.388102, lng: -71.552045 }, nombre: '' },
+            { coordenadas: { lat: -16.389097, lng: -71.549339 }, nombre: '' },
+            { coordenadas: { lat: -16.390184, lng: -71.546413 }, nombre: '' },
+            { coordenadas: { lat: -16.392248, lng: -71.540735 }, nombre: '' },
+            { coordenadas: { lat: -16.393023, lng: -71.536599 }, nombre: '' },
+            { coordenadas: { lat: -16.393349, lng: -71.535529 }, nombre: '' },
+            { coordenadas: { lat: -16.391902, lng: 71.5324266 }, nombre: '' },
+            { coordenadas: { lat: -16.394210, lng: -71.530851 }, nombre: '' },
+            { coordenadas: { lat: -16.399398, lng: -71.521790 }, nombre: '' },
+            { coordenadas: { lat: -16.402912, lng: -71.516663 }, nombre: '' },
+            { coordenadas: { lat: -16.415587, lng: -71.515251 }, nombre: '' },
+            { coordenadas: { lat: -16.425626, lng: -71.514997 }, nombre: '' },
+            { coordenadas: { lat: -16.430518, lng: -71.532659 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta1'
@@ -1003,25 +1037,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.427124, lng: -71.532956 },
-            { lat: -16.424925, lng: -71.533091 },
-            { lat: -16.415159, lng: -71.534055 },
-            { lat: -16.412611, lng:  -71.53509 },
-            { lat: -16.407767, lng: -71.538579 },
-            { lat: -16.405729, lng: -71.540011 },
-            { lat: -16.399908, lng: -71.542117 },
-            { lat: -16.396656, lng: -71.545194 },
-            { lat: -16.395264, lng: -71.548209 },
-            { lat: -16.393445, lng: -71.549074 },
-            { lat: -16.389840, lng: -71.547613 },
-            { lat: -16.389097, lng: -71.549339 },
-            { lat: -16.388102, lng: -71.552045 },
-            { lat: -16.392710, lng: -71.556940 },
-            { lat: -16.392772, lng: -71.560269 },
-            { lat: -16.393322, lng: -71.568207 },
-            { lat: -16.399962, lng: -71.570597 },
-            { lat: -16.397699, lng: -71.575094 },
-            { lat: -16.389402, lng: -71.574932 }            
+            { coordenadas: { lat: -16.427124, lng: -71.532956 }, nombre: '' },
+            { coordenadas: { lat: -16.424925, lng: -71.533091 }, nombre: '' },
+            { coordenadas: { lat: -16.415159, lng: -71.534055 }, nombre: '' },
+            { coordenadas: { lat: -16.412611, lng: -71.53509 }, nombre: '' },
+            { coordenadas: { lat: -16.407767, lng: -71.538579 }, nombre: '' },
+            { coordenadas: { lat: -16.405729, lng: -71.540011 }, nombre: '' },
+            { coordenadas: { lat: -16.399908, lng: -71.542117 }, nombre: '' },
+            { coordenadas: { lat: -16.396656, lng: -71.545194 }, nombre: '' },
+            { coordenadas: { lat: -16.395264, lng: -71.548209 }, nombre: '' },
+            { coordenadas: { lat: -16.393445, lng: -71.549074 }, nombre: '' },
+            { coordenadas: { lat: -16.389840, lng: -71.547613 }, nombre: '' },
+            { coordenadas: { lat: -16.389097, lng: -71.549339 }, nombre: '' },
+            { coordenadas: { lat: -16.388102, lng: -71.552045 }, nombre: '' },
+            { coordenadas: { lat: -16.392710, lng: -71.556940 }, nombre: '' },
+            { coordenadas: { lat: -16.392772, lng: -71.560269 }, nombre: '' },
+            { coordenadas: { lat: -16.393322, lng: -71.568207 }, nombre: '' },
+            { coordenadas: { lat: -16.399962, lng: -71.570597 }, nombre: '' },
+            { coordenadas: { lat: -16.397699, lng: -71.575094 }, nombre: '' },
+            { coordenadas: { lat: -16.389402, lng: -71.574932 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta1'
@@ -1055,26 +1089,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.456477, lng: -71.521933 },
-            { lat: -16.457903, lng: -71.523766 },
-            { lat: -16.460708, lng: -71.525649 },
-            { lat: -16.452572, lng: -71.531009 },
-            { lat: -16.450223, lng: -71.532555 },
-            { lat: -16.442026, lng: -71.528828 },
-            { lat: -16.440884, lng: -71.525574 },
-            { lat: -16.439259, lng: -71.521772 },
-            { lat: -16.436103, lng: -71.521443 },
-            { lat: -16.432944, lng: -71.522624 },
-            { lat: -16.429245, lng: -71.523600 },
-            { lat: -16.427194, lng: -71.518024 },
-            { lat: -16.425749, lng: -71.514817 },
-            { lat: -16.419447, lng: -71.516917 },
-            { lat: -16.417841, lng: -71.517824 },
-            { lat: -16.411135, lng: -71.521609 },
-            { lat: -16.407074, lng: -71.524615 },
-            { lat: -16.404404, lng: -71.527439 },
-            { lat: -16.405536, lng: -71.528936 },
-            { lat: -16.404377, lng:  -71.53168 }            
+            { coordenadas: { lat: -16.456477, lng: -71.521933 }, nombre: '' },
+            { coordenadas: { lat: -16.457903, lng: -71.523766 }, nombre: '' },
+            { coordenadas: { lat: -16.460708, lng: -71.525649 }, nombre: '' },
+            { coordenadas: { lat: -16.452572, lng: -71.531009 }, nombre: '' },
+            { coordenadas: { lat: -16.450223, lng: -71.532555 }, nombre: '' },
+            { coordenadas: { lat: -16.442026, lng: -71.528828 }, nombre: '' },
+            { coordenadas: { lat: -16.440884, lng: -71.525574 }, nombre: '' },
+            { coordenadas: { lat: -16.439259, lng: -71.521772 }, nombre: '' },
+            { coordenadas: { lat: -16.436103, lng: -71.521443 }, nombre: '' },
+            { coordenadas: { lat: -16.432944, lng: -71.522624 }, nombre: '' },
+            { coordenadas: { lat: -16.429245, lng: -71.523600 }, nombre: '' },
+            { coordenadas: { lat: -16.427194, lng: -71.518024 }, nombre: '' },
+            { coordenadas: { lat: -16.425749, lng: -71.514817 }, nombre: '' },
+            { coordenadas: { lat: -16.419447, lng: -71.516917 }, nombre: '' },
+            { coordenadas: { lat: -16.417841, lng: -71.517824 }, nombre: '' },
+            { coordenadas: { lat: -16.411135, lng: -71.521609 }, nombre: '' },
+            { coordenadas: { lat: -16.407074, lng: -71.524615 }, nombre: '' },
+            { coordenadas: { lat: -16.404404, lng: -71.527439 }, nombre: '' },
+            { coordenadas: { lat: -16.405536, lng: -71.528936 }, nombre: '' },
+            { coordenadas: { lat: -16.404377, lng: -71.53168 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta2'
@@ -1108,26 +1142,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.401749, lng: -71.528457 },
-            { lat: -16.401954, lng: -71.524461 },
-            { lat: -16.399534, lng: -71.521622 },
-            { lat: -16.402977, lng: -71.516561 },
-            { lat: -16.409027, lng: -71.514022 },
-            { lat: -16.416183, lng: -71.515461 },
-            { lat: -16.422539, lng: -71.516351 },
-            { lat: -16.425661, lng: -71.514982 },
-            { lat: -16.429077, lng: -71.523814 },
-            { lat: -16.436226, lng: -71.521600 },
-            { lat: -16.437491, lng: -71.523837 },
-            { lat: -16.439144, lng: -71.522477 },
-            { lat: -16.440673, lng: -71.525134 },
-            { lat: -16.441976, lng: -71.529016 },
-            { lat: -16.448469, lng: -71.532918 },
-            { lat: -16.452495, lng: -71.531095 },
-            { lat: -16.461431, lng: -71.526400 },
-            { lat: -16.458100, lng: -71.523867 },
-            { lat: -16.457587, lng: -71.522714 },
-            { lat: -16.456909, lng: -71.521806 }            
+            { coordenadas: { lat: -16.401749, lng: -71.528457 }, nombre: '' },
+            { coordenadas: { lat: -16.401954, lng: -71.524461 }, nombre: '' },
+            { coordenadas: { lat: -16.399534, lng: -71.521622 }, nombre: '' },
+            { coordenadas: { lat: -16.402977, lng: -71.516561 }, nombre: '' },
+            { coordenadas: { lat: -16.409027, lng: -71.514022 }, nombre: '' },
+            { coordenadas: { lat: -16.416183, lng: -71.515461 }, nombre: '' },
+            { coordenadas: { lat: -16.422539, lng: -71.516351 }, nombre: '' },
+            { coordenadas: { lat: -16.425661, lng: -71.514982 }, nombre: '' },
+            { coordenadas: { lat: -16.429077, lng: -71.523814 }, nombre: '' },
+            { coordenadas: { lat: -16.436226, lng: -71.521600 }, nombre: '' },
+            { coordenadas: { lat: -16.437491, lng: -71.523837 }, nombre: '' },
+            { coordenadas: { lat: -16.439144, lng: -71.522477 }, nombre: '' },
+            { coordenadas: { lat: -16.440673, lng: -71.525134 }, nombre: '' },
+            { coordenadas: { lat: -16.441976, lng: -71.529016 }, nombre: '' },
+            { coordenadas: { lat: -16.448469, lng: -71.532918 }, nombre: '' },
+            { coordenadas: { lat: -16.452495, lng: -71.531095 }, nombre: '' },
+            { coordenadas: { lat: -16.461431, lng: -71.526400 }, nombre: '' },
+            { coordenadas: { lat: -16.458100, lng: -71.523867 }, nombre: '' },
+            { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: '' },
+            { coordenadas: { lat: -16.456909, lng: -71.521806 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta2'
@@ -1160,26 +1194,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.3768449, lng: -71.4989620 },
-            { lat: -16.3755234, lng: -71.4997373 },
-            { lat: -16.3736312, lng: -71.5012127 },
-            { lat: -16.373694, lng: -71.502135 },
-            { lat: -16.373035, lng: -71.502874 },
-            { lat: -16.374229, lng: -71.504492 },
-            { lat: -16.375801, lng: -71.506863 },
-            { lat: -16.3770044, lng: -71.5086281 },
-            { lat: -16.3799546, lng: -71.5095353 },
-            { lat: -16.3827078, lng: -71.511775 },
-            { lat: -16.386294, lng: -71.514814 },
-            { lat: -16.38792, lng: -71.516201 },
-            { lat: -16.3908519, lng: -71.5186827 },
-            { lat: -16.39313, lng: -71.520604 },
-            { lat: -16.394169, lng: -71.521464 },
-            { lat: -16.393553, lng: -71.522717 },
-            { lat: -16.395475, lng: -71.523999 },
-            { lat: -16.395454, lng: -71.523968 },
-            { lat: -16.398224, lng: -71.526689 },
-            { lat: -16.399557, lng: -71.528701 }            
+            { coordenadas: { lat: -16.3768449, lng: -71.4989620 }, nombre: '' },
+            { coordenadas: { lat: -16.3755234, lng: -71.4997373 }, nombre: '' },
+            { coordenadas: { lat: -16.3736312, lng: -71.5012127 }, nombre: '' },
+            { coordenadas: { lat: -16.373694, lng: -71.502135 }, nombre: '' },
+            { coordenadas: { lat: -16.373035, lng: -71.502874 }, nombre: '' },
+            { coordenadas: { lat: -16.374229, lng: -71.504492 }, nombre: '' },
+            { coordenadas: { lat: -16.375801, lng: -71.506863 }, nombre: '' },
+            { coordenadas: { lat: -16.3770044, lng: -71.5086281 }, nombre: '' },
+            { coordenadas: { lat: -16.3799546, lng: -71.5095353 }, nombre: '' },
+            { coordenadas: { lat: -16.3827078, lng: -71.511775 }, nombre: '' },
+            { coordenadas: { lat: -16.386294, lng: -71.514814 }, nombre: '' },
+            { coordenadas: { lat: -16.38792, lng: -71.516201 }, nombre: '' },
+            { coordenadas: { lat: -16.3908519, lng: -71.5186827 }, nombre: '' },
+            { coordenadas: { lat: -16.39313, lng: -71.520604 }, nombre: '' },
+            { coordenadas: { lat: -16.394169, lng: -71.521464 }, nombre: '' },
+            { coordenadas: { lat: -16.393553, lng: -71.522717 }, nombre: '' },
+            { coordenadas: { lat: -16.395475, lng: -71.523999 }, nombre: '' },
+            { coordenadas: { lat: -16.395454, lng: -71.523968 }, nombre: '' },
+            { coordenadas: { lat: -16.398224, lng: -71.526689 }, nombre: '' },
+            { coordenadas: { lat: -16.399557, lng: -71.528701 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta3'
@@ -1202,7 +1236,7 @@ var Rutas = {
                 { location: { lat: -16.3881280, lng: -71.5161680 }, stopover: true },
                 { location: { lat: -16.3865340, lng: -71.5147840 }, stopover: true },
                 { location: { lat: -16.3828130, lng: -71.5116250 }, stopover: true },
-                { location: { lat: -16.380258, lng: -71.509484 }, stopover: true },//-16.380258, -71.509484
+                { location: { lat: -16.380258, lng: -71.509484 }, stopover: true },
                 { location: { lat: -16.3773510, lng: -71.5085050 }, stopover: true },
                 { location: { lat: -16.3758440, lng: -71.5065960 }, stopover: true },
                 { location: { lat: -16.3731280, lng: -71.5027630 }, stopover: true },
@@ -1212,26 +1246,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.399557, lng: -71.528701 },
-            { lat: -16.400929, lng: -71.527684 },
-            { lat: -16.400071, lng: -71.526317 },
-            { lat: -16.3981197, lng: -71.5239162 },
-            { lat: -16.396735, lng: -71.522184 },
-            { lat: -16.395308, lng: -71.520406 },
-            { lat: -16.394322, lng: -71.52134 },
-            { lat: -16.393351, lng: -71.520546 },
-            { lat: -16.3909577, lng: -71.5185623 },
-            { lat: -16.388128, lng: -71.516168 },
-            { lat: -16.386534, lng: -71.514784 },
-            { lat: -16.382813, lng: -71.511625 },
-            { lat: -16.380258, lng: -71.509484 },
-            { lat: -16.377351, lng: -71.508505 },
-            { lat: -16.375844, lng: -71.506596 },
-            { lat: -16.373128, lng: -71.502763 },
-            { lat: -16.3738517, lng: -71.5020763 },
-            { lat: -16.373702, lng: -71.501234 },
-            { lat: -16.375421, lng: -71.499743 },
-            { lat: -16.376806, lng: -71.498764 }
+            { coordenadas: { lat: -16.399557, lng: -71.528701 }, nombre: '' },
+            { coordenadas: { lat: -16.400929, lng: -71.527684 }, nombre: '' },
+            { coordenadas: { lat: -16.400071, lng: -71.526317 }, nombre: '' },
+            { coordenadas: { lat: -16.3981197, lng: -71.5239162 }, nombre: '' },
+            { coordenadas: { lat: -16.396735, lng: -71.522184 }, nombre: '' },
+            { coordenadas: { lat: -16.395308, lng: -71.520406 }, nombre: '' },
+            { coordenadas: { lat: -16.394322, lng: -71.52134 }, nombre: '' },
+            { coordenadas: { lat: -16.393351, lng: -71.520546 }, nombre: '' },
+            { coordenadas: { lat: -16.3909577, lng: -71.5185623 }, nombre: '' },
+            { coordenadas: { lat: -16.388128, lng: -71.516168 }, nombre: '' },
+            { coordenadas: { lat: -16.386534, lng: -71.514784 }, nombre: '' },
+            { coordenadas: { lat: -16.382813, lng: -71.511625 }, nombre: '' },
+            { coordenadas: { lat: -16.380258, lng: -71.509484 }, nombre: '' },
+            { coordenadas: { lat: -16.377351, lng: -71.508505 }, nombre: '' },
+            { coordenadas: { lat: -16.375844, lng: -71.506596 }, nombre: '' },
+            { coordenadas: { lat: -16.373128, lng: -71.502763 }, nombre: '' },
+            { coordenadas: { lat: -16.3738517, lng: -71.5020763 }, nombre: '' },
+            { coordenadas: { lat: -16.373702, lng: -71.501234 }, nombre: '' },
+            { coordenadas: { lat: -16.375421, lng: -71.499743 }, nombre: '' },
+            { coordenadas: { lat: -16.376806, lng: -71.498764 }, nombre: '' }
 
         ],
         recorrido: 'Vuelta',
@@ -1244,7 +1278,7 @@ var Rutas = {
             destination: { lat: -16.408259, lng: -71.542062 },
             travelMode: 'DRIVING',
             waypoints: [
-                
+
                 { location: { lat: -16.365890, lng: -71.502622 }, stopover: true },
                 { location: { lat: -16.366885, lng: -71.501532 }, stopover: true },
                 { location: { lat: -16.367482, lng: -71.500636 }, stopover: true },
@@ -1267,26 +1301,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.365748, lng: -71.501906 },
-            { lat: -16.367482, lng: -71.500636 },
-            { lat: -16.368205, lng: -71.503650 },
-            { lat: -16.368357, lng: -71.507288 },
-            { lat: -16.368915, lng: -71.509578 },
-            { lat: -16.370732, lng: -71.511512 },
-            { lat: -16.371820, lng: -71.512910 },
-            { lat: -16.373352, lng: -71.511797 },
-            { lat: -16.374917, lng: -71.513921 },
-            { lat: -16.377403, lng: -71.517193 },
-            { lat: -16.378842, lng: -71.516258 },
-            { lat: -16.382180, lng: -71.517205 },
-            { lat: -16.391750, lng: -71.533061 },
-            { lat: -16.393594, lng: -71.537316 },
-            { lat: -16.393594, lng: -71.537316 },
-            { lat: -16.394764, lng: -71.537791 },
-            { lat: -16.399281, lng: -71.539981 },
-            { lat: -16.402460, lng: -71.538958 },
-            { lat: -16.405708, lng: -71.540099 },
-            { lat: -16.408392, lng: -71.542020 }
+            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: '' },
+            { coordenadas: { lat: -16.367482, lng: -71.500636 }, nombre: '' },
+            { coordenadas: { lat: -16.368205, lng: -71.503650 }, nombre: '' },
+            { coordenadas: { lat: -16.368357, lng: -71.507288 }, nombre: '' },
+            { coordenadas: { lat: -16.368915, lng: -71.509578 }, nombre: '' },
+            { coordenadas: { lat: -16.370732, lng: -71.511512 }, nombre: '' },
+            { coordenadas: { lat: -16.371820, lng: -71.512910 }, nombre: '' },
+            { coordenadas: { lat: -16.373352, lng: -71.511797 }, nombre: '' },
+            { coordenadas: { lat: -16.374917, lng: -71.513921 }, nombre: '' },
+            { coordenadas: { lat: -16.377403, lng: -71.517193 }, nombre: '' },
+            { coordenadas: { lat: -16.378842, lng: -71.516258 }, nombre: '' },
+            { coordenadas: { lat: -16.382180, lng: -71.517205 }, nombre: '' },
+            { coordenadas: { lat: -16.391750, lng: -71.533061 }, nombre: '' },
+            { coordenadas: { lat: -16.393594, lng: -71.537316 }, nombre: '' },
+            { coordenadas: { lat: -16.393594, lng: -71.537316 }, nombre: '' },
+            { coordenadas: { lat: -16.394764, lng: -71.537791 }, nombre: '' },
+            { coordenadas: { lat: -16.399281, lng: -71.539981 }, nombre: '' },
+            { coordenadas: { lat: -16.402460, lng: -71.538958 }, nombre: '' },
+            { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: '' },
+            { coordenadas: { lat: -16.408392, lng: -71.542020 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta4'
@@ -1322,26 +1356,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.408392, lng: -71.542020 },
-            { lat: -16.407175, lng: -71.538575 },
-            { lat: -16.403214, lng: -71.536795 },
-            { lat: -16.401360, lng: -71.536073 },
-            { lat: -16.392164, lng: -71.532378 },
-            { lat: -16.388937, lng: -71.526260 },
-            { lat: -16.385680, lng: -71.524602 },
-            { lat: -16.386409, lng: -71.522936 },
-            { lat: -16.382180, lng: -71.517205 },
-            { lat: -16.378814, lng: -71.516096 },
-            { lat: -16.377581, lng: -71.515363 },
-            { lat: -16.374917, lng: -71.513921 },
-            { lat: -16.373352, lng: -71.511797 },
-            { lat: -16.370732, lng: -71.511512 },
-            { lat: -16.368836, lng: -71.508194 },
-            { lat: -16.368225, lng: -71.503925 },
-            { lat: -16.369784, lng: -71.503754 },
-            { lat: -16.369636, lng: -71.502064 },
-            { lat: -16.366831, lng: -71.499585 },
-            { lat: -16.365748, lng: -71.501906 }
+            { coordenadas: { lat: -16.408392, lng: -71.542020 }, nombre: '' },
+            { coordenadas: { lat: -16.407175, lng: -71.538575 }, nombre: '' },
+            { coordenadas: { lat: -16.403214, lng: -71.536795 }, nombre: '' },
+            { coordenadas: { lat: -16.401360, lng: -71.536073 }, nombre: '' },
+            { coordenadas: { lat: -16.392164, lng: -71.532378 }, nombre: '' },
+            { coordenadas: { lat: -16.388937, lng: -71.526260 }, nombre: '' },
+            { coordenadas: { lat: -16.385680, lng: -71.524602 }, nombre: '' },
+            { coordenadas: { lat: -16.386409, lng: -71.522936 }, nombre: '' },
+            { coordenadas: { lat: -16.382180, lng: -71.517205 }, nombre: '' },
+            { coordenadas: { lat: -16.378814, lng: -71.516096 }, nombre: '' },
+            { coordenadas: { lat: -16.377581, lng: -71.515363 }, nombre: '' },
+            { coordenadas: { lat: -16.374917, lng: -71.513921 }, nombre: '' },
+            { coordenadas: { lat: -16.373352, lng: -71.511797 }, nombre: '' },
+            { coordenadas: { lat: -16.370732, lng: -71.511512 }, nombre: '' },
+            { coordenadas: { lat: -16.368836, lng: -71.508194 }, nombre: '' },
+            { coordenadas: { lat: -16.368225, lng: -71.503925 }, nombre: '' },
+            { coordenadas: { lat: -16.369784, lng: -71.503754 }, nombre: '' },
+            { coordenadas: { lat: -16.369636, lng: -71.502064 }, nombre: '' },
+            { coordenadas: { lat: -16.366831, lng: -71.499585 }, nombre: '' },
+            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: '' }
 
         ],
         recorrido: 'Vuelta',
@@ -1371,30 +1405,28 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.379800, lng: -71.491760 },
-            { lat: -16.378560, lng: -71.493560 },
-            { lat: -16.379330, lng: -71.498630 },
-            { lat: -16.381320, lng: -71.502340 },
-            { lat: -16.380690, lng: -71.508840 },
-            { lat: -16.382810, lng: -71.511820 },
-            { lat: -16.398680, lng: -71.546860 },
-            { lat: -16.391050, lng: -71.518790 },
-            { lat: -16.394190, lng: -71.521470 },
-            { lat: -16.397850, lng: -71.516780 },
-            { lat: -16.400220, lng: -71.516010 },
-            { lat: -16.405330, lng: -71.521530 },
-            { lat: -16.406420, lng: -71.523170 },
-            { lat: -16.408120, lng: -71.526740 },
-            { lat: -16.412760, lng: -71.536900 },
-            { lat: -16.413430, lng: -71.538960 },
-            { lat: -16.414090, lng: -71.542840 },
-            { lat: -16.420550, lng: -71.538990 },
-            { lat: -16.422200, lng: -71.544070 },
-            //
-            { lat: -16.400887, lng: -71.516323 },
-            { lat: -16.394509, lng: -71.522573 },
-
-            { lat: -16.422470, lng: -71.544230 }
+            { coordenadas: { lat: -16.379800, lng: -71.491760 }, nombre: '' },
+            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: '' },
+            { coordenadas: { lat: -16.379330, lng: -71.498630 }, nombre: '' },
+            { coordenadas: { lat: -16.381320, lng: -71.502340 }, nombre: '' },
+            { coordenadas: { lat: -16.380690, lng: -71.508840 }, nombre: '' },
+            { coordenadas: { lat: -16.382810, lng: -71.511820 }, nombre: '' },
+            { coordenadas: { lat: -16.398680, lng: -71.546860 }, nombre: '' },
+            { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: '' },
+            { coordenadas: { lat: -16.394190, lng: -71.521470 }, nombre: '' },
+            { coordenadas: { lat: -16.397850, lng: -71.516780 }, nombre: '' },
+            { coordenadas: { lat: -16.400220, lng: -71.516010 }, nombre: '' },
+            { coordenadas: { lat: -16.405330, lng: -71.521530 }, nombre: '' },
+            { coordenadas: { lat: -16.406420, lng: -71.523170 }, nombre: '' },
+            { coordenadas: { lat: -16.408120, lng: -71.526740 }, nombre: '' },
+            { coordenadas: { lat: -16.412760, lng: -71.536900 }, nombre: '' },
+            { coordenadas: { lat: -16.413430, lng: -71.538960 }, nombre: '' },
+            { coordenadas: { lat: -16.414090, lng: -71.542840 }, nombre: '' },
+            { coordenadas: { lat: -16.420550, lng: -71.538990 }, nombre: '' },
+            { coordenadas: { lat: -16.422200, lng: -71.544070 }, nombre: '' },
+            { coordenadas: { lat: -16.400887, lng: -71.516323 }, nombre: '' },
+            { coordenadas: { lat: -16.394509, lng: -71.522573 }, nombre: '' },
+            { coordenadas: { lat: -16.422470, lng: -71.544230 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta5'
@@ -1423,26 +1455,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.426740, lng: -71.533890 },
-            { lat: -16.425730, lng: -71.533040 },
-            { lat: -16.416750, lng: -71.532930 },
-            { lat: -16.416030, lng: -71.533550 },
-            { lat: -16.413660, lng: -71.534750 },
-            { lat: -16.410490, lng: -71.532660 },
-            { lat: -16.408220, lng: -71.526630 },
-            { lat: -16.406280, lng: -71.522810 },
-            { lat: -16.405340, lng: -71.521290 },
-            { lat: -16.402930, lng: -71.517940 },
-            { lat: -16.401240, lng: -71.516600 },
-            { lat: -16.398380, lng: -71.515930 },
-            { lat: -16.394310, lng: -71.521340 },
-            { lat: -16.390580, lng: -71.518280 },
-            { lat: -16.382860, lng: -71.511770 },
-            { lat: -16.380690, lng: -71.508840 },
-            { lat: -16.381410, lng: -71.502170 },
-            { lat: -16.379330, lng: -71.498630 },
-            { lat: -16.378560, lng: -71.493560 },
-            { lat: -16.379800, lng: -71.491760 }
+            { coordenadas: { lat: -16.426740, lng: -71.533890 }, nombre: '' },
+            { coordenadas: { lat: -16.425730, lng: -71.533040 }, nombre: '' },
+            { coordenadas: { lat: -16.416750, lng: -71.532930 }, nombre: '' },
+            { coordenadas: { lat: -16.416030, lng: -71.533550 }, nombre: '' },
+            { coordenadas: { lat: -16.413660, lng: -71.534750 }, nombre: '' },
+            { coordenadas: { lat: -16.410490, lng: -71.532660 }, nombre: '' },
+            { coordenadas: { lat: -16.408220, lng: -71.526630 }, nombre: '' },
+            { coordenadas: { lat: -16.406280, lng: -71.522810 }, nombre: '' },
+            { coordenadas: { lat: -16.405340, lng: -71.521290 }, nombre: '' },
+            { coordenadas: { lat: -16.402930, lng: -71.517940 }, nombre: '' },
+            { coordenadas: { lat: -16.401240, lng: -71.516600 }, nombre: '' },
+            { coordenadas: { lat: -16.398380, lng: -71.515930 }, nombre: '' },
+            { coordenadas: { lat: -16.394310, lng: -71.521340 }, nombre: '' },
+            { coordenadas: { lat: -16.390580, lng: -71.518280 }, nombre: '' },
+            { coordenadas: { at: -16.382860, lng: -71.511770 }, nombre: '' },
+            { coordenadas: { lat: -16.380690, lng: -71.508840 }, nombre: '' },
+            { coordenadas: { lat: -16.381410, lng: -71.502170 }, nombre: '' },
+            { coordenadas: { lat: -16.379330, lng: -71.498630 }, nombre: '' },
+            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: '' },
+            { coordenadas: { lat: -16.379800, lng: -71.491760 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta5'
@@ -1468,34 +1500,28 @@ var Rutas = {
                 { location: { lat: -16.40642, lng: -71.52317 }, stopover: true },
                 { location: { lat: -16.40812, lng: -71.52674 }, stopover: true },
                 { location: { lat: -16.41276, lng: -71.53690 }, stopover: true },
-                //
-                { location: { lat: -16.413523, lng: -71.539138 }, stopover: true }, 
-
-
-
+                { location: { lat: -16.413523, lng: -71.539138 }, stopover: true },
                 { location: { lat: -16.41409, lng: -71.54284 }, stopover: true },
                 { location: { lat: -16.42055, lng: -71.53899 }, stopover: true },
                 { location: { lat: -16.42220, lng: -71.54407 }, stopover: true }
             ]
         },
         paradas: [
-            { lat: -16.37980, lng: -71.49176 },
-            { lat: -16.38132, lng: -71.50234 },
-            { lat: -16.38069, lng: -71.50884 },
-            { lat: -16.38281, lng: -71.51182 },
-            { lat: -16.38742, lng: -71.51573 },
-            { lat: -16.39105, lng: -71.51879 },
-            { lat: -16.39419, lng: -71.52147 },
-            { lat: -16.39785, lng: -71.51678 },
-            { lat: -16.40022, lng: -71.51601 },
-            { lat: -16.40533, lng: -71.52153 },
-            { lat: -16.40642, lng: -71.52317 },
-            { lat: -16.40812, lng: -71.52674 },
-            { lat: -16.41276, lng: -71.53690 },
-
-            { lat: -16.413523, lng: -71.539138 },
-
-            { lat: -16.41343, lng: -71.53896 },
+            { coordenadas: { lat: -16.37980, lng: -71.49176 }, nombre: '' },
+            { coordenadas: { lat: -16.38132, lng: -71.50234 }, nombre: '' },
+            { coordenadas: { lat: -16.38069, lng: -71.50884 }, nombre: '' },
+            { coordenadas: { lat: -16.38281, lng: -71.51182 }, nombre: '' },
+            { coordenadas: { lat: -16.38742, lng: -71.51573 }, nombre: '' },
+            { coordenadas: { lat: -16.39105, lng: -71.51879 }, nombre: '' },
+            { coordenadas: { lat: -16.39419, lng: -71.52147 }, nombre: '' },
+            { coordenadas: { lat: -16.39785, lng: -71.51678 }, nombre: '' },
+            { coordenadas: { lat: -16.40022, lng: -71.51601 }, nombre: '' },
+            { coordenadas: { lat: -16.40533, lng: -71.52153 }, nombre: '' },
+            { coordenadas: { lat: -16.40642, lng: -71.52317 }, nombre: '' },
+            { coordenadas: { lat: -16.40812, lng: -71.52674 }, nombre: '' },
+            { coordenadas: { lat: -16.41276, lng: -71.53690 }, nombre: '' },
+            { coordenadas: { lat: -16.413523, lng: -71.539138 }, nombre: '' },
+            { coordenadas: { lat: -16.41343, lng: -71.53896 }, nombre: '' },
 
         ],
         recorrido: 'Ida',
@@ -1530,21 +1556,21 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.42674, lng: -71.53389 },
-            { lat: -16.41675, lng: -71.53293 },
-            { lat: -16.41603, lng: -71.53355 },
-            { lat: -16.41366, lng: -71.53475 },
-            { lat: -16.41049, lng: -71.53266 },
-            { lat: -16.40822, lng: -71.52663 },
-            { lat: -16.40628, lng: -71.52281 },
-            { lat: -16.40534, lng: -71.52129 },
-            { lat: -16.40293, lng: -71.51794 },
-            { lat: -16.40124, lng: -71.51660 },
-            { lat: -16.39838, lng: -71.51593 },
-            { lat: -16.39431, lng: -71.52134 },
-            { lat: -16.39058, lng: -71.51828 },
-            { lat: -16.38286, lng: -71.51177 },
-            { lat: -16.38069, lng: -71.50884 },
+            { coordenadas: { lat: -16.42674, lng: -71.53389 }, nombre: '' },
+            { coordenadas: { lat: -16.41675, lng: -71.53293 }, nombre: '' },
+            { coordenadas: { lat: -16.41603, lng: -71.53355 }, nombre: '' },
+            { coordenadas: { lat: -16.41366, lng: -71.53475 }, nombre: '' },
+            { coordenadas: { lat: -16.41049, lng: -71.53266 }, nombre: '' },
+            { coordenadas: { lat: -16.40822, lng: -71.52663 }, nombre: '' },
+            { coordenadas: { lat: -16.40628, lng: -71.52281 }, nombre: '' },
+            { coordenadas: { lat: -16.40534, lng: -71.52129 }, nombre: '' },
+            { coordenadas: { lat: -16.40293, lng: -71.51794 }, nombre: '' },
+            { coordenadas: { lat: -16.40124, lng: -71.51660 }, nombre: '' },
+            { coordenadas: { lat: -16.39838, lng: -71.51593 }, nombre: '' },
+            { coordenadas: { lat: -16.39431, lng: -71.52134 }, nombre: '' },
+            { coordenadas: { lat: -16.39058, lng: -71.51828 }, nombre: '' },
+            { coordenadas: { lat: -16.38286, lng: -71.51177 }, nombre: '' },
+            { coordenadas: { lat: -16.38069, lng: -71.50884 }, nombre: '' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta6'
@@ -1579,22 +1605,22 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.384800, lng: -71.570220 },
-            { lat: -16.375233, lng: -71.567978 },
-            { lat: -16.375036, lng: -71.566817 },
-            { lat: -16.374349, lng: -71.561483 },
-            { lat: -16.379168, lng: -71.559184 },
-            { lat: -16.381021, lng: -71.556761 },
-            { lat: -16.384138, lng: -71.555935 },
-            { lat: -16.389280, lng: -71.548936 },
-            { lat: -16.391946, lng: -71.548793 },
-            { lat: -16.397905, lng: -71.545947 },
-            { lat: -16.403500, lng: -71.547666 },
-            { lat: -16.404721, lng: -71.542879 },
-            { lat: -16.408666, lng: -71.537000 },
-            { lat: -16.402646, lng: -71.529500 },
-            { lat: -16.399491, lng: -71.521671 },
-            { lat: -16.402970, lng: -71.516549 },
+            { coordenadas: { lat: -16.384800, lng: -71.570220 }, nombre: '' },
+            { coordenadas: { lat: -16.375233, lng: -71.567978 }, nombre: '' },
+            { coordenadas: { lat: -16.375036, lng: -71.566817 }, nombre: '' },
+            { coordenadas: { lat: -16.374349, lng: -71.561483 }, nombre: '' },
+            { coordenadas: { lat: -16.379168, lng: -71.559184 }, nombre: '' },
+            { coordenadas: { lat: -16.381021, lng: -71.556761 }, nombre: '' },
+            { coordenadas: { lat: -16.384138, lng: -71.555935 }, nombre: '' },
+            { coordenadas: { lat: -16.389280, lng: -71.548936 }, nombre: '' },
+            { coordenadas: { lat: -16.391946, lng: -71.548793 }, nombre: '' },
+            { coordenadas: { lat: -16.397905, lng: -71.545947 }, nombre: '' },
+            { coordenadas: { lat: -16.403500, lng: -71.547666 }, nombre: '' },
+            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: '' },
+            { coordenadas: { lat: -16.408666, lng: -71.537000 }, nombre: '' },
+            { coordenadas: { lat: -16.402646, lng: -71.529500 }, nombre: '' },
+            { coordenadas: { lat: -16.399491, lng: -71.521671 }, nombre: '' },
+            { coordenadas: { lat: -16.402970, lng: -71.516549 }, nombre: '' },
         ],
         recorrido: 'Ida',
         nombre: 'Ruta7'
@@ -1629,29 +1655,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.425830, lng: -71.492770 },
-            { lat: -16.410459, lng: -71.513243 },
-            { lat: -16.403259, lng: -71.516280 },
-            { lat: -16.399392, lng: -71.521586 },
-            { lat: -16.398187, lng: -71.526713 },
-            { lat: -16.395463, lng: -71.530834 },
-            { lat: -16.393299, lng: -71.537399 },
-            { lat: -16.392254, lng: -71.540129 },
-            { lat: -16.390006, lng: -71.546472 },
-            { lat: -16.389147, lng: -71.548898 },
-            { lat: -16.384089, lng: -71.555849 },
-            { lat: -16.381005, lng: -71.556608 },
-            { lat: -16.379168, lng: -71.559184 },
-            { lat: -16.374349, lng: -71.561483 },
-            { lat: -16.375036, lng: -71.566817 },
-            //
-            { lat: -16.393949, lng: -71.535655 },
-            { lat: -16.394723, lng: -71.533352 },
-            { lat: -16.395082, lng: -71.532254 },
-
-
-            { lat: -16.375233, lng: -71.567978 },
-
+            { coordenadas: { lat: -16.425830, lng: -71.492770 }, nombre: '' },
+            { coordenadas: { lat: -16.410459, lng: -71.513243 }, nombre: '' },
+            { coordenadas: { lat: -16.403259, lng: -71.516280 }, nombre: '' },
+            { coordenadas: { lat: -16.399392, lng: -71.521586 }, nombre: '' },
+            { coordenadas: { lat: -16.398187, lng: -71.526713 }, nombre: '' },
+            { coordenadas: { lat: -16.395463, lng: -71.530834 }, nombre: '' },
+            { coordenadas: { lat: -16.393299, lng: -71.537399 }, nombre: '' },
+            { coordenadas: { lat: -16.392254, lng: -71.540129 }, nombre: '' },
+            { coordenadas: { lat: -16.390006, lng: -71.546472 }, nombre: '' },
+            { coordenadas: { lat: -16.389147, lng: -71.548898 }, nombre: '' },
+            { coordenadas: { lat: -16.384089, lng: -71.555849 }, nombre: '' },
+            { coordenadas: { lat: -16.381005, lng: -71.556608 }, nombre: '' },
+            { coordenadas: { lat: -16.379168, lng: -71.559184 }, nombre: '' },
+            { coordenadas: { lat: -16.374349, lng: -71.561483 }, nombre: '' },
+            { coordenadas: { lat: -16.375036, lng: -71.566817 }, nombre: '' },
+            { coordenadas: { lat: -16.393949, lng: -71.535655 }, nombre: '' },
+            { coordenadas: { lat: -16.394723, lng: -71.533352 }, nombre: '' },
+            { coordenadas: { lat: -16.395082, lng: -71.532254 }, nombre: '' },
+            { coordenadas: { lat: -16.375233, lng: -71.567978 }, nombre: '' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta7'
@@ -1686,21 +1708,21 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.387058, lng: -71.575015 },
-            { lat: -16.403220, lng: -71.573008 },
-            { lat: -16.404376, lng: -71.573231 },
-            { lat: -16.403220, lng: -71.568348 },
-            { lat: -16.400683, lng: -71.569132 },
-            { lat: -16.394982, lng: -71.569286 },
-            { lat: -16.392581, lng: -71.565814 },
-            { lat: -16.392562, lng: -71.556064 },
-            { lat: -16.388926, lng: -71.555101 },
-            { lat: -16.389280, lng: -71.548936 },
-            { lat: -16.391946, lng: -71.548793 },
-            { lat: -16.397905, lng: -71.545947 },
-            { lat: -16.403500, lng: -71.547666 },
-            { lat: -16.404721, lng: -71.542879 },
-            { lat: -16.416222, lng: -71.533643 },
+            { coordenadas: { lat: -16.387058, lng: -71.575015 }, nombre: '' },
+            { coordenadas: { lat: -16.403220, lng: -71.573008 }, nombre: '' },
+            { coordenadas: { lat: -16.404376, lng: -71.573231 }, nombre: '' },
+            { coordenadas: { lat: -16.403220, lng: -71.568348 }, nombre: '' },
+            { coordenadas: { lat: -16.400683, lng: -71.569132 }, nombre: '' },
+            { coordenadas: { lat: -16.394982, lng: -71.569286 }, nombre: '' },
+            { coordenadas: { lat: -16.392581, lng: -71.565814 }, nombre: '' },
+            { coordenadas: { lat: -16.392562, lng: -71.556064 }, nombre: '' },
+            { coordenadas: { lat: -16.388926, lng: -71.555101 }, nombre: '' },
+            { coordenadas: { lat: -16.389280, lng: -71.548936 }, nombre: '' },
+            { coordenadas: { lat: -16.391946, lng: -71.548793 }, nombre: '' },
+            { coordenadas: { lat: -16.397905, lng: -71.545947 }, nombre: '' },
+            { coordenadas: { lat: -16.403500, lng: -71.547666 }, nombre: '' },
+            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: '' },
+            { coordenadas: { lat: -16.416222, lng: -71.533643 }, nombre: '' },
         ],
         recorrido: 'Ida',
         nombre: 'Ruta8'
@@ -1716,10 +1738,8 @@ var Rutas = {
                 { location: { lat: -16.426127, lng: -71.515727 }, stopover: true },
                 { location: { lat: -16.417877, lng: -71.515813 }, stopover: true },
                 { location: { lat: -16.411832, lng: -71.512688 }, stopover: true },
-
                 { location: { lat: -16.399691, lng: -71.521836 }, stopover: true },
-                { location: { lat: -16.398971, lng: -71.521357 }, stopover: true }, 
-
+                { location: { lat: -16.398971, lng: -71.521357 }, stopover: true },
                 { location: { lat: -16.398187, lng: -71.526713 }, stopover: true },
                 { location: { lat: -16.395463, lng: -71.530834 }, stopover: true },
                 { location: { lat: -16.393299, lng: -71.537399 }, stopover: true },
@@ -1738,30 +1758,27 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.430168, lng: -71.534405 },
-            { lat: -16.417877, lng: -71.515813 },
-            { lat: -16.411832, lng: -71.512688 },
-            { lat: -16.399491, lng: -71.521671 },
-            { lat: -16.398187, lng: -71.526713 },
-            { lat: -16.395463, lng: -71.530834 },
-            { lat: -16.393299, lng: -71.537399 },
-            { lat: -16.392254, lng: -71.540129 },
-            { lat: -16.389280, lng: -71.548936 },
-            { lat: -16.390889, lng: -71.552762 },
-            { lat: -16.392562, lng: -71.556064 },
-            { lat: -16.392581, lng: -71.565814 },
-            { lat: -16.394982, lng: -71.569286 },
-            { lat: -16.400683, lng: -71.569132 },
-            //
-            { lat: -16.393949, lng: -71.535655 },
-            { lat: -16.394723, lng: -71.533352 },
-            { lat: -16.395082, lng: -71.532254 },
-            { lat: -16.399691, lng: -71.521836 }, 
-            { lat: -16.398971, lng: -71.521357 },
-
-            { lat: -16.401146, lng: -71.523436 },
-
-            { lat: -16.403220, lng: -71.568348 },
+            { coordenadas: { lat: -16.430168, lng: -71.534405 }, nombre: '' },
+            { coordenadas: { lat: -16.417877, lng: -71.515813 }, nombre: '' },
+            { coordenadas: { lat: -16.411832, lng: -71.512688 }, nombre: '' },
+            { coordenadas: { lat: -16.399491, lng: -71.521671 }, nombre: '' },
+            { coordenadas: { lat: -16.398187, lng: -71.526713 }, nombre: '' },
+            { coordenadas: { lat: -16.395463, lng: -71.530834 }, nombre: '' },
+            { coordenadas: { lat: -16.393299, lng: -71.537399 }, nombre: '' },
+            { coordenadas: { lat: -16.392254, lng: -71.540129 }, nombre: '' },
+            { coordenadas: { lat: -16.389280, lng: -71.548936 }, nombre: '' },
+            { coordenadas: { lat: -16.390889, lng: -71.552762 }, nombre: '' },
+            { coordenadas: { lat: -16.392562, lng: -71.556064 }, nombre: '' },
+            { coordenadas: { lat: -16.392581, lng: -71.565814 }, nombre: '' },
+            { coordenadas: { lat: -16.394982, lng: -71.569286 }, nombre: '' },
+            { coordenadas: { lat: -16.400683, lng: -71.569132 }, nombre: '' },
+            { coordenadas: { lat: -16.393949, lng: -71.535655 }, nombre: '' },
+            { coordenadas: { lat: -16.394723, lng: -71.533352 }, nombre: '' },
+            { coordenadas: { lat: -16.395082, lng: -71.532254 }, nombre: '' },
+            { coordenadas: { lat: -16.399691, lng: -71.521836 }, nombre: '' },
+            { coordenadas: { lat: -16.398971, lng: -71.521357 }, nombre: '' },
+            { coordenadas: { lat: -16.401146, lng: -71.523436 }, nombre: '' },
+            { coordenadas: { lat: -16.403220, lng: -71.568348 }, nombre: '' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta8'
@@ -1796,26 +1813,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.461673, lng: -71.524326 },
-            { lat: -16.460158, lng: -71.521153 },
-            { lat: -16.449918, lng: -71.512411 },
-            { lat: -16.447044, lng: -71.516154 },
-            { lat: -16.443472, lng: -71.518408 },
-            { lat: -16.441926, lng: -71.528789 },
-            { lat: -16.436928, lng: -71.530585 },
-            { lat: -16.430817, lng: -71.532734 },
-            { lat: -16.425761, lng: -71.533018 },
-            { lat: -16.415120, lng: -71.534077 },
-            { lat: -16.412098, lng: -71.534760 },
-            { lat: -16.408356, lng: -71.532299 },
-            { lat: -16.404434, lng: -71.527490 },
-            { lat: -16.400375, lng: -71.520307 },
-            { lat: -16.404191, lng: -71.519255 },
-            { lat: -16.399666, lng: -71.515290 },
-            { lat: -16.398007, lng: -71.516424 },
-            { lat: -16.395484, lng: -71.516323 },
-            { lat: -16.393674, lng: -71.511030 },
-            { lat: -16.394008, lng: -71.502937 }
+            { coordenadas: { lat: -16.461673, lng: -71.524326 }, nombre: '' },
+            { coordenadas: { lat: -16.460158, lng: -71.521153 }, nombre: '' },
+            { coordenadas: { lat: -16.449918, lng: -71.512411 }, nombre: '' },
+            { coordenadas: { lat: -16.447044, lng: -71.516154 }, nombre: '' },
+            { coordenadas: { lat: -16.443472, lng: -71.518408 }, nombre: '' },
+            { coordenadas: { lat: -16.441926, lng: -71.528789 }, nombre: '' },
+            { coordenadas: { lat: -16.436928, lng: -71.530585 }, nombre: '' },
+            { coordenadas: { lat: -16.430817, lng: -71.532734 }, nombre: '' },
+            { coordenadas: { lat: -16.425761, lng: -71.533018 }, nombre: '' },
+            { coordenadas: { lat: -16.415120, lng: -71.534077 }, nombre: '' },
+            { coordenadas: { lat: -16.412098, lng: -71.534760 }, nombre: '' },
+            { coordenadas: { lat: -16.408356, lng: -71.532299 }, nombre: '' },
+            { coordenadas: { lat: -16.404434, lng: -71.527490 }, nombre: '' },
+            { coordenadas: { lat: -16.400375, lng: -71.520307 }, nombre: '' },
+            { coordenadas: { lat: -16.404191, lng: -71.519255 }, nombre: '' },
+            { coordenadas: { lat: -16.399666, lng: -71.515290 }, nombre: '' },
+            { coordenadas: { lat: -16.398007, lng: -71.516424 }, nombre: '' },
+            { coordenadas: { lat: -16.395484, lng: -71.516323 }, nombre: '' },
+            { coordenadas: { lat: -16.393674, lng: -71.511030 }, nombre: '' },
+            { coordenadas: { lat: -16.394008, lng: -71.502937 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta9'
@@ -1827,19 +1844,14 @@ var Rutas = {
             destination: { lat: -16.46169, lng: -71.52431 },
             travelMode: 'DRIVING',
             waypoints: [
-                //{ location: { lat: -16.394130, lng: -71.502980 }, stopover: true },
                 { location: { lat: -16.396510, lng: -71.508320 }, stopover: true },
-                // 
                 { location: { lat: -16.392934, lng: -71.509574 }, stopover: true },
-
                 { location: { lat: -16.392120, lng: -71.513850 }, stopover: true },
                 { location: { lat: -16.390510, lng: -71.518317 }, stopover: true },
                 { location: { lat: -16.394208, lng: -71.521430 }, stopover: true },
                 { location: { lat: -16.393424, lng: -71.522591 }, stopover: true },
                 { location: { lat: -16.401970, lng: -71.526990 }, stopover: true },
-                //I
                 { location: { lat: -16.404230, lng: -71.527332 }, stopover: true },
-
                 { location: { lat: -16.412090, lng: -71.535270 }, stopover: true },
                 { location: { lat: -16.415910, lng: -71.533860 }, stopover: true },
                 { location: { lat: -16.430310, lng: -71.534440 }, stopover: true },
@@ -1849,82 +1861,80 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.394129, lng: -71.502966 },
-            { lat: -16.393662, lng: -71.511054 },
-            { lat: -16.390521, lng: -71.518365 },
-            { lat: -16.393582, lng: -71.522671 },
-            { lat: -16.397215, lng: -71.525116 },
-            { lat: -16.400957, lng: -71.527633 },
-            { lat: -16.404269, lng: -71.527420 },
-            { lat: -16.408309, lng: -71.532270 },
-            { lat: -16.411982, lng: -71.535213 },
-            { lat: -16.415289, lng: -71.534190 },
-            { lat: -16.421406, lng: -71.531356 },
-            { lat: -16.425336, lng: -71.533428 },
-            { lat: -16.430090, lng: -71.534449 },
-            { lat: -16.434600, lng: -71.531542 },
-            { lat: -16.441966, lng: -71.528799 },
-            { lat: -16.443320, lng: -71.521352 },
-            { lat: -16.447208, lng: -71.516246 },
-            { lat: -16.449907, lng: -71.512435 },
-            { lat: -16.456454, lng: -71.517489 },
-            //
-            { lat: -16.456454, lng: -71.517489 },
-
-            { lat: -16.461628, lng: -71.524270 }
+            { coordenadas: { lat: -16.394129, lng: -71.502966 }, nombre: '' },
+            { coordenadas: { lat: -16.393662, lng: -71.511054 }, nombre: '' },
+            { coordenadas: { lat: -16.390521, lng: -71.518365 }, nombre: '' },
+            { coordenadas: { lat: -16.393582, lng: -71.522671 }, nombre: '' },
+            { coordenadas: { lat: -16.397215, lng: -71.525116 }, nombre: '' },
+            { coordenadas: { lat: -16.400957, lng: -71.527633 }, nombre: '' },
+            { coordenadas: { lat: -16.404269, lng: -71.527420 }, nombre: '' },
+            { coordenadas: { lat: -16.408309, lng: -71.532270 }, nombre: '' },
+            { coordenadas: { lat: -16.411982, lng: -71.535213 }, nombre: '' },
+            { coordenadas: { lat: -16.415289, lng: -71.534190 }, nombre: '' },
+            { coordenadas: { lat: -16.421406, lng: -71.531356 }, nombre: '' },
+            { coordenadas: { lat: -16.425336, lng: -71.533428 }, nombre: '' },
+            { coordenadas: { lat: -16.430090, lng: -71.534449 }, nombre: '' },
+            { coordenadas: { lat: -16.434600, lng: -71.531542 }, nombre: '' },
+            { coordenadas: { lat: -16.441966, lng: -71.528799 }, nombre: '' },
+            { coordenadas: { lat: -16.443320, lng: -71.521352 }, nombre: '' },
+            { coordenadas: { lat: -16.447208, lng: -71.516246 }, nombre: '' },
+            { coordenadas: { lat: -16.449907, lng: -71.512435 }, nombre: '' },
+            { coordenadas: { lat: -16.456454, lng: -71.517489 }, nombre: '' },
+            { coordenadas: { lat: -16.456454, lng: -71.517489 }, nombre: '' },
+            { coordenadas: { lat: -16.461628, lng: -71.524270 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta9'
     },
 
-       Ruta10_Ida: {
+    Ruta10_Ida: {
         solicitud: {
             origin: { lat: -16.42929, lng: -71.491115 },
             destination: { lat: -16.40194, lng: -71.54705 },
             travelMode: 'DRIVING',
             waypoints: [
                 { location: { lat: -16.429331, lng: -71.496263 }, stopover: true },
-                { location: { lat: -16.429756, lng:-71.499702 }, stopover: true },
+                { location: { lat: -16.429756, lng: -71.499702 }, stopover: true },
                 { location: { lat: -16.428722, lng: -71.502831 }, stopover: true },
                 { location: { lat: -16.422136, lng: -71.507444 }, stopover: true },
-                { location: { lat: -16.417278, lng: -71.510184   }, stopover: true },
-                { location: { lat: -16.412010, lng: -71.512590}, stopover: true },
-                { location: { lat: -16.411874, lng:-71.506238}, stopover: true },
-                { location: { lat: -16.410248, lng:-71.505025}, stopover: true },
+                { location: { lat: -16.417278, lng: -71.510184 }, stopover: true },
+                { location: { lat: -16.412010, lng: -71.512590 }, stopover: true },
+                { location: { lat: -16.411874, lng: -71.506238 }, stopover: true },
+                { location: { lat: -16.410248, lng: -71.505025 }, stopover: true },
                 { location: { lat: -16.40534, lng: -71.51252 }, stopover: true },
                 { location: { lat: -16.403328, lng: -71.515660 }, stopover: true },
                 { location: { lat: -16.401605, lng: -71.518252 }, stopover: true },
                 { location: { lat: -16.398378, lng: -71.515936 }, stopover: true },
-                { location: { lat: -16.391949, lng:-71.524430 }, stopover: true },
+                { location: { lat: -16.391949, lng: -71.524430 }, stopover: true },
                 { location: { lat: -16.39509, lng: -71.53233 }, stopover: true },
-                { location: { lat:-16.393570, lng:-71.536698}, stopover: true },
-                { location: { lat: -16.398722, lng:-71.538709 }, stopover: true },
+                { location: { lat: -16.393570, lng: -71.536698 }, stopover: true },
+                { location: { lat: -16.398722, lng: -71.538709 }, stopover: true },
                 { location: { lat: -16.396088, lng: -71.544949 }, stopover: true },
                 { location: { lat: -16.40194, lng: -71.54705 }, stopover: true }
             ]
         },
         paradas: [
-            { lat: -16.429262, lng: -71.491125 },
-            { lat: -16.429747, lng: -71.499679 },
-            { lat: -16.428697, lng: -71.502789 },
-            { lat: -16.422173, lng: -71.507363 },
-            { lat: -16.417256, lng: -71.510156 },
-            { lat: -16.412197, lng: -71.512481 },
-            { lat: -16.405368, lng: -71.512428  },
-            { lat: -16.403309, lng: -71.515654 },
-            { lat: -16.397842, lng: -71.516621 },
-            { lat: -16.393912, lng: -71.521913 },
-            { lat: -16.393360, lng: -71.528781 },
-            { lat: -16.394195, lng: -71.530874 },
-            { lat: -16.395081, lng: -71.532306 },
-            { lat: -16.393937, lng: -71.535667 },
-            { lat: -16.394113, lng: -71.536919 },
-            { lat: -16.396761, lng: -71.537960 },
-            { lat: -16.398671, lng: -71.538730 },
-            { lat: -16.396775, lng: -71.543658 },
-            { lat: -16.397163, lng: -71.545397 },
-            { lat: -16.399461, lng: -71.546338 },
-            { lat: -16.401929, lng: -71.547093 }
+            { coordenadas: { lat: -16.429262, lng: -71.491125 }, nombre: '' },
+            { coordenadas: { lat: -16.429747, lng: -71.499679 }, nombre: '' },
+            { coordenadas: { lat: -16.428697, lng: -71.502789 }, nombre: '' },
+            { coordenadas: { lat: -16.422173, lng: -71.507363 }, nombre: '' },
+            { coordenadas: { lat: -16.417256, lng: -71.510156 }, nombre: '' },
+            { coordenadas: { lat: -16.412197, lng: -71.512481 }, nombre: '' },
+            { coordenadas: { lat: -16.405368, lng: -71.512428 }, nombre: '' },
+            { coordenadas: { lat: -16.403309, lng: -71.515654 }, nombre: '' },
+            { coordenadas: { lat: -16.397842, lng: -71.516621 }, nombre: '' },
+            { coordenadas: { lat: -16.393912, lng: -71.521913 }, nombre: '' },
+            { coordenadas: { lat: -16.393360, lng: -71.528781 }, nombre: '' },
+            { coordenadas: { lat: -16.394195, lng: -71.530874 }, nombre: '' },
+            { coordenadas: { lat: -16.395081, lng: -71.532306 }, nombre: '' },
+            { coordenadas: { lat: -16.393937, lng: -71.535667 }, nombre: '' },
+            { coordenadas: { lat: -16.394113, lng: -71.536919 }, nombre: '' },
+            { coordenadas: { lat: -16.396761, lng: -71.537960 }, nombre: '' },
+            { coordenadas: { lat: -16.398671, lng: -71.538730 }, nombre: '' },
+            { coordenadas: { lat: -16.396775, lng: -71.543658 }, nombre: '' },
+            { coordenadas: { lat: -16.397163, lng: -71.545397 }, nombre: '' },
+            { coordenadas: { lat: -16.399461, lng: -71.546338 }, nombre: '' },
+            { coordenadas: { lat: -16.401929, lng: -71.547093 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta10'
@@ -1951,26 +1961,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.403736, lng: -71.547759 },
-            { lat: -16.404374, lng: -71.543042 },
-            { lat: -16.405660, lng: -71.542283 },
-            { lat: -16.408707, lng: -71.541102 },
-            { lat: -16.407125, lng: -71.539192 },
-            { lat: -16.408299, lng: -71.538196 },
-            { lat: -16.410193, lng: -71.536186 },
-            { lat: -16.413341, lng: -71.535068 },
-            { lat: -16.415582, lng: -71.534069 },
-            { lat: -16.421310, lng: -71.531340 },
-            { lat: -16.425094, lng: -71.533336 },
-            { lat: -16.430359, lng: -71.534402 },
-            { lat: -16.429743, lng: -71.526694 },
-            { lat: -16.427296, lng: -71.518592 },
-            { lat: -16.425082, lng: -71.513470 },
-            { lat: -16.423293, lng: -71.509753 },
-            { lat: -16.422306, lng: -71.507636 },
-            { lat: -16.424746, lng: -71.505882 },
-            { lat: -16.429367, lng: -71.496306 },
-            { lat: -16.429310, lng: -71.491165 }
+            { coordenadas: { lat: -16.403736, lng: -71.547759 }, nombre: '' },
+            { coordenadas: { lat: -16.404374, lng: -71.543042 }, nombre: '' },
+            { coordenadas: { lat: -16.405660, lng: -71.542283 }, nombre: '' },
+            { coordenadas: { lat: -16.408707, lng: -71.541102 }, nombre: '' },
+            { coordenadas: { lat: -16.407125, lng: -71.539192 }, nombre: '' },
+            { coordenadas: { lat: -16.408299, lng: -71.538196 }, nombre: '' },
+            { coordenadas: { lat: -16.410193, lng: -71.536186 }, nombre: '' },
+            { coordenadas: { lat: -16.413341, lng: -71.535068 }, nombre: '' },
+            { coordenadas: { lat: -16.415582, lng: -71.534069 }, nombre: '' },
+            { coordenadas: { lat: -16.421310, lng: -71.531340 }, nombre: '' },
+            { coordenadas: { lat: -16.425094, lng: -71.533336 }, nombre: '' },
+            { coordenadas: { lat: -16.430359, lng: -71.534402 }, nombre: '' },
+            { coordenadas: { lat: -16.429743, lng: -71.526694 }, nombre: '' },
+            { coordenadas: { lat: -16.427296, lng: -71.518592 }, nombre: '' },
+            { coordenadas: { lat: -16.425082, lng: -71.513470 }, nombre: '' },
+            { coordenadas: { lat: -16.423293, lng: -71.509753 }, nombre: '' },
+            { coordenadas: { lat: -16.422306, lng: -71.507636 }, nombre: '' },
+            { coordenadas: { lat: -16.424746, lng: -71.505882 }, nombre: '' },
+            { coordenadas: { lat: -16.429367, lng: -71.496306 }, nombre: '' },
+            { coordenadas: { lat: -16.429310, lng: -71.491165 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta10'
@@ -2004,26 +2014,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.359427, lng: -71.509089 },
-            { lat: -16.362028, lng: -71.513599 },
-            { lat: -16.364530, lng: -71.515414 },
-            { lat: -16.367270, lng: -71.519366 },
-            { lat: -16.368882, lng: -71.519305 },
-            { lat: -16.371222, lng: -71.516691 },
-            { lat: -16.374671, lng: -71.522629 },
-            { lat: -16.378040, lng: -71.524532 },
-            { lat: -16.378157, lng: -71.521353 },
-            { lat: -16.379410, lng: -71.520118 },
-            { lat: -16.383255, lng: -71.524638 },
-            { lat: -16.389452, lng: -71.526704 },
-            { lat: -16.394248, lng: -71.521652 },
-            { lat: -16.396579, lng: -71.518624 },
-            { lat: -16.400129, lng: -71.520316 },
-            { lat: -16.402356, lng: -71.525069 },
-            { lat: -16.408386, lng: -71.532386 },
-            { lat: -16.416374, lng: -71.533496 },
-            { lat: -16.420565, lng: -71.539217 },
-            { lat: -16.423038, lng: -71.542801 }
+            { coordenadas: { lat: -16.359427, lng: -71.509089 }, nombre: '' },
+            { coordenadas: { lat: -16.362028, lng: -71.513599 }, nombre: '' },
+            { coordenadas: { lat: -16.364530, lng: -71.515414 }, nombre: '' },
+            { coordenadas: { lat: -16.367270, lng: -71.519366 }, nombre: '' },
+            { coordenadas: { lat: -16.368882, lng: -71.519305 }, nombre: '' },
+            { coordenadas: { lat: -16.371222, lng: -71.516691 }, nombre: '' },
+            { coordenadas: { lat: -16.374671, lng: -71.522629 }, nombre: '' },
+            { coordenadas: { lat: -16.378040, lng: -71.524532 }, nombre: '' },
+            { coordenadas: { lat: -16.378157, lng: -71.521353 }, nombre: '' },
+            { coordenadas: { lat: -16.379410, lng: -71.520118 }, nombre: '' },
+            { coordenadas: { lat: -16.383255, lng: -71.524638 }, nombre: '' },
+            { coordenadas: { lat: -16.389452, lng: -71.526704 }, nombre: '' },
+            { coordenadas: { lat: -16.394248, lng: -71.521652 }, nombre: '' },
+            { coordenadas: { lat: -16.396579, lng: -71.518624 }, nombre: '' },
+            { coordenadas: { lat: -16.400129, lng: -71.520316 }, nombre: '' },
+            { coordenadas: { lat: -16.402356, lng: -71.525069 }, nombre: '' },
+            { coordenadas: { lat: -16.408386, lng: -71.532386 }, nombre: '' },
+            { coordenadas: { lat: -16.416374, lng: -71.533496 }, nombre: '' },
+            { coordenadas: { lat: -16.420565, lng: -71.539217 }, nombre: '' },
+            { coordenadas: { lat: -16.423038, lng: -71.542801 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta11'
@@ -2061,24 +2071,24 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.4223778, lng: -71.5440237 },
-            { lat: -16.4215858, lng: -71.5414179 },
-            { lat: -16.4163267, lng: -71.5332190 },
-            { lat: -16.4133469, lng: -71.5348413 },
-            { lat: -16.4117572, lng: -71.5344432 },
-            { lat: -16.4109596, lng: -71.5333157 },
-            { lat: -16.4057026, lng: -71.5289640 },
-            { lat: -16.4044569, lng: -71.5274436 },
-            { lat: -16.4058452, lng: -71.5221469 },
-            { lat: -16.4053539, lng: -71.5212372 },
-            { lat: -16.3934125, lng: -71.5224761 },
-            { lat: -16.3887705, lng: -71.5262105 },
-            { lat: -16.3786713, lng: -71.5232247 },
-            { lat: -16.3782878, lng: -71.5240210 },
-            { lat: -16.3779285, lng: -71.5245938 },
-            { lat: -16.3796659, lng: -71.5266417 },
-            { lat: -16.3784089, lng: -71.5277752 },
-            { lat: -16.3714912, lng: -71.5166505 }
+            { coordenadas: { lat: -16.4223778, lng: -71.5440237 }, nombre: '' },
+            { coordenadas: { lat: -16.4215858, lng: -71.5414179 }, nombre: '' },
+            { coordenadas: { lat: -16.4163267, lng: -71.5332190 }, nombre: '' },
+            { coordenadas: { lat: -16.4133469, lng: -71.5348413 }, nombre: '' },
+            { coordenadas: { lat: -16.4117572, lng: -71.5344432 }, nombre: '' },
+            { coordenadas: { lat: -16.4109596, lng: -71.5333157 }, nombre: '' },
+            { coordenadas: { lat: -16.4057026, lng: -71.5289640 }, nombre: '' },
+            { coordenadas: { lat: -16.4044569, lng: -71.5274436 }, nombre: '' },
+            { coordenadas: { lat: -16.4058452, lng: -71.5221469 }, nombre: '' },
+            { coordenadas: { lat: -16.4053539, lng: -71.5212372 }, nombre: '' },
+            { coordenadas: { lat: -16.3934125, lng: -71.5224761 }, nombre: '' },
+            { coordenadas: { lat: -16.3887705, lng: -71.5262105 }, nombre: '' },
+            { coordenadas: { lat: -16.3786713, lng: -71.5232247 }, nombre: '' },
+            { coordenadas: { lat: -16.3782878, lng: -71.5240210 }, nombre: '' },
+            { coordenadas: { lat: -16.3779285, lng: -71.5245938 }, nombre: '' },
+            { coordenadas: { lat: -16.3796659, lng: -71.5266417 }, nombre: '' },
+            { coordenadas: { lat: -16.3784089, lng: -71.5277752 }, nombre: '' },
+            { coordenadas: { lat: -16.3714912, lng: -71.5166505 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta11'
@@ -2101,24 +2111,24 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.403722, lng: -71.494809 },
-            { lat: -16.404709, lng: -71.498214 },
-            { lat: -16.405002, lng: -71.501107 },
-            { lat: -16.403398, lng: -71.502156 },
-            { lat: -16.400429, lng: -71.504589 },
-            { lat: -16.401512, lng: -71.508537 },
-            { lat: -16.402070, lng: -71.509843 },
-            { lat: -16.403160, lng: -71.511711 },
-            { lat: -16.403919, lng: -71.512903 },
-            { lat: -16.402451, lng: -71.514979 },
-            { lat: -16.401719, lng: -71.518078 },
-            { lat: -16.403047, lng: -71.518197 },
-            { lat: -16.405092, lng: -71.521061 },
-            { lat: -16.406350, lng: -71.523071 },
-            { lat: -16.408109, lng: -71.526702 },
-            { lat: -16.409166, lng: -71.530458 },
-            { lat: -16.408893, lng: -71.532837 },
-            { lat: -16.407710, lng: -71.533938 }
+            { coordenadas: { lat: -16.403722, lng: -71.494809 }, nombre: '' },
+            { coordenadas: { lat: -16.404709, lng: -71.498214 }, nombre: '' },
+            { coordenadas: { lat: -16.405002, lng: -71.501107 }, nombre: '' },
+            { coordenadas: { lat: -16.403398, lng: -71.502156 }, nombre: '' },
+            { coordenadas: { lat: -16.400429, lng: -71.504589 }, nombre: '' },
+            { coordenadas: { lat: -16.401512, lng: -71.508537 }, nombre: '' },
+            { coordenadas: { lat: -16.402070, lng: -71.509843 }, nombre: '' },
+            { coordenadas: { lat: -16.403160, lng: -71.511711 }, nombre: '' },
+            { coordenadas: { lat: -16.403919, lng: -71.512903 }, nombre: '' },
+            { coordenadas: { lat: -16.402451, lng: -71.514979 }, nombre: '' },
+            { coordenadas: { lat: -16.401719, lng: -71.518078 }, nombre: '' },
+            { coordenadas: { lat: -16.403047, lng: -71.518197 }, nombre: '' },
+            { coordenadas: { lat: -16.405092, lng: -71.521061 }, nombre: '' },
+            { coordenadas: { lat: -16.406350, lng: -71.523071 }, nombre: '' },
+            { coordenadas: { lat: -16.408109, lng: -71.526702 }, nombre: '' },
+            { coordenadas: { lat: -16.409166, lng: -71.530458 }, nombre: '' },
+            { coordenadas: { lat: -16.408893, lng: -71.532837 }, nombre: '' },
+            { coordenadas: { lat: -16.407710, lng: -71.533938 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta12'
@@ -2146,26 +2156,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.407710, lng: -71.533938 },
-            { lat: -16.406093, lng: -71.533732 },
-            { lat: -16.405042, lng: -71.532517 },
-            { lat: -16.404175, lng: -71.531462 },
-            { lat: -16.402534, lng: -71.529420 },
-            { lat: -16.404259, lng: -71.527511 },
-            { lat: -16.402499, lng: -71.525137 },
-            { lat: -16.400874, lng: -71.523139 },
-            { lat: -16.399566, lng: -71.521671 },
-            { lat: -16.399360, lng: -71.518576 },
-            { lat: -16.399557, lng: -71.515725 },
-            { lat: -16.399721, lng: -71.511831 },
-            { lat: -16.402422, lng: -71.514933 },
-            { lat: -16.403160, lng: -71.511711 },
-            { lat: -16.403160, lng: -71.511711 },
-            { lat: -16.402070, lng: -71.509843 },
-            { lat: -16.400483, lng: -71.507091 },
-            { lat: -16.405056, lng: -71.502802 },
-            { lat: -16.404836, lng: -71.498590 },
-            { lat: -16.403722, lng: -71.494809 }
+            { coordenadas: { lat: -16.407710, lng: -71.533938 }, nombre: '' },
+            { coordenadas: { lat: -16.406093, lng: -71.533732 }, nombre: '' },
+            { coordenadas: { lat: -16.405042, lng: -71.532517 }, nombre: '' },
+            { coordenadas: { lat: -16.404175, lng: -71.531462 }, nombre: '' },
+            { coordenadas: { lat: -16.402534, lng: -71.529420 }, nombre: '' },
+            { coordenadas: { lat: -16.404259, lng: -71.527511 }, nombre: '' },
+            { coordenadas: { lat: -16.402499, lng: -71.525137 }, nombre: '' },
+            { coordenadas: { lat: -16.400874, lng: -71.523139 }, nombre: '' },
+            { coordenadas: { lat: -16.399566, lng: -71.521671 }, nombre: '' },
+            { coordenadas: { lat: -16.399360, lng: -71.518576 }, nombre: '' },
+            { coordenadas: { lat: -16.399557, lng: -71.515725 }, nombre: '' },
+            { coordenadas: { lat: -16.399721, lng: -71.511831 }, nombre: '' },
+            { coordenadas: { lat: -16.402422, lng: -71.514933 }, nombre: '' },
+            { coordenadas: { lat: -16.403160, lng: -71.511711 }, nombre: '' },
+            { coordenadas: { lat: -16.403160, lng: -71.511711 }, nombre: '' },
+            { coordenadas: { lat: -16.402070, lng: -71.509843 }, nombre: '' },
+            { coordenadas: { lat: -16.400483, lng: -71.507091 }, nombre: '' },
+            { coordenadas: { lat: -16.405056, lng: -71.502802 }, nombre: '' },
+            { coordenadas: { lat: -16.404836, lng: -71.498590 }, nombre: '' },
+            { coordenadas: { lat: -16.403722, lng: -71.494809 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta12'
@@ -2204,20 +2214,20 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.337710, lng: -71.552126 },
-            { lat: -16.330666, lng: -71.542712 },
-            { lat: -16.354867, lng: -71.541874 },
-            { lat: -16.382219, lng: -71.545523 },
-            { lat: -16.389605, lng: -71.547600 },
-            { lat: -16.392522, lng: -71.540168 },
-            { lat: -16.392601, lng: -71.537432 },
-            { lat: -16.392931, lng: -71.535040 },
-            { lat: -16.391723, lng: -71.530674 },
-            { lat: -16.394476, lng: -71.526156 },
-            { lat: -16.398861, lng: -71.521246 },
-            { lat: -16.399562, lng: -71.515512 },
-            { lat: -16.405689, lng: -71.522199 },
-            { lat: -16.406574, lng: -71.530123 }
+            { coordenadas: { lat: -16.337710, lng: -71.552126 }, nombre: '' },
+            { coordenadas: { lat: -16.330666, lng: -71.542712 }, nombre: '' },
+            { coordenadas: { lat: -16.354867, lng: -71.541874 }, nombre: '' },
+            { coordenadas: { lat: -16.382219, lng: -71.545523 }, nombre: '' },
+            { coordenadas: { lat: -16.389605, lng: -71.547600 }, nombre: '' },
+            { coordenadas: { lat: -16.392522, lng: -71.540168 }, nombre: '' },
+            { coordenadas: { lat: -16.392601, lng: -71.537432 }, nombre: '' },
+            { coordenadas: { lat: -16.392931, lng: -71.535040 }, nombre: '' },
+            { coordenadas: { lat: -16.391723, lng: -71.530674 }, nombre: '' },
+            { coordenadas: { lat: -16.394476, lng: -71.526156 }, nombre: '' },
+            { coordenadas: { lat: -16.398861, lng: -71.521246 }, nombre: '' },
+            { coordenadas: { lat: -16.399562, lng: -71.515512 }, nombre: '' },
+            { coordenadas: { lat: -16.405689, lng: -71.522199 }, nombre: '' },
+            { coordenadas: { lat: -16.406574, lng: -71.530123 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta13'
@@ -2231,10 +2241,8 @@ var Rutas = {
             waypoints: [
                 { location: { lat: -16.401938, lng: -71.524481 }, stopover: true },
                 { location: { lat: -16.399958, lng: -71.526221 }, stopover: true },
-
                 { location: { lat: -16.396354, lng: -71.528536 }, stopover: true },
                 { location: { lat: -16.395382, lng: -71.531432 }, stopover: true },
-
                 { location: { lat: -16.393327, lng: -71.537382 }, stopover: true },
                 { location: { lat: -16.391420, lng: -71.542485 }, stopover: true },
                 { location: { lat: -16.389595, lng: -71.547535 }, stopover: true },
@@ -2246,23 +2254,23 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.406574, lng: -71.530123 },
-            { lat: -16.401938, lng: -71.524481 },
-            { lat: -16.399958, lng: -71.526221 },
-            { lat: -16.396386, lng: -71.528331 },
-            { lat: -16.395420, lng: -71.531290 },
-            { lat: -16.393322, lng: -71.537322 },
-            { lat: -16.391487, lng: -71.542318 },
-            { lat: -16.389595, lng: -71.547535 },
-            { lat: -16.381820, lng: -71.545401 },
-            { lat: -16.361935, lng: -71.543956 },
-            { lat: -16.354821, lng: -71.542461 },
-            { lat: -16.344880, lng: -71.541455 },
-            { lat: -16.337829, lng: -71.539906 },
-            { lat: -16.333291, lng: -71.538470 },
-            { lat: -16.331683, lng: -71.541877 },
-            { lat: -16.330101, lng: -71.542968 },
-            { lat: -16.337729, lng: -71.552171 }
+            { coordenadas: { lat: -16.406574, lng: -71.530123 }, nombre: '' },
+            { coordenadas: { lat: -16.401938, lng: -71.524481 }, nombre: '' },
+            { coordenadas: { lat: -16.399958, lng: -71.526221 }, nombre: '' },
+            { coordenadas: { lat: -16.396386, lng: -71.528331 }, nombre: '' },
+            { coordenadas: { lat: -16.395420, lng: -71.531290 }, nombre: '' },
+            { coordenadas: { lat: -16.393322, lng: -71.537322 }, nombre: '' },
+            { coordenadas: { lat: -16.391487, lng: -71.542318 }, nombre: '' },
+            { coordenadas: { lat: -16.389595, lng: -71.547535 }, nombre: '' },
+            { coordenadas: { lat: -16.381820, lng: -71.545401 }, nombre: '' },
+            { coordenadas: { lat: -16.361935, lng: -71.543956 }, nombre: '' },
+            { coordenadas: { lat: -16.354821, lng: -71.542461 }, nombre: '' },
+            { coordenadas: { lat: -16.344880, lng: -71.541455 }, nombre: '' },
+            { coordenadas: { lat: -16.337829, lng: -71.539906 }, nombre: '' },
+            { coordenadas: { lat: -16.333291, lng: -71.538470 }, nombre: '' },
+            { coordenadas: { lat: -16.331683, lng: -71.541877 }, nombre: '' },
+            { coordenadas: { lat: -16.330101, lng: -71.542968 }, nombre: '' },
+            { coordenadas: { lat: -16.337729, lng: -71.552171 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta13'
@@ -2302,23 +2310,23 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.461711, lng: -71.524362 },
-            { lat: -16.459751, lng: -71.522359 },
-            { lat: -16.456411, lng: -71.517414 },
-            { lat: -16.447123, lng: -71.516316 },
-            { lat: -16.444272, lng: -71.518061 },
-            { lat: -16.442239, lng: -71.525039 },
-            { lat: -16.441936, lng: -71.528853 },
-            { lat: -16.430844, lng: -71.532754 },
-            { lat: -16.425645, lng: -71.533021 },
-            { lat: -16.417242, lng: -71.532626 },
-            { lat: -16.416391, lng: -71.533317 },
-            { lat: -16.409507, lng: -71.536577 },
-            { lat: -16.406727, lng: -71.539358 },
-            { lat: -16.404309, lng: -71.542514 },
-            { lat: -16.404293, lng: -71.547908 },
-            { lat: -16.395193, lng: -71.548271 },
-            { lat: -16.389966, lng: -71.547015 }
+            { coordenadas: { lat: -16.461711, lng: -71.524362 }, nombre: '' },
+            { coordenadas: { lat: -16.459751, lng: -71.522359 }, nombre: '' },
+            { coordenadas: { lat: -16.456411, lng: -71.517414 }, nombre: '' },
+            { coordenadas: { lat: -16.447123, lng: -71.516316 }, nombre: '' },
+            { coordenadas: { lat: -16.444272, lng: -71.518061 }, nombre: '' },
+            { coordenadas: { lat: -16.442239, lng: -71.525039 }, nombre: '' },
+            { coordenadas: { lat: -16.441936, lng: -71.528853 }, nombre: '' },
+            { coordenadas: { lat: -16.430844, lng: -71.532754 }, nombre: '' },
+            { coordenadas: { lat: -16.425645, lng: -71.533021 }, nombre: '' },
+            { coordenadas: { lat: -16.417242, lng: -71.532626 }, nombre: '' },
+            { coordenadas: { lat: -16.416391, lng: -71.533317 }, nombre: '' },
+            { coordenadas: { lat: -16.409507, lng: -71.536577 }, nombre: '' },
+            { coordenadas: { lat: -16.406727, lng: -71.539358 }, nombre: '' },
+            { coordenadas: { lat: -16.404309, lng: -71.542514 }, nombre: '' },
+            { coordenadas: { lat: -16.404293, lng: -71.547908 }, nombre: '' },
+            { coordenadas: { lat: -16.395193, lng: -71.548271 }, nombre: '' },
+            { coordenadas: { lat: -16.389966, lng: -71.547015 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta14'
@@ -2358,20 +2366,20 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.389966, lng: -71.547015 },
-            { lat: -16.392522, lng: -71.540168 },
-            { lat: -16.392601, lng: -71.537432 },
-            { lat: -16.392931, lng: -71.535040 },
-            { lat: -16.391723, lng: -71.530674 },
-            { lat: -16.391944, lng: -71.524411 },
-            { lat: -16.387459, lng: -71.515628 },
-            { lat: -16.379378, lng: -71.510543 },
-            { lat: -16.392053, lng: -71.513920 },
-            { lat: -16.397531, lng: -71.520779 },
-            { lat: -16.400241, lng: -71.520347 },
-            { lat: -16.401999, lng: -71.524520 },
-            { lat: -16.405521, lng: -71.528895 },
-            { lat: -16.453479, lng: -71.513214 },
+            { coordenadas: { lat: -16.389966, lng: -71.547015 }, nombre: '' },
+            { coordenadas: { lat: -16.392522, lng: -71.540168 }, nombre: '' },
+            { coordenadas: { lat: -16.392601, lng: -71.537432 }, nombre: '' },
+            { coordenadas: { lat: -16.392931, lng: -71.535040 }, nombre: '' },
+            { coordenadas: { lat: -16.391723, lng: -71.530674 }, nombre: '' },
+            { coordenadas: { lat: -16.391944, lng: -71.524411 }, nombre: '' },
+            { coordenadas: { lat: -16.387459, lng: -71.515628 }, nombre: '' },
+            { coordenadas: { lat: -16.379378, lng: -71.510543 }, nombre: '' },
+            { coordenadas: { lat: -16.392053, lng: -71.513920 }, nombre: '' },
+            { coordenadas: { lat: -16.397531, lng: -71.520779 }, nombre: '' },
+            { coordenadas: { lat: -16.400241, lng: -71.520347 }, nombre: '' },
+            { coordenadas: { lat: -16.401999, lng: -71.524520 }, nombre: '' },
+            { coordenadas: { lat: -16.405521, lng: -71.528895 }, nombre: '' },
+            { coordenadas: { lat: -16.453479, lng: -71.513214 }, nombre: '' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta14'
@@ -2383,50 +2391,50 @@ var Rutas = {
             destination: { lat: -16.40588, lng: -71.53165 },
             travelMode: 'DRIVING',
             waypoints: [
-                { location: { lat: -16.415288, lng: -71.494275 }, stopover: true },//-16.415288, -71.494275
-                { location: { lat: -16.416525, lng: -71.494253 }, stopover: true },//-16.416525, -71.494253
+                { location: { lat: -16.415288, lng: -71.494275 }, stopover: true },
+                { location: { lat: -16.416525, lng: -71.494253 }, stopover: true },
                 { location: { lat: -16.41686, lng: -71.49663 }, stopover: true },
                 { location: { lat: -16.41557, lng: -71.49719 }, stopover: true },
 
                 { location: { lat: -16.41287, lng: -71.50112 }, stopover: true },
-                { location: { lat: -16.411645, lng: -71.502947 }, stopover: true },//-16.411645, -71.502947
-                { location: { lat: -16.410169, lng: -71.505122 }, stopover: true },//-16.410169, -71.505122
-                { location: { lat: -16.408048, lng: -71.508369 }, stopover: true },//-16.408048, -71.508369
-                { location: { lat: -16.406510, lng: -71.510743 }, stopover: true }, //-16.406510, -71.510743
-                { location: { lat: -16.405188, lng: -71.512756 }, stopover: true },//-16.405188, -71.512756
-                { location: { lat: -16.404385, lng: -71.514035 }, stopover: true },//-16.404385, -71.514035
-                { location: { lat: -16.402699, lng: -71.516648 }, stopover: true },//-16.402699, -71.516648
-                { location: { lat: -16.401509, lng: -71.518382 }, stopover: true },//-16.401509, -71.518382
-                { location: { lat: -16.399562, lng: -71.521684 }, stopover: true },//-16.399562, -71.521684
-                { location: { lat: -16.402047, lng: -71.524635 }, stopover: true },//-16.402047, -71.524635
-                { location: { lat: -16.404558, lng: -71.527705 }, stopover: true },//-16.404558, -71.527705
-                { location: { lat: -16.407251, lng: -71.530956 }, stopover: true },//-16.407251, -71.530956
+                { location: { lat: -16.411645, lng: -71.502947 }, stopover: true },
+                { location: { lat: -16.410169, lng: -71.505122 }, stopover: true },
+                { location: { lat: -16.408048, lng: -71.508369 }, stopover: true },
+                { location: { lat: -16.406510, lng: -71.510743 }, stopover: true },
+                { location: { lat: -16.405188, lng: -71.512756 }, stopover: true },
+                { location: { lat: -16.404385, lng: -71.514035 }, stopover: true },
+                { location: { lat: -16.402699, lng: -71.516648 }, stopover: true },
+                { location: { lat: -16.401509, lng: -71.518382 }, stopover: true },
+                { location: { lat: -16.399562, lng: -71.521684 }, stopover: true },
+                { location: { lat: -16.402047, lng: -71.524635 }, stopover: true },
+                { location: { lat: -16.404558, lng: -71.527705 }, stopover: true },
+                { location: { lat: -16.407251, lng: -71.530956 }, stopover: true },
                 { location: { lat: -16.40881, lng: -71.53290 }, stopover: true },
-                { location: { lat: -16.407588, lng: -71.533875 }, stopover: true },//-16.407588, -71.533875
+                { location: { lat: -16.407588, lng: -71.533875 }, stopover: true },
             ]
         },
         paradas: [
-            { lat: -16.414941, lng: -71.492484 },
-            { lat: -16.415248, lng: -71.494264 },//, 
-            { lat: -16.416506, lng: -71.494157 },
-            { lat: -16.416740, lng: -71.495928 },
-            { lat: -16.416825, lng: -71.496591 },
-            { lat: -16.413102, lng: -71.500701 },
-            { lat: -16.411851, lng: -71.502667 },//-16.411851, -71.502667
-            { lat: -16.410201, lng: -71.505018 },
-            { lat: -16.408195, lng: -71.508145 },//-16.408195, -71.508145
-            { lat: -16.406645, lng: -71.510465 },
-            { lat: -16.405289, lng: -71.512523 },
-            { lat: -16.404452, lng: -71.513852 },
-            { lat: -16.402827, lng: -71.516451 },
-            { lat: -16.401688, lng: -71.518102 },
-            { lat: -16.399431, lng: -71.521521 },
-            { lat: -16.401884, lng: -71.524453 },
-            { lat: -16.404287, lng: -71.527420 },
-            { lat: -16.406948, lng: -71.530622 },
-            { lat: -16.408763, lng: -71.532894 },
-            { lat: -16.407692, lng: -71.533936 },
-            { lat: -16.405893, lng: -71.531662 }
+            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: '' },
+            { coordenadas: { lat: -16.415248, lng: -71.494264 }, nombre: '' },
+            { coordenadas: { lat: -16.416506, lng: -71.494157 }, nombre: '' },
+            { coordenadas: { lat: -16.416740, lng: -71.495928 }, nombre: '' },
+            { coordenadas: { lat: -16.416825, lng: -71.496591 }, nombre: '' },
+            { coordenadas: { lat: -16.413102, lng: -71.500701 }, nombre: '' },
+            { coordenadas: { lat: -16.411851, lng: -71.502667 }, nombre: '' },
+            { coordenadas: { lat: -16.410201, lng: -71.505018 }, nombre: '' },
+            { coordenadas: { lat: -16.408195, lng: -71.508145 }, nombre: '' },
+            { coordenadas: { lat: -16.406645, lng: -71.510465 }, nombre: '' },
+            { coordenadas: { lat: -16.405289, lng: -71.512523 }, nombre: '' },
+            { coordenadas: { lat: -16.404452, lng: -71.513852 }, nombre: '' },
+            { coordenadas: { lat: -16.402827, lng: -71.516451 }, nombre: '' },
+            { coordenadas: { lat: -16.401688, lng: -71.518102 }, nombre: '' },
+            { coordenadas: { lat: -16.399431, lng: -71.521521 }, nombre: '' },
+            { coordenadas: { lat: -16.401884, lng: -71.524453 }, nombre: '' },
+            { coordenadas: { lat: -16.404287, lng: -71.527420 }, nombre: '' },
+            { coordenadas: { lat: -16.406948, lng: -71.530622 }, nombre: '' },
+            { coordenadas: { lat: -16.408763, lng: -71.532894 }, nombre: '' },
+            { coordenadas: { lat: -16.407692, lng: -71.533936 }, nombre: '' },
+            { coordenadas: { lat: -16.405893, lng: -71.531662 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta15'
@@ -2440,22 +2448,22 @@ var Rutas = {
             waypoints: [
                 { location: { lat: -16.40662, lng: -71.53105 }, stopover: true },
                 { location: { lat: -16.40698, lng: -71.53064 }, stopover: true },
-                { location: { lat: -16.404398, lng: -71.527358 }, stopover: true },//-16.404398, -71.527358
+                { location: { lat: -16.404398, lng: -71.527358 }, stopover: true },
                 { location: { lat: -16.40650, lng: -71.52521 }, stopover: true },
                 { location: { lat: -16.40763, lng: -71.52700 }, stopover: true },
                 { location: { lat: -16.40823, lng: -71.52671 }, stopover: true },
                 { location: { lat: -16.40432, lng: -71.51945 }, stopover: true },
-                { location: { lat: -16.403823, lng: -71.518866 }, stopover: true },//-16.403823, -71.518866
-                { location: { lat: -16.402555, lng: -71.517132 }, stopover: true },//-16.402555, -71.517132
-                { location: { lat: -16.404704, lng: -71.513648 }, stopover: true },//-16.404704, -71.513648
-                { location: { lat: -16.406891, lng: -71.510351 }, stopover: true },//-16.406891, -71.510351
-                { location: { lat: -16.407722, lng: -71.509040 }, stopover: true },//-16.407722, -71.509040
-                { location: { lat: -16.409620, lng: -71.506134 }, stopover: true },//-16.409620, -71.506134
-                { location: { lat: -16.410344, lng: -71.505030 }, stopover: true },//-16.410344, -71.505030
-                { location: { lat: -16.411117, lng: -71.503793 }, stopover: true },//-16.411117, -71.503793
-                { location: { lat: -16.412217, lng: -71.502148 }, stopover: true },//-16.412217, -71.502148
-                { location: { lat: -16.413290, lng: -71.500518 }, stopover: true },//-16.413290, -71.500518
-                { location: { lat: -16.414334, lng: -71.498933 }, stopover: true },//-16.414334, -71.498933
+                { location: { lat: -16.403823, lng: -71.518866 }, stopover: true },
+                { location: { lat: -16.402555, lng: -71.517132 }, stopover: true },
+                { location: { lat: -16.404704, lng: -71.513648 }, stopover: true },
+                { location: { lat: -16.406891, lng: -71.510351 }, stopover: true },
+                { location: { lat: -16.407722, lng: -71.509040 }, stopover: true },
+                { location: { lat: -16.409620, lng: -71.506134 }, stopover: true },
+                { location: { lat: -16.410344, lng: -71.505030 }, stopover: true },
+                { location: { lat: -16.411117, lng: -71.503793 }, stopover: true },
+                { location: { lat: -16.412217, lng: -71.502148 }, stopover: true },
+                { location: { lat: -16.413290, lng: -71.500518 }, stopover: true },
+                { location: { lat: -16.414334, lng: -71.498933 }, stopover: true },
                 { location: { lat: -16.41549, lng: -71.49726 }, stopover: true },
                 { location: { lat: -16.41684, lng: -71.49663 }, stopover: true },
                 { location: { lat: -16.41650, lng: -71.49409 }, stopover: true },
@@ -2463,26 +2471,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.405880, lng: -71.531609 },
-            { lat: -16.406972, lng: -71.530688 },
-            { lat: -16.404405, lng: -71.527465 },
-            { lat: -16.408085, lng: -71.526767 },
-            { lat: -16.404361, lng: -71.519511 },
-            { lat: -16.402466, lng: -71.517523 },//-16.402466, -71.517523
-            { lat: -16.405498, lng: -71.515520 },//
-            { lat: -16.404548, lng: -71.513906 },
-
-            { lat: -16.406530, lng: -71.510884 },
-            { lat: -16.407595, lng: -71.509244 },
-            { lat: -16.409440, lng: -71.506484 },
-            { lat: -16.410225, lng: -71.505253 },
-            { lat: -16.410972, lng: -71.504035 },
-            { lat: -16.412086, lng: -71.502399 },
-            { lat: -16.413010, lng: -71.500945 },
-            { lat: -16.414211, lng: -71.499164 },
-            { lat: -16.416856, lng: -71.496647 },
-            { lat: -16.415251, lng: -71.494262 },
-            { lat: -16.414941, lng: -71.492484 }
+            { coordenadas: { lat: -16.405880, lng: -71.531609 }, nombre: '' },
+            { coordenadas: { lat: -16.406972, lng: -71.530688 }, nombre: '' },
+            { coordenadas: { lat: -16.404405, lng: -71.527465 }, nombre: '' },
+            { coordenadas: { lat: -16.408085, lng: -71.526767 }, nombre: '' },
+            { coordenadas: { lat: -16.404361, lng: -71.519511 }, nombre: '' },
+            { coordenadas: { lat: -16.402466, lng: -71.517523 }, nombre: '' },
+            { coordenadas: { lat: -16.405498, lng: -71.515520 }, nombre: '' },
+            { coordenadas: { lat: -16.404548, lng: -71.513906 }, nombre: '' },
+            { coordenadas: { lat: -16.406530, lng: -71.510884 }, nombre: '' },
+            { coordenadas: { lat: -16.407595, lng: -71.509244 }, nombre: '' },
+            { coordenadas: { lat: -16.409440, lng: -71.506484 }, nombre: '' },
+            { coordenadas: { lat: -16.410225, lng: -71.505253 }, nombre: '' },
+            { coordenadas: { lat: -16.410972, lng: -71.504035 }, nombre: '' },
+            { coordenadas: { lat: -16.412086, lng: -71.502399 }, nombre: '' },
+            { coordenadas: { lat: -16.413010, lng: -71.500945 }, nombre: '' },
+            { coordenadas: { lat: -16.414211, lng: -71.499164 }, nombre: '' },
+            { coordenadas: { lat: -16.416856, lng: -71.496647 }, nombre: '' },
+            { coordenadas: { lat: -16.415251, lng: -71.494262 }, nombre: '' },
+            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta15'
@@ -2519,26 +2526,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.415687, lng: -71.481059 },
-            { lat: -16.414957, lng: -71.482207 },
-            { lat: -16.416374, lng: -71.491533 },
-            { lat: -16.417192, lng: -71.490997 },
-            { lat: -16.419366, lng: -71.494388 },
-            { lat: -16.421863, lng: -71.498269 },
-            { lat: -16.421304, lng: -71.499081 },
-            { lat: -16.419748, lng: -71.501452 },
-            { lat: -16.418202, lng: -71.503757 },
-            { lat: -16.416961, lng: -71.505599 },
-            { lat: -16.413997, lng: -71.510035 },
-            { lat: -16.411856, lng: -71.512615 },
-            { lat: -16.407584, lng: -71.514463 },
-            { lat: -16.401931, lng: -71.517658 },
-            { lat: -16.401852, lng: -71.524443 },
-            { lat: -16.404277, lng: -71.527423 },
-            { lat: -16.416436, lng: -71.533493 },
-            { lat: -16.425214, lng: -71.533381 },
-            { lat: -16.424623, lng: -71.537356 },
-            { lat: -16.422482, lng: -71.543998 }
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' },
+            { coordenadas: { lat: -16.414957, lng: -71.482207 }, nombre: '' },
+            { coordenadas: { lat: -16.416374, lng: -71.491533 }, nombre: '' },
+            { coordenadas: { lat: -16.417192, lng: -71.490997 }, nombre: '' },
+            { coordenadas: { lat: -16.419366, lng: -71.494388 }, nombre: '' },
+            { coordenadas: { lat: -16.421863, lng: -71.498269 }, nombre: '' },
+            { coordenadas: { lat: -16.421304, lng: -71.499081 }, nombre: '' },
+            { coordenadas: { lat: -16.419748, lng: -71.501452 }, nombre: '' },
+            { coordenadas: { lat: -16.418202, lng: -71.503757 }, nombre: '' },
+            { coordenadas: { lat: -16.416961, lng: -71.505599 }, nombre: '' },
+            { coordenadas: { lat: -16.413997, lng: -71.510035 }, nombre: '' },
+            { coordenadas: { lat: -16.411856, lng: -71.512615 }, nombre: '' },
+            { coordenadas: { lat: -16.407584, lng: -71.514463 }, nombre: '' },
+            { coordenadas: { lat: -16.401931, lng: -71.517658 }, nombre: '' },
+            { coordenadas: { lat: -16.401852, lng: -71.524443 }, nombre: '' },
+            { coordenadas: { lat: -16.404277, lng: -71.527423 }, nombre: '' },
+            { coordenadas: { lat: -16.416436, lng: -71.533493 }, nombre: '' },
+            { coordenadas: { lat: -16.425214, lng: -71.533381 }, nombre: '' },
+            { coordenadas: { lat: -16.424623, lng: -71.537356 }, nombre: '' },
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta16'
@@ -2571,25 +2578,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.422482, lng: -71.543998 },
-            { lat: -16.420349, lng: -71.538283 },
-            { lat: -16.416409, lng: -71.533253 },
-            { lat: -16.410877, lng: -71.533310 },
-            { lat: -16.408833, lng: -71.532856 },
-            { lat: -16.404901, lng: -71.532332 },
-            { lat: -16.402540, lng: -71.529401 },
-            { lat: -16.400045, lng: -71.526315 },
-            { lat: -16.398129, lng: -71.523925 },
-            { lat: -16.401035, lng: -71.519330 },
-            { lat: -16.402709, lng: -71.516916 },
-            { lat: -16.411832, lng: -71.512658 },
-            { lat: -16.416808, lng: -71.505883 },
-            { lat: -16.419231, lng: -71.502285 },
-            { lat: -16.420963, lng: -71.499699 },
-            { lat: -16.421904, lng: -71.498309 },
-            { lat: -16.417192, lng: -71.490994 },
-            { lat: -16.414970, lng: -71.482243 },
-            { lat: -16.415687, lng: -71.481059 }
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' },
+            { coordenadas: { lat: -16.420349, lng: -71.538283 }, nombre: '' },
+            { coordenadas: { lat: -16.416409, lng: -71.533253 }, nombre: '' },
+            { coordenadas: { lat: -16.410877, lng: -71.533310 }, nombre: '' },
+            { coordenadas: { lat: -16.408833, lng: -71.532856 }, nombre: '' },
+            { coordenadas: { lat: -16.404901, lng: -71.532332 }, nombre: '' },
+            { coordenadas: { lat: -16.402540, lng: -71.529401 }, nombre: '' },
+            { coordenadas: { lat: -16.400045, lng: -71.526315 }, nombre: '' },
+            { coordenadas: { lat: -16.398129, lng: -71.523925 }, nombre: '' },
+            { coordenadas: { lat: -16.401035, lng: -71.519330 }, nombre: '' },
+            { coordenadas: { lat: -16.402709, lng: -71.516916 }, nombre: '' },
+            { coordenadas: { lat: -16.411832, lng: -71.512658 }, nombre: '' },
+            { coordenadas: { lat: -16.416808, lng: -71.505883 }, nombre: '' },
+            { coordenadas: { lat: -16.419231, lng: -71.502285 }, nombre: '' },
+            { coordenadas: { lat: -16.420963, lng: -71.499699 }, nombre: '' },
+            { coordenadas: { lat: -16.421904, lng: -71.498309 }, nombre: '' },
+            { coordenadas: { lat: -16.417192, lng: -71.490994 }, nombre: '' },
+            { coordenadas: { lat: -16.414970, lng: -71.482243 }, nombre: '' },
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta16'
@@ -2626,29 +2633,29 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.457495, lng: -71.553456 },
-            { lat: -16.454059, lng: -71.551968 },
-            { lat: -16.451625, lng: -71.554773 },
-            { lat: -16.449373, lng: -71.552765 },
-            { lat: -16.447824, lng: -71.551574 },
-            { lat: -16.445044, lng: -71.553789 },
-            { lat: -16.443232, lng: -71.555744 },
-            { lat: -16.440109, lng: -71.558928 },
-            { lat: -16.438159, lng: -71.561045 },
-            { lat: -16.435799, lng: -71.562146 },
-            { lat: -16.433926, lng: -71.561266 },
-            { lat: -16.431596, lng: -71.561566 },
-            { lat: -16.425467, lng: -71.556556 },
-            { lat: -16.417991, lng: -71.550118 },
-            { lat: -16.408094, lng: -71.541803 },
-            { lat: -16.405833, lng: -71.540123 },
-            { lat: -16.407579, lng: -71.538789 },
-            { lat: -16.408788, lng: -71.537813 },
-            { lat: -16.407687, lng: -71.535737 },
-            { lat: -16.406086, lng: -71.5337799 },
-            { lat: -16.404857, lng: -71.532234 },
-            { lat: -16.402557, lng: -71.529376 },
-            { lat: -16.404298, lng: -71.527483 }
+            { coordenadas: { lat: -16.457495, lng: -71.553456 }, nombre: '' },
+            { coordenadas: { lat: -16.454059, lng: -71.551968 }, nombre: '' },
+            { coordenadas: { lat: -16.451625, lng: -71.554773 }, nombre: '' },
+            { coordenadas: { lat: -16.449373, lng: -71.552765 }, nombre: '' },
+            { coordenadas: { lat: -16.447824, lng: -71.551574 }, nombre: '' },
+            { coordenadas: { lat: -16.445044, lng: -71.553789 }, nombre: '' },
+            { coordenadas: { lat: -16.443232, lng: -71.555744 }, nombre: '' },
+            { coordenadas: { lat: -16.440109, lng: -71.558928 }, nombre: '' },
+            { coordenadas: { lat: -16.438159, lng: -71.561045 }, nombre: '' },
+            { coordenadas: { lat: -16.435799, lng: -71.562146 }, nombre: '' },
+            { coordenadas: { lat: -16.433926, lng: -71.561266 }, nombre: '' },
+            { coordenadas: { lat: -16.431596, lng: -71.561566 }, nombre: '' },
+            { coordenadas: { lat: -16.425467, lng: -71.556556 }, nombre: '' },
+            { coordenadas: { lat: -16.417991, lng: -71.550118 }, nombre: '' },
+            { coordenadas: { lat: -16.408094, lng: -71.541803 }, nombre: '' },
+            { coordenadas: { lat: -16.405833, lng: -71.540123 }, nombre: '' },
+            { coordenadas: { lat: -16.407579, lng: -71.538789 }, nombre: '' },
+            { coordenadas: { lat: -16.408788, lng: -71.537813 }, nombre: '' },
+            { coordenadas: { lat: -16.407687, lng: -71.535737 }, nombre: '' },
+            { coordenadas: { lat: -16.406086, lng: -71.5337799 }, nombre: '' },
+            { coordenadas: { lat: -16.404857, lng: -71.532234 }, nombre: '' },
+            { coordenadas: { lat: -16.402557, lng: -71.529376 }, nombre: '' },
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta17'
@@ -2682,27 +2689,27 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.404298, lng: -71.527483 },
-            { lat: -16.407302, lng: -71.531077 },
-            { lat: -16.408759, lng: -71.532887 },
-            { lat: -16.409945, lng: -71.534394 },
-            { lat: -16.409031, lng: -71.537289 },
-            { lat: -16.407880, lng: -71.538376 },
-            { lat: -16.405765, lng: -71.540001 },
-            { lat: -16.408011, lng: -71.541922 },
-            { lat: -16.416775, lng: -71.549205 },
-            { lat: -16.424112, lng: -71.555641 },
-            { lat: -16.431679, lng: -71.561626 },
-            { lat: -16.435113, lng: -71.562212 },
-            { lat: -16.438143, lng: -71.561196 },
-            { lat: -16.440143, lng: -71.559143 },
-            { lat: -16.443101, lng: -71.555940 },
-            { lat: -16.447744, lng: -71.551620 },
-            { lat: -16.448796, lng: -71.552552 },
-            { lat: -16.449967, lng: -71.553328 },
-            { lat: -16.451293, lng: -71.554598 },
-            { lat: -16.453984, lng: -71.552040 },
-            { lat: -16.457464, lng: -71.553470 }
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' },
+            { coordenadas: { lat: -16.407302, lng: -71.531077 }, nombre: '' },
+            { coordenadas: { lat: -16.408759, lng: -71.532887 }, nombre: '' },
+            { coordenadas: { lat: -16.409945, lng: -71.534394 }, nombre: '' },
+            { coordenadas: { lat: -16.409031, lng: -71.537289 }, nombre: '' },
+            { coordenadas: { lat: -16.407880, lng: -71.538376 }, nombre: '' },
+            { coordenadas: { lat: -16.405765, lng: -71.540001 }, nombre: '' },
+            { coordenadas: { lat: -16.408011, lng: -71.541922 }, nombre: '' },
+            { coordenadas: { lat: -16.416775, lng: -71.549205 }, nombre: '' },
+            { coordenadas: { lat: -16.424112, lng: -71.555641 }, nombre: '' },
+            { coordenadas: { lat: -16.431679, lng: -71.561626 }, nombre: '' },
+            { coordenadas: { lat: -16.435113, lng: -71.562212 }, nombre: '' },
+            { coordenadas: { lat: -16.438143, lng: -71.561196 }, nombre: '' },
+            { coordenadas: { lat: -16.440143, lng: -71.559143 }, nombre: '' },
+            { coordenadas: { lat: -16.443101, lng: -71.555940 }, nombre: '' },
+            { coordenadas: { lat: -16.447744, lng: -71.551620 }, nombre: '' },
+            { coordenadas: { lat: -16.448796, lng: -71.552552 }, nombre: '' },
+            { coordenadas: { lat: -16.449967, lng: -71.553328 }, nombre: '' },
+            { coordenadas: { lat: -16.451293, lng: -71.554598 }, nombre: '' },
+            { coordenadas: { lat: -16.453984, lng: -71.552040 }, nombre: '' },
+            { coordenadas: { lat: -16.457464, lng: -71.553470 }, nombre: '' }
 
         ],
         recorrido: 'Vuelta',
@@ -2734,24 +2741,24 @@ var Rutas = {
             ]
         },
         paradas: [
-            { lat: -16.424818, lng: -71.672601 },
-            { lat: -16.412088, lng: -71.632504 },
-            { lat: -16.407951, lng: -71.608429 },
-            { lat: -16.406695, lng: -71.600124 },
-            { lat: -16.405934, lng: -71.587915 },
-            { lat: -16.404796, lng: -71.573517 },
-            { lat: -16.404445, lng: -71.568290 },
-            { lat: -16.406437, lng: -71.563684 },
-            { lat: -16.410773, lng: -71.557252 },
-            { lat: -16.417835, lng: -71.549945 },
-            { lat: -16.412769, lng: -71.545555 },
-            { lat: -16.408253, lng: -71.541921 },
-            { lat: -16.405878, lng: -71.540138 },
-            { lat: -16.408849, lng: -71.537155 },
-            { lat: -16.406880, lng: -71.534738 },
-            { lat: -16.404960, lng: -71.532303 },
-            { lat: -16.402629, lng: -71.529443 },
-            { lat: -16.400118, lng: -71.526278 }
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
+            { coordenadas: { lat: -16.412088, lng: -71.632504 }, nombre: '' },
+            { coordenadas: { lat: -16.407951, lng: -71.608429 }, nombre: '' },
+            { coordenadas: { lat: -16.406695, lng: -71.600124 }, nombre: '' },
+            { coordenadas: { lat: -16.405934, lng: -71.587915 }, nombre: '' },
+            { coordenadas: { lat: -16.404796, lng: -71.573517 }, nombre: '' },
+            { coordenadas: { lat: -16.404445, lng: -71.568290 }, nombre: '' },
+            { coordenadas: { lat: -16.406437, lng: -71.563684 }, nombre: '' },
+            { coordenadas: { lat: -16.410773, lng: -71.557252 }, nombre: '' },
+            { coordenadas: { lat: -16.417835, lng: -71.549945 }, nombre: '' },
+            { coordenadas: { lat: -16.412769, lng: -71.545555 }, nombre: '' },
+            { coordenadas: { lat: -16.408253, lng: -71.541921 }, nombre: '' },
+            { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: '' },
+            { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: '' },
+            { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: '' },
+            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: '' },
+            { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: '' },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta18'
@@ -2776,39 +2783,39 @@ var Rutas = {
                 { location: { lat: -16.415304, lng: -71.542419 }, stopover: true },
                 { location: { lat: -16.419299, lng: -71.543814 }, stopover: true },
                 { location: { lat: -16.418096, lng: -71.548797 }, stopover: true },
-                { location: { lat:  -16.411085, lng: -71.556453}, stopover: true },
-                { location: { lat:  -16.406161, lng: -71.563632}, stopover: true },
-                { location: { lat:  -16.404140, lng: -71.568424}, stopover: true },
-                { location: { lat:  -16.404464, lng: -71.573469}, stopover: true },
-                { location: { lat:  -16.405775, lng: -71.589039}, stopover: true },
-                { location: { lat:  -16.406692, lng: -71.600331}, stopover: true },
-                { location: { lat:  -16.407912, lng: -71.608588}, stopover: true },
-                { location: { lat:  -16.412054, lng: -71.632636}, stopover: true }
+                { location: { lat: -16.411085, lng: -71.556453 }, stopover: true },
+                { location: { lat: -16.406161, lng: -71.563632 }, stopover: true },
+                { location: { lat: -16.404140, lng: -71.568424 }, stopover: true },
+                { location: { lat: -16.404464, lng: -71.573469 }, stopover: true },
+                { location: { lat: -16.405775, lng: -71.589039 }, stopover: true },
+                { location: { lat: -16.406692, lng: -71.600331 }, stopover: true },
+                { location: { lat: -16.407912, lng: -71.608588 }, stopover: true },
+                { location: { lat: -16.412054, lng: -71.632636 }, stopover: true }
             ]
         },
         paradas: [
-            { lat: -16.400118, lng: -71.526278 },
-            { lat: -16.401924, lng: -71.524605 },
-            { lat: -16.404779, lng: -71.528059 },
-            { lat: -16.406833, lng: -71.530515 },
-            { lat: -16.408721, lng: -71.532890 },
-            { lat: -16.408973, lng: -71.537310 },
-            { lat: -16.407595, lng: -71.538597 },
-            { lat: -16.405720, lng: -71.540101 },
-            { lat: -16.408170, lng: -71.542015 },
-            { lat: -16.412778, lng: -71.545521 },
-            { lat: -16.415272, lng: -71.542435 },
-            { lat: -16.419220, lng: -71.543721 },
-            { lat: -16.418218, lng: -71.548446 },
-            { lat: -16.411204, lng: -71.556279 },
-            { lat: -16.406368, lng: -71.563135 },
-            { lat: -16.404111, lng: -71.568179 },
-            { lat: -16.404428, lng: -71.573264 },
-            { lat: -16.405620, lng: -71.588551 },
-            { lat: -16.406624, lng: -71.599973 },
-            { lat: -16.407802, lng: -71.608172 },
-            { lat: -16.411978, lng: -71.632483 },
-            { lat: -16.424818, lng: -71.672601 },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' },
+            { coordenadas: { lat: -16.401924, lng: -71.524605 }, nombre: '' },
+            { coordenadas: { lat: -16.404779, lng: -71.528059 }, nombre: '' },
+            { coordenadas: { lat: -16.406833, lng: -71.530515 }, nombre: '' },
+            { coordenadas: { lat: -16.408721, lng: -71.532890 }, nombre: '' },
+            { coordenadas: { lat: -16.408973, lng: -71.537310 }, nombre: '' },
+            { coordenadas: { lat: -16.407595, lng: -71.538597 }, nombre: '' },
+            { coordenadas: { lat: -16.405720, lng: -71.540101 }, nombre: '' },
+            { coordenadas: { lat: -16.408170, lng: -71.542015 }, nombre: '' },
+            { coordenadas: { lat: -16.412778, lng: -71.545521 }, nombre: '' },
+            { coordenadas: { lat: -16.415272, lng: -71.542435 }, nombre: '' },
+            { coordenadas: { lat: -16.419220, lng: -71.543721 }, nombre: '' },
+            { coordenadas: { lat: -16.418218, lng: -71.548446 }, nombre: '' },
+            { coordenadas: { lat: -16.411204, lng: -71.556279 }, nombre: '' },
+            { coordenadas: { lat: -16.406368, lng: -71.563135 }, nombre: '' },
+            { coordenadas: { lat: -16.404111, lng: -71.568179 }, nombre: '' },
+            { coordenadas: { lat: -16.404428, lng: -71.573264 }, nombre: '' },
+            { coordenadas: { lat: -16.405620, lng: -71.588551 }, nombre: '' },
+            { coordenadas: { lat: -16.406624, lng: -71.599973 }, nombre: '' },
+            { coordenadas: { lat: -16.407802, lng: -71.608172 }, nombre: '' },
+            { coordenadas: { lat: -16.411978, lng: -71.632483 }, nombre: '' },
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta18'
