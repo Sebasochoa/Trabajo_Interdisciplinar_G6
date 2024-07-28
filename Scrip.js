@@ -503,13 +503,13 @@ function OneRoute() {
                 solicitudes.push(solicitudfiltrada);
             }
         }
-
+        result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes };
+        return result;
     }
 }
 
 function TwoRoutes() {
-    if(destinoMarcador && ubicacion)
-    {
+    if (destinoMarcador && ubicacion) {
         let DestinoPos = destinoMarcador.getPosition();
         let InicialPos = ubicacion.getPosition();
 
@@ -1120,7 +1120,7 @@ var Rutas = {
             { coordenadas: { lat: -16.425626, lng: -71.514997 }, nombre: 'Reservorio guardia civil' },
             { coordenadas: { lat: -16.430518, lng: -71.532659 }, nombre: 'Ovalo la Pacheta' },
             { coordenadas: { lat: -16.4290323, lng: -71.5239811 }, nombre: 'GRifo Primax monterrey' }
-            
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta1'
@@ -1175,7 +1175,7 @@ var Rutas = {
             { coordenadas: { lat: -16.393322, lng: -71.568207 }, nombre: 'Coleigo Divino Niño Jesus' },
             { coordenadas: { lat: -16.399962, lng: -71.570597 }, nombre: 'Coliseo Gallos la calle' },
             { coordenadas: { lat: -16.397699, lng: -71.575094 }, nombre: 'Grifo COPAR' },
-            { coordenadas: { lat: -16.389402, lng: -71.574932 }, nombre: 'Reservorio semirural Pacahcutec' }            
+            { coordenadas: { lat: -16.389402, lng: -71.574932 }, nombre: 'Reservorio semirural Pacahcutec' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta1'
@@ -1229,7 +1229,7 @@ var Rutas = {
             { coordenadas: { lat: -16.404404, lng: -71.527439 }, nombre: 'Paucarpata con Indepenencia' },
             { coordenadas: { lat: -16.405536, lng: -71.528936 }, nombre: 'Coliseo' },
             { coordenadas: { lat: -16.404377, lng: -71.53168 }, nombre: 'Terminal' }
-            
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta2'
@@ -1282,7 +1282,7 @@ var Rutas = {
             { coordenadas: { lat: -16.461431, lng: -71.526400 }, nombre: 'Lara Tradicional' },
             { coordenadas: { lat: -16.458100, lng: -71.523867 }, nombre: 'Parque Mickey I' },
             { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: 'la Palizada' },
-            { coordenadas: { lat: -16.456909, lng: -71.521806 }, nombre: 'Terminal' }            
+            { coordenadas: { lat: -16.456909, lng: -71.521806 }, nombre: 'Terminal' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta2'
@@ -1386,7 +1386,7 @@ var Rutas = {
             { coordenadas: { lat: -16.3738517, lng: -71.5020763 }, nombre: 'Estadio porvenir' },
             { coordenadas: { lat: -16.373702, lng: -71.501234 }, nombre: 'Torre de control' },
             { coordenadas: { lat: -16.375421, lng: -71.499743 }, nombre: 'I.E. padre Eloy' },
-            { coordenadas: { lat: -16.376806, lng: -71.498764 }, nombre: 'Terminal Mariategui' }            
+            { coordenadas: { lat: -16.376806, lng: -71.498764 }, nombre: 'Terminal Mariategui' }
 
         ],
         recorrido: 'Vuelta',
@@ -1441,7 +1441,7 @@ var Rutas = {
             { coordenadas: { lat: -16.399281, lng: -71.539981 }, nombre: 'Cruz Verde' },
             { coordenadas: { lat: -16.402460, lng: -71.538958 }, nombre: 'Calle Merced' },
             { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Salaverry' },
-            { coordenadas: { lat: -16.408392, lng: -71.542020 }, nombre: 'Parque Mariano Melgar' }            
+            { coordenadas: { lat: -16.408392, lng: -71.542020 }, nombre: 'Parque Mariano Melgar' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta4'
@@ -1496,7 +1496,7 @@ var Rutas = {
             { coordenadas: { lat: -16.369784, lng: -71.503754 }, nombre: 'Av Circunvalación' },
             { coordenadas: { lat: -16.369636, lng: -71.502064 }, nombre: 'San Luis C' },
             { coordenadas: { lat: -16.366831, lng: -71.499585 }, nombre: 'Huayro Restaurante' },
-            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO' }            
+            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO' }
 
         ],
         recorrido: 'Vuelta',
@@ -1525,32 +1525,32 @@ var Rutas = {
                 { location: { lat: -16.423100, lng: -71.541820 }, stopover: true }
             ]
         },
-            paradas: [
-                { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia Mz N LT 6, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'JGC3+H5W, Arequipa 04004, Peru' }, 
-                { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'F,C, JF9V+GVR, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Carlos GArcia Bloque P - Dep, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'JF4H+895, Av. Progreso, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Angel Caballero 2700, Arequipa 04001, Peru' }, 
-                { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' }, 
-                { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' }, 
-                { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores 04004, Peru' }, 
-                { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' }, 
-                { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' }, 
-                { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' }, 
-                { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' }  
-            ],
-            
+        paradas: [
+            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia Mz N LT 6, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'JGC3+H5W, Arequipa 04004, Peru' },
+            { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'F,C, JF9V+GVR, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Carlos GArcia Bloque P - Dep, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'JF4H+895, Av. Progreso, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Angel Caballero 2700, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' },
+            { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' },
+            { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Sepúlveda 406, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700, Miraflores 04001, Peru' },
+            { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'C-11, Hunter, Av. Andrés Avelino Cáceres, José Luis Bustamante y Rivero 04011, Peru' }
+        ],
+
         recorrido: 'Ida',
         nombre: 'Ruta5'
     },
@@ -1578,21 +1578,21 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.425649, lng: -71.534593 }, nombre: 'Av. Andrés Avelino Cáceres' }, 
-            { coordenadas: { lat: -16.426290, lng: -71.533841 }, nombre: 'Av. Cementerio 13' },  
+            { coordenadas: { lat: -16.425649, lng: -71.534593 }, nombre: 'Av. Andrés Avelino Cáceres' },
+            { coordenadas: { lat: -16.426290, lng: -71.533841 }, nombre: 'Av. Cementerio 13' },
             { coordenadas: { lat: -16.426849, lng: -71.533021 }, nombre: 'Lanificio' },
-            { coordenadas: { lat: -16.417179, lng: -71.532656 }, nombre: 'Funerario Franco' },  
+            { coordenadas: { lat: -16.417179, lng: -71.532656 }, nombre: 'Funerario Franco' },
             { coordenadas: { lat: -16.412443, lng: -71.535086 }, nombre: 'UNSA BIOMEDICAS' },
             { coordenadas: { lat: -16.399699, lng: -71.515342 }, nombre: 'Calle Teniente Ferre' },
             { coordenadas: { lat: -16.399409, lng: -71.516563 }, nombre: 'P.t Miraflores Parcela a' },
             { coordenadas: { lat: -16.398443, lng: -71.515917 }, nombre: 'Colegio Del Ejército Arequipa' },
-            { coordenadas: { lat: -16.394424,  lng: -71.521229 }, nombre: 'Pro - Hogar' },
-            { coordenadas: { lat: -16.380959,  lng: -71.508514 }, nombre: 'Tacna Y Arica 300-320' },
+            { coordenadas: { lat: -16.394424, lng: -71.521229 }, nombre: 'Pro - Hogar' },
+            { coordenadas: { lat: -16.380959, lng: -71.508514 }, nombre: 'Tacna Y Arica 300-320' },
             { coordenadas: { lat: -16.381153, lng: -71.505459 }, nombre: 'P.j Tahuantinsuyo Zona a' },
-            { coordenadas: { lat: -16.382087, lng:-71.500624 }, nombre: 'P.j Tahuantinsuyo Zona a' },
-            { coordenadas: { lat: -16.378752, lng:-71.497561 }, nombre: 'Alto Juan XXIII' },
-            { coordenadas: { lat: -16.378392, lng:-71.496308 }, nombre: 'La Galaxia' },
-            { coordenadas: { lat: -16.378346, lng:-71.493489 }, nombre: 'Tienda de abarrotes "Diana Sandra"' }
+            { coordenadas: { lat: -16.382087, lng: -71.500624 }, nombre: 'P.j Tahuantinsuyo Zona a' },
+            { coordenadas: { lat: -16.378752, lng: -71.497561 }, nombre: 'Alto Juan XXIII' },
+            { coordenadas: { lat: -16.378392, lng: -71.496308 }, nombre: 'La Galaxia' },
+            { coordenadas: { lat: -16.378346, lng: -71.493489 }, nombre: 'Tienda de abarrotes "Diana Sandra"' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta5'
