@@ -4,7 +4,8 @@
 <head>
     <title>Ruta Personalizada</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&libraries=places&callback=initMap"
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7TPqn6e17-MyDthQGfZXSyPw7mwLlbpY&libraries=places&callback=initMap"
         async defer></script>
     <script src="Scrip.js"></script>
     <link rel="stylesheet" href="Estilos.css">
@@ -19,44 +20,46 @@
         </div>
     </header>
     <div class="dropdown">
-        <button class="Opcion" onclick="toggleDropdown()">Seleccionar Opciones</button>
+        <button class="Opcion" onclick="toggleDropdown()">Mostrar Rutas</button>
         <div class="dropdown-content" id="dropdownContent">
-            <label><input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('Ruta1')"> Dolores San Martin
-                1</label><br>
-            <label><input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('Ruta2')"> COTUM A
-                2</label><br>
+            <label><input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('Ruta1')"> COTUM A
+            </label><br>
+            <label><input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('Ruta2')"> Dolores San Martin
+            </label><br>
             <label><input type="checkbox" id="checkbox3" onchange="handleCheckboxChange('Ruta3')"> A15-Miraflores
-                3</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox4" onchange="handleCheckboxChange('Ruta4')"> Alto Selva Alegre
-                4</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox5" onchange="handleCheckboxChange('Ruta5')"> C2-4D(Cono Norte)
-                5</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox6" onchange="handleCheckboxChange('Ruta6')"> BJUANXXIII
-                6</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox7" onchange="handleCheckboxChange('Ruta7')"> C11 COTUM B
-                7</label><br>
-            <label><input type="checkbox" id="checkbox8" onchange="handleCheckboxChange('Ruta8')"> C7-5 AQP Masivo Alto Libertad
-                8</label><br>
+            </label><br>
+            <label><input type="checkbox" id="checkbox8" onchange="handleCheckboxChange('Ruta8')"> C7-5 AQP Masivo Alto
+                Libertad
+            </label><br>
             <label><input type="checkbox" id="checkbox9" onchange="handleCheckboxChange('Ruta9')"> C - 3 de octubre
-                9</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox10" onchange="handleCheckboxChange('Ruta10')"> C7 AqpMasivo 7-09
-                10</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox11" onchange="handleCheckboxChange('Ruta11')"> A-Mariano Melgar
-                11</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox12" onchange="handleCheckboxChange('Ruta12')"> B-Polanco
-                12</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox13" onchange="handleCheckboxChange('Ruta13')"> B - 3 de octubre
-                13</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox14" onchange="handleCheckboxChange('Ruta14')"> Cayma Enace
-                14</label><br>
-            <label><input type="checkbox" id="checkbox15" onchange="handleCheckboxChange('Ruta15')"> La Perla S.R.L.T.D.A
-                15</label><br>
+            </label><br>
+            <label><input type="checkbox" id="checkbox15" onchange="handleCheckboxChange('Ruta15')"> La Perla
+                S.R.L.T.D.A
+            </label><br>
             <label><input type="checkbox" id="checkbox16" onchange="handleCheckboxChange('Ruta16')"> 15 de agosto
-                16</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox17" onchange="handleCheckboxChange('Ruta17')"> ORIOL - A
-                17</label><br>
+            </label><br>
             <label><input type="checkbox" id="checkbox18" onchange="handleCheckboxChange('Ruta18')"> Uchumayo
-                18</label><br>
+            </label><br>
         </div>
     </div>
     <input type="text" id="pac-input" placeholder="Buscar ubicacion">
