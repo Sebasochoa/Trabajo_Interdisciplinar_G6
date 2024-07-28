@@ -1672,7 +1672,7 @@ var Rutas = {
             { coordenadas: { lat: -16.41675, lng: -71.53293 }, nombre: 'Av. Daniel Alcides Carrión 513, Arequipa' },
             { coordenadas: { lat: -16.41603, lng: -71.53355 }, nombre: 'Matto 94, Arequipa' },
             { coordenadas: { lat: -16.41366, lng: -71.53475 }, nombre: 'Av. Daniel Alcides Carrión 501-A, Arequipa' },
-            { coordenadas: { lat: -16.41049, lng: -71.53266 }, nombre: 'HFQ9+R27, Arequipa 04001' },
+            { coordenadas: { lat: -16.41049, lng: -71.53266 }, nombre: 'Urb Francisco Mostajo, Arequipa 04001' },
             { coordenadas: { lat: -16.40822, lng: -71.52663 }, nombre: 'Vía Rápida Venezuela 938, Cercado de Arequipa' },
             { coordenadas: { lat: -16.40628, lng: -71.52281 }, nombre: 'Av. Virgen del Pilar, Arequipa' },
             { coordenadas: { lat: -16.40534, lng: -71.52129 }, nombre: 'Vía Rápida Venezuela 330, Arequipa' },
@@ -1732,7 +1732,7 @@ var Rutas = {
             { coordenadas: { lat: -16.391946, lng: -71.548793 }, nombre: 'Av. Trinidad Moran H-22 León XIII Cayma Cercado de Arequipa, Cayma' },
             { coordenadas: { lat: -16.397905, lng: -71.545947 }, nombre: 'Av. José Abelardo Quiñones, Arequipa' },
             { coordenadas: { lat: -16.403500, lng: -71.547666 }, nombre: 'Ricardo Palma 305, Yanahuara' },
-            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: 'Lima 408, Arequipa' },
+            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: 'Ovalo De Vallecito Lima 408, Arequipa' },
             { coordenadas: { lat: -16.408666, lng: -71.537000 }, nombre: 'Av. Jorge Chávez 801, Arequipa' },
             { coordenadas: { lat: -16.402646, lng: -71.529500 }, nombre: 'Estación Goyeneche, Av. Jorge Chavez,' },
             { coordenadas: { lat: -16.399491, lng: -71.521671 }, nombre: 'Av. Independencia 10, Arequipa' },
@@ -1777,7 +1777,7 @@ var Rutas = {
             { coordenadas: { lat: -16.425830, lng: -71.492770 }, nombre: 'Calle Inca Garcilaso de la Vega 302, Paucarpata' },
             { coordenadas: { lat: -16.427835, lng: -71.502801 }, nombre: 'John F. Kennedy 2116, Paucarpata 04008' },
             { coordenadas: { lat: -16.410468, lng: -71.513274 }, nombre: 'Av. Jesús 528, Arequipa 04001' },
-            { coordenadas: { lat: -16.403266, lng: -71.516312 }, nombre: ' Mal. Zolezzi 102, Mariano Melgar' },
+            { coordenadas: { lat: -16.403266, lng: -71.516312 }, nombre: 'Centro Comercial Don Manuel implementos de seguridad Mal. Zolezzi 102, Mariano Melgar' },
             { coordenadas: { lat: -16.399392, lng: -71.521586 }, nombre: 'Av. Mariscal Castilla 149, Miraflores' },
             { coordenadas: { lat: -16.398187, lng: -71.526713 }, nombre: 'Av. La Paz 503, Arequipa 04001' },
             { coordenadas: { lat: -16.395463, lng: -71.530834 }, nombre: 'C. Ayacucho, Arequipa 04001' },
@@ -1828,10 +1828,10 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.387058, lng: -71.575015 }, nombre: 'Av. Perú, Arequipa 04014' },
-            { coordenadas: { lat: -16.392649, lng: -71.574616 }, nombre: 'Huascar, Arequipa 04014' },
+            { coordenadas: { lat: -16.387058, lng: -71.575015 }, nombre: 'La Iglesia de Jesucristo de los Santos de los Últimos Días Av. Perú, Arequipa 04014' },
+            { coordenadas: { lat: -16.392649, lng: -71.574616 }, nombre: 'Estadio de Semi Rural Pachacutec Huascar, Arequipa 04014' },
             { coordenadas: { lat: -16.403220, lng: -71.573008 }, nombre: 'Av. Circunvalación 107, Cerro Colorado' },
-            { coordenadas: { lat: -16.404376, lng: -71.573231 }, nombre: 'Av. Circunvalación 188, Arequipa' },
+            { coordenadas: { lat: -16.404376, lng: -71.573231 }, nombre: 'Polleria Romancero Av. Circunvalación 188, Arequipa' },
             { coordenadas: { lat: -16.403220, lng: -71.568348 }, nombre: 'Juan Santos Atahualpa, Arequipa' },
             { coordenadas: { lat: -16.400683, lng: -71.569132 }, nombre: 'Av. Buenos Aires 213, Cerro Colorado' },
             { coordenadas: { lat: -16.394982, lng: -71.569286 }, nombre: 'Confraternidad 107, Cerro Colorado' },
@@ -1842,12 +1842,12 @@ var Rutas = {
             { coordenadas: { lat: -16.391946, lng: -71.548793 }, nombre: 'Av. Trinidad Moran H-22 León XIII Cayma Cercado de Arequipa' },
             { coordenadas: { lat: -16.397905, lng: -71.545947 }, nombre: 'Av. José Abelardo Quiñones, Arequipa' },
             { coordenadas: { lat: -16.403500, lng: -71.547666 }, nombre: 'Ricardo Palma 305, Yanahuara' },
-            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: 'Lima 408, Arequipa' },
-            { coordenadas: { lat: -16.416222, lng: -71.533643 }, nombre: 'Matto 100, Arequipa' },
+            { coordenadas: { lat: -16.404721, lng: -71.542879 }, nombre: ' Ovalo De Vallecito Parque Lima 408, Arequipa' },
+            { coordenadas: { lat: -16.416222, lng: -71.533643 }, nombre: 'Hospital Regional Honorio Delgado Espinoza III-1 Matto 100, Arequipa' },
             { coordenadas: { lat: -16.421498, lng: -71.531358 }, nombre: 'Av. Daniel Alcides Carrión 213, José Luis Bustamante y Rivero' },
             { coordenadas: { lat: -16.425209, lng: -71.533374 }, nombre: 'Pje. Quiroz 101, José Luis Bustamante y Rivero' },
             { coordenadas: { lat: -16.428147, lng: -71.534175 }, nombre: 'Av. Cementerio, José Luis Bustamante y Rivero' },
-            { coordenadas: { lat: -16.430168, lng: -71.534405 }, nombre: 'Av. Cementerio 336, José Luis Bustamante y Rivero' }
+            { coordenadas: { lat: -16.430168, lng: -71.534405 }, nombre: 'Cementerio General "La Apacheta" Av. Cementerio 336, José Luis Bustamante y Rivero' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta8'
@@ -1901,8 +1901,8 @@ var Rutas = {
             { coordenadas: { lat: -16.400683, lng: -71.569132 }, nombre: 'Av. Buenos Aires 213, Cerro Colorado' },
             { coordenadas: { lat: -16.404376, lng: -71.573231 }, nombre: 'Av. Circunvalación 188, Arequipa' },
             { coordenadas: { lat: -16.403220, lng: -71.573008 }, nombre: 'Av. Circunvalación 107, Cerro Colorado' },
-            { coordenadas: { lat: -16.392649, lng: -71.574616 }, nombre: 'Huascar, Arequipa 04014' },
-            { coordenadas: { lat: -16.387058, lng: -71.575015 }, nombre: 'Av. Perú, Arequipa' }
+            { coordenadas: { lat: -16.392649, lng: -71.574616 }, nombre: 'Estadio de Semi Rural Pachacutec Huascar, Arequipa 04014' },
+            { coordenadas: { lat: -16.387058, lng: -71.575015 }, nombre: 'La Iglesia de Jesucristo de los Santos de los Últimos Días Av. Perú, Arequipa' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta8'
@@ -1937,25 +1937,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.46167, lng: -71.52433 }, nombre: 'Zafiros 200, Socabaya' },
+            { coordenadas: { lat: -16.46167, lng: -71.52433 }, nombre: 'Mirador Santa Cruz de Lara Zafiros 200, Socabaya' },
             { coordenadas: { lat: -16.45603, lng: -71.51871 }, nombre: 'Alhelies 109, Socabaya' },
-            { coordenadas: { lat: -16.45139, lng: -71.51439 }, nombre: 'Socabaya 04012,' },
-            { coordenadas: { lat: -16.44785, lng: -71.51629 }, nombre: 'José Luis Bustamante 04009' },
+            { coordenadas: { lat: -16.45139, lng: -71.51439 }, nombre: 'Socabaya 04012 - Urbanización El Recodo,' },
+            { coordenadas: { lat: -16.44785, lng: -71.51629 }, nombre: 'José Luis Bustamante PROASMIN E.I.R.L. 04009' },
             { coordenadas: { lat: -16.44333, lng: -71.52169 }, nombre: ' Av. Caracas 308, Arequipa ' },
             { coordenadas: { lat: -16.43652, lng: -71.53073 }, nombre: 'C. Aplao 101, José Luis Bustamante y Rivero' },
             { coordenadas: { lat: -16.43053, lng: -71.53271 }, nombre: '13 de Enero Mz. E Lote 1 Sección A, José Luis Bustamante y Rivero' },
             { coordenadas: { lat: -16.42578, lng: -71.53306 }, nombre: 'Av. Perú 3, José Luis Bustamante y Rivero' },
             { coordenadas: { lat: -16.42060, lng: -71.53138 }, nombre: 'Av. Daniel Alcides Carrión 197, José Luis Bustamante y Rivero' },
-            { coordenadas: { lat: -16.41204, lng: -71.53475 }, nombre: 'HFP8+X4V, Arequipa 04002, Peru' },
-            { coordenadas: { lat: -16.41035, lng: -71.53260 }, nombre: 'HFQ9+R27, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.41204, lng: -71.53475 }, nombre: 'UNSA Biomedicas, Arequipa 04002, Peru' },
+            { coordenadas: { lat: -16.41035, lng: -71.53260 }, nombre: 'Ovalo Venezuela, Arequipa 04001, Peru' },
             { coordenadas: { lat: -16.40244, lng: -71.52509 }, nombre: 'Av. Independencia 424,' },
             { coordenadas: { lat: -16.40251, lng: -71.51781 }, nombre: 'Av. Republica de Venezuela 118, Arequipa ' },
             { coordenadas: { lat: -16.40419, lng: -71.51929 }, nombre: 'Urb. la Alborada, Arequipa ' },
             { coordenadas: { lat: -16.39944, lng: -71.51668 }, nombre: 'Sepúlveda 400, Miraflores' },
-            { coordenadas: { lat: -16.39381, lng: -71.51144 }, nombre: 'JF4Q+F87, Miraflores 04004, Peru' },
+            { coordenadas: { lat: -16.39381, lng: -71.51144 }, nombre: 'Alameda Salaverry, Miraflores 04004, Peru' },
             { coordenadas: { lat: -16.39379, lng: -71.51108 }, nombre: 'Calle 5 prolongación, C. Sanchez Trujillo Mz 2C, Miraflores' },
             { coordenadas: { lat: -16.39345, lng: -71.50936 }, nombre: 'Urb. Alameda salaverry Mz Q lote 9, Miraflores' },
-            { coordenadas: { lat: -16.39401, lng: -71.50297 }, nombre: 'JF4W+8V3, Mariano Melgar 04006, Peru' }
+            { coordenadas: { lat: -16.39401, lng: -71.50297 }, nombre: 'Losa Deportiva Villa Alto Cenepa, Mariano Melgar 04006, Peru' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta9'
@@ -1984,13 +1984,13 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.394129, lng: -71.502966 }, nombre: 'JF4W+8V3, Mariano Melgar 04006' },
+            { coordenadas: { lat: -16.394129, lng: -71.502966 }, nombre: 'Losa Deportiva Villa Alto Cenepa, Mariano Melgar 04006' },
             { coordenadas: { lat: -16.393662, lng: -71.511054 }, nombre: 'Calle 5 prolongación, C. Sanchez Trujillo' },
             { coordenadas: { lat: -16.390521, lng: -71.518365 }, nombre: 'Ca. Ramon Castilla 503, Miraflores' },
             { coordenadas: { lat: -16.393582, lng: -71.522671 }, nombre: 'Av. San Martin 625, Miraflores' },
             { coordenadas: { lat: -16.397215, lng: -71.525116 }, nombre: 'Av. San Martin 100, Miraflores' },
             { coordenadas: { lat: -16.400957, lng: -71.527633 }, nombre: 'Av. Goyeneche 227, Arequipa' },
-            { coordenadas: { lat: -16.404269, lng: -71.527420 }, nombre: '04730, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.404269, lng: -71.527420 }, nombre: 'Facultad de geología, geofisica y minas, Arequipa 04001, Peru' },
             { coordenadas: { lat: -16.408309, lng: -71.532270 }, nombre: 'Av. Independencia 1528, Arequipa' },
             { coordenadas: { lat: -16.411982, lng: -71.535213 }, nombre: 'Estación Venezuela, Daniel Alcides Carrion, Arequipa' },
             { coordenadas: { lat: -16.415289, lng: -71.534190 }, nombre: 'Hospital General, Arequipa' },
@@ -2001,7 +2001,7 @@ var Rutas = {
             { coordenadas: { lat: -16.441966, lng: -71.528799 }, nombre: 'Oroya 100, Socabay' },
             { coordenadas: { lat: -16.443320, lng: -71.521352 }, nombre: 'Alfonso Ugarte 102, Socabaya' },
             { coordenadas: { lat: -16.447208, lng: -71.516246 }, nombre: 'Urb. La Breña E-3, José Luis Bustamante y Rivero' },
-            { coordenadas: { lat: -16.449907, lng: -71.512435 }, nombre: 'GFXQ+X4G, José Luis Bustamante' },
+            { coordenadas: { lat: -16.449907, lng: -71.512435 }, nombre: 'Parque Urb. Las Esmeraldas, José Luis Bustamante' },
             { coordenadas: { lat: -16.456454, lng: -71.517489 }, nombre: ' Arequipa 2401, Socabaya 04012,' },
             { coordenadas: { lat: -16.456454, lng: -71.517489 }, nombre: 'Zafiros 200, Socabaya ' },
             { coordenadas: { lat: -16.461628, lng: -71.524270 }, nombre: '2 do paradero Zafiros 200, Socabaya ' }
