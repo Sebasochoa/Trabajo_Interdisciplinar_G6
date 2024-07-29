@@ -15,64 +15,82 @@
     <header>
         <div class="header-container">
             <img src="logo.png" alt="Logo" class="logo">
+            <img src="bus.png" alt="Bus" class="busL">
             <h1>GRUPO06 - Rutas Personalizadas</h1>
+            <img src="bus.png" alt="Bus" class="busR">
             <button class="nav-button" onclick="location.href='rutas.html'">Rutas</button>
         </div>
     </header>
-    <div class="dropdown">
-        <button class="Opcion" onclick="toggleDropdown()">Mostrar Rutas</button>
-        <div class="dropdown-content" id="dropdownContent">
-            <label><input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('Ruta1')"> COTUM A
-            </label><br>
-            <label><input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('Ruta2')"> Dolores San Martin
-            </label><br>
-            <label><input type="checkbox" id="checkbox3" onchange="handleCheckboxChange('Ruta3')"> A15-Miraflores
-            </label><br>
-            <label><input type="checkbox" id="checkbox4" onchange="handleCheckboxChange('Ruta4')"> Alto Selva Alegre
-            </label><br>
-            <label><input type="checkbox" id="checkbox5" onchange="handleCheckboxChange('Ruta5')"> C2-4D(Cono Norte)
-            </label><br>
-            <label><input type="checkbox" id="checkbox6" onchange="handleCheckboxChange('Ruta6')"> BJUANXXIII
-            </label><br>
-            <label><input type="checkbox" id="checkbox7" onchange="handleCheckboxChange('Ruta7')"> C11 COTUM B
-            </label><br>
-            <label><input type="checkbox" id="checkbox8" onchange="handleCheckboxChange('Ruta8')"> C7-5 AQP Masivo Alto
-                Libertad
-            </label><br>
-            <label><input type="checkbox" id="checkbox9" onchange="handleCheckboxChange('Ruta9')"> C - 3 de octubre
-            </label><br>
-            <label><input type="checkbox" id="checkbox10" onchange="handleCheckboxChange('Ruta10')"> C7 AqpMasivo 7-09
-            </label><br>
-            <label><input type="checkbox" id="checkbox11" onchange="handleCheckboxChange('Ruta11')"> A-Mariano Melgar
-            </label><br>
-            <label><input type="checkbox" id="checkbox12" onchange="handleCheckboxChange('Ruta12')"> B-Polanco
-            </label><br>
-            <label><input type="checkbox" id="checkbox13" onchange="handleCheckboxChange('Ruta13')"> B - 3 de octubre
-            </label><br>
-            <label><input type="checkbox" id="checkbox14" onchange="handleCheckboxChange('Ruta14')"> Cayma Enace
-            </label><br>
-            <label><input type="checkbox" id="checkbox15" onchange="handleCheckboxChange('Ruta15')"> La Perla
-                S.R.L.T.D.A
-            </label><br>
-            <label><input type="checkbox" id="checkbox16" onchange="handleCheckboxChange('Ruta16')"> 15 de agosto
-            </label><br>
-            <label><input type="checkbox" id="checkbox17" onchange="handleCheckboxChange('Ruta17')"> ORIOL - A
-            </label><br>
-            <label><input type="checkbox" id="checkbox18" onchange="handleCheckboxChange('Ruta18')"> Uchumayo
-            </label><br>
-        </div>
-    </div>
-    <input type="text" id="pac-input" placeholder="Buscar ubicacion">
+    
+    <input type="text" id="pac-input" placeholder="Destino">
+    <input type="text" id="pac-input" placeholder="Segundo Destino">
     <input type="checkbox" id="checkbox">
     <label for="checkbox">No utilizar tu ubicacion</label>
-    <input type="text" id="pac-input-2" placeholder="Buscar otra ubicacion">
+    <input type="text" id="pac-input-2" placeholder="Origen">
+    
     <button type="button" class="nav-button" id="borrar">Borrar caminos y Paradas</button>
-    <main>
+    <!--main>
         <div class="map-container">
-            <div id="map" style="height: 500px; width: 100%;"></div>
+            <div id="map" style="height: 500px; width: 80%;"></div>
+        </div>
+    </main-->
+        <!--div class="dropdown">
+                    <button class="Opcion" onclick="toggleDropdown()">Mostrar Rutas</button>
+                    <div class="dropdown-content" id="dropdownContent">
+                        <label><input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('Ruta1')"> COTUM A
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('Ruta2')"> Dolores San Martin
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox3" onchange="handleCheckboxChange('Ruta3')"> A15-Miraflores
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox4" onchange="handleCheckboxChange('Ruta4')"> Alto Selva Alegre
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox5" onchange="handleCheckboxChange('Ruta5')"> C2-4D(Cono Norte)
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox6" onchange="handleCheckboxChange('Ruta6')"> BJUANXXIII
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox7" onchange="handleCheckboxChange('Ruta7')"> C11 COTUM B
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox8" onchange="handleCheckboxChange('Ruta8')"> C7-5 AQP Masivo Alto
+                            Libertad
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox9" onchange="handleCheckboxChange('Ruta9')"> C - 3 de octubre
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox10" onchange="handleCheckboxChange('Ruta10')"> C7 AqpMasivo 7-09
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox11" onchange="handleCheckboxChange('Ruta11')"> A-Mariano Melgar
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox12" onchange="handleCheckboxChange('Ruta12')"> B-Polanco
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox13" onchange="handleCheckboxChange('Ruta13')"> B - 3 de octubre
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox14" onchange="handleCheckboxChange('Ruta14')"> Cayma Enace
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox15" onchange="handleCheckboxChange('Ruta15')"> La Perla
+                            S.R.L.T.D.A
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox16" onchange="handleCheckboxChange('Ruta16')"> 15 de agosto
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox17" onchange="handleCheckboxChange('Ruta17')"> ORIOL - A
+                        </label><br>
+                        <label><input type="checkbox" id="checkbox18" onchange="handleCheckboxChange('Ruta18')"> Uchumayo
+                        </label><br>
+                    </div>
+                </div-->
+                
+    <main>
+        <div id="map"></div>
+        <div class="side-container">
+            <div class="nav-buttons">
+                <button type="button" class="nav-button-R" id="btn_ruta1">Ruta</button>
+                <button type="button" class="nav-button-R" id="btn_ruta2">Ruta ++</button>
+            </div>
+            <p class="titulo">Rutas - Paraderos</p>
+            <div id="ruta-nombre-container" class="instrucciones"></div>
         </div>
     </main>
-    <div id="ruta-nombre-container" class="instrucciones"></div>
+
+    
     <div class="legend">
         <div class="legend-item">
             <span>Camino ida</span>
