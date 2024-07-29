@@ -27,10 +27,7 @@ function initMap() {
         center: { lat: -16.386904, lng: -71.574997 },
         zoom: 12
     });
-
-    const permisoUbicacion = getCookie('permisoUbicacion') || localStorage.getItem('permisoUbicacion');
-
-    if (permisoUbicacion) {
+    if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
                 lat: position.coords.latitude,
@@ -45,26 +42,6 @@ function initMap() {
             });
 
             mapa.setCenter(pos);
-        }, function () {
-            handleLocationError(true, mapa);
-        });
-    } else if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            var pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-
-            ubicacion = new google.maps.Marker({
-                position: pos,
-                map: mapa,
-                draggable: true,
-                title: "Tu ubicacion actual"
-            });
-
-            mapa.setCenter(pos);
-            setCookie('permisoUbicacion', 'true', 365);
-            localStorage.setItem('permisoUbicacion', 'true');
         }, function () {
             handleLocationError(true, mapa);
         });
@@ -119,25 +96,6 @@ function initMap() {
     document.getElementById('borrar').addEventListener('click', function () {
         limpiarRutas();
     });
-
-}
-function setCookie(name, value, days) {
-    const d = new Date();
-    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-    const expires = "expires=" + d.toUTCString();
-    console.log(name);
-    document.cookie = name + "=" + value + ";" + expires + ";path=/";
-}
-
-function getCookie(name) {
-    const nameEQ = name + "=";
-    const ca = document.cookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
 }
 
 
@@ -224,7 +182,6 @@ function agregarDestino(latLng) {
     });
     limpiarRutas();
     borrarRutas();
-    CalcularRutas();
 }
 
 function degreesToRadians(degrees) {
@@ -263,13 +220,10 @@ function findStops(Position, Map, ComparativeDistance) {
 }
 
 function IsApproaching(Paraderos, Ubicacion, Destino) {
-    console.log(Paraderos);
     let DistanciaMin = Infinity;
     let indiceCercanoDest = -1;
-    console.log('Destino');
     Paraderos.forEach((parada, indice) => {
         const distance = haversineDistance(parada.coordenadas.lat, parada.coordenadas.lng, Destino.lat, Destino.lng);
-        //console.log(`${parada.coordenadas.lat}, ${parada.coordenadas.lng}: ${distance}`);
         if (distance < DistanciaMin) {
             DistanciaMin = distance;
             indiceCercanoDest = indice;
@@ -277,19 +231,14 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
     });
     DistanciaMin = Infinity;
     let indiceCercanoUbi = -1;
-    console.log('Ubicacion');
     Paraderos.forEach((parada, indice) => {
         const distance = haversineDistance(parada.coordenadas.lat, parada.coordenadas.lng, Ubicacion.lat, Ubicacion.lng);
-        //console.log(`${parada.coordenadas.lat}, ${parada.coordenadas.lng}: ${distance}`);
         if (distance < DistanciaMin) {
             DistanciaMin = distance;
             indiceCercanoUbi = indice;
         }
     });
-    console.log(indiceCercanoUbi);
-    console.log(indiceCercanoDest);
     if (indiceCercanoDest === -1 || indiceCercanoUbi === -1) {
-        console.log('No encontro indices');
         return false;
     }
 
@@ -309,10 +258,9 @@ function IsApproaching(Paraderos, Ubicacion, Destino) {
         }
     }
     else {
-        console.log('indice ubicacion > indice cercano');
         return false;
     }
-    console.log(result);
+
     let countZeros = result.reduce((acc, currentValue) => {
         if (currentValue === 0) {
             acc++;
@@ -390,66 +338,6 @@ function GetNearStop(Paraderos, Coordenadas) {
     return result;
 }
 
-function ChooseRoute(Objeto, Ubicacion, Destino) {
-    const rutaKeys = Object.entries(Objeto);
-
-    for (let ruta in rutaKeys) {
-        let [rutaNombre, rutaArray] = rutaKeys[ruta];
-        if (rutaArray.length > 1) {
-            let DobleRecorrido = {};
-            DobleRecorrido[rutaNombre] = rutaArray;
-            EraseWay(DobleRecorrido, Ubicacion, Destino);
-        }
-        let objetoruta = GetRoute(rutaNombre, rutaArray[0]);
-        if (!IsApproaching(objetoruta.paradas, Ubicacion, Destino)) {
-            delete Objeto[rutaNombre];
-        }
-    }
-}
-
-function ManageNearRoutes(CercanasADestino, CercanasAUbicacion, PosicionInicial, PosicionDestino) {
-    let increment = 0.1;
-    let maxDistance = 0.3;
-    let found = false;
-    let result = null;
-
-    while (increment <= maxDistance && !found) {
-        findStops(PosicionDestino, CercanasADestino, increment);
-        findStops(PosicionInicial, CercanasAUbicacion, increment);
-        let rutaCercana = containsAny(CercanasAUbicacion, CercanasADestino);
-
-        if (rutaCercana !== null) {
-            let rutaKeys = Object.keys(rutaCercana);
-            let rutaArray = rutaCercana[rutaKeys[0]];
-
-            if (Array.isArray(rutaKeys)) {
-                ChooseRoute(rutaCercana, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() });
-            }
-
-            if (Array.isArray(rutaArray) && rutaArray.length > 1) {
-                EraseWay(rutaCercana, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() });
-            }
-
-            rutaKeys = Object.keys(rutaCercana);
-            rutaArray = rutaCercana[rutaKeys[0]];
-
-            const RutaASeguir = GetRoute(rutaKeys[0], rutaArray[0]);
-            const { paradas } = RutaASeguir;
-            if (IsApproaching(paradas, { lat: PosicionInicial.lat(), lng: PosicionInicial.lng() }, { lat: PosicionDestino.lat(), lng: PosicionDestino.lng() }) === true) {
-
-                result = rutaCercana;
-                found = true;
-            }
-            else {
-                increment += 0.1;
-            }
-        } else {
-            increment += 0.1;
-        }
-    }
-    return result;
-}
-
 function OneRoute() {
     if (destinoMarcador && ubicacion) {
         let DestinoPos = destinoMarcador.getPosition();
@@ -468,7 +356,8 @@ function OneRoute() {
 
         let nombres = [];
         let estaciones = {};
-        let solicitudes = [];
+        let solicitudes = {};
+        let instrucciones = {};
 
         for (let ruta in rutaCercana) {
             if (rutaCercana.hasOwnProperty(ruta)) {
@@ -493,19 +382,71 @@ function OneRoute() {
                 let solicitud = GetRoute(ruta, recorrido[0]);
                 let paradaUbi = GetNearStop(solicitud.paradas, Inicial);
                 let paradaDest = GetNearStop(solicitud.paradas, Destino);
-                let paradasFiltradas = filterStops(
-                    filterStops(solicitud.paradas, paradaUbi, false),
-                    paradaDest, true
-                );
+                let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
                 estaciones[ruta] = paradasFiltradas;
-
-                let solicitudfiltrada = modificarsolicitud(solicitud.solicitud, paradaUbi, paradaDest);
-                solicitudes.push(solicitudfiltrada);
+                instrucciones[ruta] = Get_Instrucctions(solicitud, paradaUbi, paradaDest);
+                let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
+                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando(paradaUbi, paradaDest);
+                let arraySolicitudes = [];
+                arraySolicitudes.push(solicitudPParada);
+                arraySolicitudes.push(solicitudfiltrada);
+                arraySolicitudes.push(solicitudSParada);
+                solicitudes[ruta] = arraySolicitudes;
             }
         }
-        result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes };
+        result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
         return result;
     }
+}
+
+function Get_Stop(Paraderos, Coordenada) {
+    return Paraderos.find(location =>
+        location.coordenadas.lat === Coordenada.lat && location.coordenadas.lng === Coordenada.lng
+    );
+}
+
+function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
+    let DestinoPos = destinoMarcador.getPosition();
+    let InicioPos = ubicacion.getPosition();
+
+    const Inicio = { lat: InicioPos.lat(), lng: InicioPos.lng() };
+    const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
+    let oparada_1 = Get_Stop(Ruta.paradas, Parada_1);
+    let oparada_2 = Get_Stop(Ruta.paradas, Parada_2);
+    let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
+    let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
+    let instrucciones = `<h4>1.</h4><p>Debes caminar ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
+    <h4>2.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta.nombre]} en el recorrido: ${Ruta.recorrido}.</p>
+    <h4>3.</h4><p>Para luego bajarte en la Parada: ${oparada_2.nombre}.</p>
+    <h4>4.</h4><p>Y finalmente camina ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino</p>`;
+    return instrucciones;
+}
+
+function Get_Instrucctions(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
+    let DestinoPos = destinoMarcador.getPosition();
+    let InicioPos = ubicacion.getPosition();
+
+    const Inicio = { lat: InicioPos.lat(), lng: InicioPos.lng() };
+    const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
+
+    let oparada_1 = Get_Stop(Ruta_1.paradas, Parada_1);
+    let oparada_Intermedia_1 = Get_Stop(Ruta_1.paradas, Parada_Intermedia_1);
+
+    let oparada_2 = Get_Stop(Ruta_2.paradas, Parada_2);
+    let oparada_Intermedia_2 = Get_Stop(Ruta_2.paradas, Parada_Intermedia_2);
+
+    let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
+    let distanciaParadasIntermedias = haversineDistance(oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat);
+    let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
+
+    let instrucciones = `<h4>1.</h4><p>Debes caminar ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
+    <h4>2.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta_1.nombre]} en el recorrido: ${Ruta_1.recorrido}.</p>
+    <h4>3.</h4><p>Luego baja en la Parada: ${oparada_Intermedia_1.nombre}.</p>
+    <h4>4.</h4><p>Camina ${(distanciaParadasIntermedias * 1000).toFixed(0)} m hacia ${oparada_Intermedia_2.nombre}.</p>
+    <h4>5.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta_2.nombre]} en el recorrido: ${Ruta_2.recorrido}.</p>
+    <h4>6.</h4><p>Tienes que bajar en la Parada: ${oparada_2.nombre}.</p>
+    <h4>7.</h4><p>Y finalmente camina ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino</p>`;
+    return instrucciones;
 }
 
 function TwoRoutes() {
@@ -524,149 +465,103 @@ function TwoRoutes() {
 
         console.log(rutasCercanasADestino);
         console.log(rutasCercanasAUbicacion);
+        let [cercanasDestino, cercanasUbicacion] = findUniqueRoutes(rutasCercanasAUbicacion, rutasCercanasADestino);
+        console.log(cercanasDestino);
+        console.log(cercanasUbicacion);
 
-        rutasCercanasAUbicacion.forEach((setUbicacion, rutaubicacion) => {
-            rutasCercanasADestino.forEach((setDestino, rutadestino) => {
-                let recorridoubicacion = rutasCercanasAUbicacion.get(rutaubicacion);
-                let recorridodestino = rutasCercanasADestino.get(rutadestino);
-                for (let recorridoU of recorridoubicacion) {
-                    let objetoUbicacion = GetRoute(rutaubicacion, recorridoU);
-                    const paradasU = objetoUbicacion.paradas;
-                    for (let recorridoD of recorridodestino) {
-                        let objetoDestino = GetRoute(rutadestino, recorridoD);
-                        const paradasD = objetoDestino.paradas;
+        let nombres = [];
 
-                        paradasU.forEach((paradaU) => {
-                            paradasD.forEach((paradaD) => {
-                                const distanciaEntreParaderos = haversineDistance(paradaU.coordenadas.lat, paradaU.coordenadas.lng, paradaD.coordenadas.lat, paradaD.coordenadas.lng);
-                                if ((distanciaEntreParaderos < distanciamascorta) && (IsApproaching(paradasU, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng })) && (IsApproaching(paradasD, { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() }))) {
-                                    distanciamascorta = distanciaEntreParaderos;
-                                    RutaASeguir1 = objetoUbicacion;
-                                    RutaASeguir2 = objetoDestino;
-                                    paraderoIntermedio1 = { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng };
-                                    paraderoIntermedio2 = { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }
+        for (let ruta_1 in cercanasUbicacion) {
+            let array_1 = cercanasUbicacion[ruta_1];
+            for (let ruta_2 in cercanasDestino) {
+                let array_2 = cercanasDestino[ruta_2];
+                for (let recorrido_1 of array_1) {
+                    for (let recorrido_2 of array_2) {
+                        let objetoRuta_1 = GetRoute(ruta_1, recorrido_1);
+                        let objetoRuta_2 = GetRoute(ruta_2, recorrido_2);
+                        const paradasRuta_1 = objetoRuta_1.paradas;
+                        const paradasRuta_2 = objetoRuta_2.paradas;
+                        let distanciamascorta = Infinity;
+                        let obj = null;
+                        paradasRuta_1.forEach((parada_1 => {
+                            paradasRuta_2.forEach((parada_2 => {
+                                const distance = haversineDistance(parada_1.coordenadas.lat, parada_1.coordenadas.lng, parada_2.coordenadas.lat, parada_2.coordenadas.lng);
+                                if (distance < distanciamascorta && distance < 0.4) {
+                                    obj = {
+                                        [ruta_1]: { recorrido: recorrido_1, parada: parada_1.coordenadas },
+                                        [ruta_2]: { recorrido: recorrido_2, parada: parada_2.coordenadas }
+                                    };
                                 }
-                            });
-                        });
-                    }
-                }
-
-            });
-        });
-    }
-}
-
-function CalcularRutas() {
-    if (destinoMarcador && ubicacion) {
-        let posicionDestino = destinoMarcador.getPosition();
-        let posicionInicial = ubicacion.getPosition();
-        let rutasCercanasADestino = new Map();
-        let rutasCercanasAUbicacion = new Map();
-
-        let result = ManageNearRoutes(rutasCercanasADestino, rutasCercanasAUbicacion, posicionInicial, posicionDestino);
-
-        if (rutasCercanasADestino.size !== 0 && rutasCercanasAUbicacion.size !== 0) {
-            if (result !== null) {
-                console.log(rutasCercanasAUbicacion);
-                console.log(rutasCercanasADestino);
-                const rutaKeys = Object.keys(result);
-                const rutaArray = result[rutaKeys[0]];
-
-                if (Array.isArray(rutaKeys)) {
-                    ChooseRoute(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
-                }
-
-                if (Array.isArray(rutaArray) && rutaArray.length > 1) {
-                    EraseWay(result, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
-                }
-
-                const RutaASeguir = GetRoute(rutaKeys[0], rutaArray[0]);
-                const { paradas } = RutaASeguir;
-
-                let minDistanciaUbicacion = Infinity;
-                let minDistanciaDestino = Infinity;
-                let paraderoUbicacion;
-                let paraderoDestino;
-
-                paradas.forEach((coordenada) => {
-                    let distanciaUbicacion = haversineDistance(coordenada.coordenadas.lat, coordenada.coordenadas.lng, posicionInicial.lat(), posicionInicial.lng());
-                    let distanciaDestino = haversineDistance(coordenada.coordenadas.lat, coordenada.coordenadas.lng, posicionDestino.lat(), posicionDestino.lng());
-                    if (distanciaUbicacion < minDistanciaUbicacion) {
-                        minDistanciaUbicacion = distanciaUbicacion;
-                        paraderoUbicacion = coordenada.coordenadas;
-                    }
-                    if (distanciaDestino < minDistanciaDestino) {
-                        minDistanciaDestino = distanciaDestino;
-                        paraderoDestino = coordenada.coordenadas;
-                    }
-                });
-                mostrarRutapersonalizada(RutaASeguir.solicitud, 'green', RutaASeguir.nombre, RutaASeguir.paradas, paraderoUbicacion, paraderoDestino);
-            }
-            else {
-                console.log(rutasCercanasAUbicacion);
-                console.log(rutasCercanasADestino);
-
-                let distanciamascorta = Infinity;
-                let RutaASeguir1;
-                let RutaASeguir2;
-                let paraderoIntermedio1;
-                let paraderoIntermedio2;
-                rutasCercanasAUbicacion.forEach((setUbicacion, rutaubicacion) => {
-                    rutasCercanasADestino.forEach((setDestino, rutadestino) => {
-                        let recorridoubicacion = rutasCercanasAUbicacion.get(rutaubicacion);
-                        let recorridodestino = rutasCercanasADestino.get(rutadestino);
-                        for (let recorridoU of recorridoubicacion) {
-                            let objetoUbicacion = GetRoute(rutaubicacion, recorridoU);
-                            const paradasU = objetoUbicacion.paradas;
-                            for (let recorridoD of recorridodestino) {
-                                let objetoDestino = GetRoute(rutadestino, recorridoD);
-                                const paradasD = objetoDestino.paradas;
-
-                                paradasU.forEach((paradaU) => {
-                                    paradasD.forEach((paradaD) => {
-                                        const distanciaEntreParaderos = haversineDistance(paradaU.coordenadas.lat, paradaU.coordenadas.lng, paradaD.coordenadas.lat, paradaD.coordenadas.lng);
-                                        if ((distanciaEntreParaderos < distanciamascorta) && (IsApproaching(paradasU, { lat: posicionInicial.lat(), lng: posicionInicial.lng() }, { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng })) && (IsApproaching(paradasD, { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }, { lat: posicionDestino.lat(), lng: posicionDestino.lng() }))) {
-                                            distanciamascorta = distanciaEntreParaderos;
-                                            RutaASeguir1 = objetoUbicacion;
-                                            RutaASeguir2 = objetoDestino;
-                                            paraderoIntermedio1 = { lat: paradaU.coordenadas.lat, lng: paradaU.coordenadas.lng };
-                                            paraderoIntermedio2 = { lat: paradaD.coordenadas.lat, lng: paradaD.coordenadas.lng }
-                                        }
-                                    });
-                                });
-                            }
+                            }))
+                        }));
+                        if (obj) {
+                            nombres.push(obj);
                         }
-
-                    });
-                });
-                ShowCompleteRoute(RutaASeguir1, RutaASeguir2, paraderoIntermedio1, paraderoIntermedio2);
-
+                    }
+                }
             }
         }
-        else {
-            const rutaNombreContainer = document.getElementById('ruta-nombre-container');
 
-            const rutaNombreElement = document.createElement('p');
-            let nuevaRutaText = 'No se puede calcular una Ruta desde tu Ubicacion hacia tu Destino';
+        nombres.forEach((rutaObj, index) => {
+            let keys = Object.keys(rutaObj);
 
-            rutaNombreElement.textContent = nuevaRutaText;
-            rutaNombreContainer.appendChild(rutaNombreElement);
+            if (keys.length > 0) {
+                let ruta1 = keys[0];
+                let solicitudRuta1 = GetRoute(ruta1, rutaObj[ruta1].recorrido);
+                if (!IsApproaching(solicitudRuta1.paradas, Inicial, rutaObj[ruta1].parada)) {
+                    delete nombres[index];
+                    return;
+                }
 
-        }
+                if (keys.length > 1) {
+                    let ruta2 = keys[1];
+                    let solicitudRuta2 = GetRoute(ruta2, rutaObj[ruta2].recorrido);
+                    if (!IsApproaching(solicitudRuta2.paradas, rutaObj[ruta2].parada, Destino)) {
+                        delete nombres[index];
+                        return;
+                    }
+                }
+            }
+        });
+
+        nombres = nombres.filter(ruta => ruta !== undefined);
+
+        let nombreresult = {};
+        let estaciones= {};
+        let solicitudes = {};
+        let instrucciones = {};
+
+
+        nombres.forEach((Objeto, index) => {
+            let keys = Object.keys(Objeto);
+            let arrayNombres = [keys[0], keys[1]];
+            nombreresult[index] = arrayNombres;
+            if (keys.length > 0) {
+                let ruta1 = keys[0];
+                let ruta2 = keys[1];
+                let ruta1Objeto = GetRoute(ruta1, Objeto[ruta1].recorrido);
+                let ruta2Objeto = GetRoute(ruta2, Objeto[ruta2].recorrido);
+                let paradasRuta_1 = GetFilteredStops(ruta1Objeto.paradas, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+                let paradasRuta_2 = GetFilteredStops(ruta2Objeto.paradas, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+                let solicitudRuta1 = GetFilteredRequest(ruta1Objeto.solicitud, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+                let solicitudRuta2 = GetFilteredRequest(ruta2Objeto.solicitud, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+                let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando(GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada);
+                
+                solicitudes[index] = [
+                    { [ruta1]: solicitudRuta1 },
+                    { [ruta2]: solicitudRuta2 },
+                    { 'Caminando': [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] }
+                ];
+                estaciones[index] = [{ [ruta1]: paradasRuta_1, [ruta2]: paradasRuta_2 }];
+                instrucciones[index] = Get_Instrucctions(ruta1Objeto,ruta2Objeto,GetNearStop(ruta1Objeto.paradas, Inicial),Objeto[ruta1].parada,GetNearStop(ruta2Objeto.paradas, Destino),Objeto[ruta2].parada);
+            }
+        });
+        console.log(nombreresult);
+        console.log(estaciones);
+        console.log(solicitudes);
+        console.log(instrucciones);
+        result = { nombres: nombreresult, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
     }
-}
-
-function ShowCompleteRoute(Solicitud1, Solicitud2, ParaderoIntermedio1, ParaderoIntermedio2) {
-    let posicionDestino = destinoMarcador.getPosition();
-    let posicionInicial = ubicacion.getPosition();
-
-    let paraderoinicial = GetNearStop(Solicitud1.paradas, { lat: posicionInicial.lat(), lng: posicionInicial.lng() });
-    let paraderofinal = GetNearStop(Solicitud2.paradas, { lat: posicionDestino.lat(), lng: posicionDestino.lng() });
-
-    mostrarrutacaminando(Solicitud1.nombre, paraderoinicial, paraderofinal);
-
-    mostrarRutapersonalizada(Solicitud1.solicitud, 'green', Solicitud1.nombre, Solicitud1.paradas, paraderoinicial, ParaderoIntermedio1);
-    mostrarRutapersonalizada(Solicitud2.solicitud, 'blue', Solicitud2.nombre, Solicitud2.paradas, ParaderoIntermedio2, paraderofinal);
 }
 
 function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, paraderoinicio, paraderofinal) {
@@ -684,7 +579,7 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
         },
         //suppressMarkers: true
     });
-    let nuevasolicitud = modificarsolicitud(solicitud, paraderoinicio, paraderofinal);
+    let nuevasolicitud = GetFilteredRequest(solicitud, paraderoinicio, paraderofinal);
     let nuevasparadas = []
     nuevasparadas = filterStops(Paraderos, paraderoinicio, false);
     nuevasparadas = filterStops(nuevasparadas, paraderofinal, true);
@@ -700,31 +595,9 @@ function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, parad
             window.alert('Error al obtener la ruta: ' + estado);
         }
     });
-    renderizadores[nombreRuta].push(renderizador); // Almacenar el renderizador en el array de la ruta
-
-    let calleinicio = null;
-    let callefinal = null
-    async function obtenerYAlmacenarNombreCalle() {
-        try {
-            calleinicio = await obtenerNombreCalle(paraderoinicio.lat, paraderoinicio.lng);
-            callefinal = await obtenerNombreCalle(paraderofinal.lat, paraderofinal.lng);
-            mostrarNombreRutaEnInterfaz(nombreRuta, calleinicio, callefinal);
-        } catch (error) {
-            console.error('Error al obtener el nombre de la calle:', error);
-        }
-    }
-    obtenerYAlmacenarNombreCalle().then(() => { });
+    renderizadores[nombreRuta].push(renderizador); // Almacenar el renderizador en el array de la ruta    
 }
 
-
-function isCloserToStartorEnd(Solicitud, ParaderoInicio) {
-    let inicioruta = Solicitud.origin;
-    let finalruta = Solicitud.destination;
-    if (haversineDistance(inicioruta.lat, inicioruta.lng, ParaderoInicio.lat, ParaderoInicio.lng) < haversineDistance(finalruta.lat, finalruta.lng, ParaderoInicio.lat, ParaderoInicio.lng)) {
-        return true;
-    }
-    return false;
-}
 
 function containsAny(mapA, mapB) {
     let result = {};
@@ -748,6 +621,56 @@ function containsAny(mapA, mapB) {
     } else {
         return null;
     }
+}
+
+function findUniqueRoutes(mapA, mapB) {
+    let result1 = {}
+    let result2 = {}
+    for (let [key, setB] of mapB) {
+        if (mapA.has(key)) {
+            let setA = mapA.get(key);
+            for (let elem of setB) {
+                if (!setA.has(elem)) {
+                    if (!result1[key]) {
+                        result1[key] = [];
+                    }
+                    result1[key].push(elem);
+                }
+            }
+        }
+        else {
+            if (!result1[key]) {
+                result1[key] = [];
+            }
+            for (let elem of setB) {
+                result1[key].push(elem);
+            }
+
+        }
+    }
+    for (let [key, setA] of mapA) {
+        if (mapB.has(key)) {
+            let setB = mapB.get(key);
+            for (let elem of setA) {
+                if (!setB.has(elem)) {
+                    if (!result2[key]) {
+                        result2[key] = [];
+                    }
+                    result2[key].push(elem);
+                }
+            }
+        }
+        else {
+            if (!result2[key]) {
+                result2[key] = [];
+            }
+            for (let elem of setA) {
+                result2[key].push(elem);
+            }
+
+        }
+    }
+    return [result1, result2];
 }
 
 function filterStops(Paradas, Coordenada, Posteriores) {
@@ -775,8 +698,7 @@ function filterStops(Paradas, Coordenada, Posteriores) {
     }
 }
 
-
-function filterWaypints(Waypoints, Referencia, Posteriores) {
+function filterWaypoints(Waypoints, Referencia, Posteriores) {
     let indiceCercano = -1;
     let minDistancia = Infinity;
 
@@ -798,10 +720,17 @@ function filterWaypints(Waypoints, Referencia, Posteriores) {
     return waypointsFiltrados;
 }
 
-function modificarsolicitud(solicitud, paraderoinicio, paraderofinal) {
+function GetFilteredStops(Paraderos, ParaderoInicio, ParaderoFinal) {
+    let nuevosstops = [];
+    nuevosstops = filterStops(Paraderos, ParaderoInicio, false);
+    nuevosstops = filterStops(nuevosstops, ParaderoFinal, true);
+    return nuevosstops;
+}
+
+function GetFilteredRequest(solicitud, paraderoinicio, paraderofinal) {
     let nuevoswaypoints = [];
-    nuevoswaypoints = filterWaypints(solicitud.waypoints, paraderoinicio, false);
-    nuevoswaypoints = filterWaypints(nuevoswaypoints, paraderofinal, true);
+    nuevoswaypoints = filterWaypoints(solicitud.waypoints, paraderoinicio, false);
+    nuevoswaypoints = filterWaypoints(nuevoswaypoints, paraderofinal, true);
 
     let nuevasolicitud = {
         origin: paraderoinicio,
@@ -813,173 +742,41 @@ function modificarsolicitud(solicitud, paraderoinicio, paraderofinal) {
     return nuevasolicitud;
 }
 
-function mostrarrutacaminando(nombreRuta, paraderoinicio, paraderofinal) {
-    if (!renderizadores[nombreRuta]) {
-        renderizadores[nombreRuta] = [];
-    }
-
+function Solicitudes_Caminando(paraderoinicio, paraderofinal) {
     let solicitudInicio = {
         origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
         destination: { lat: paraderoinicio.lat, lng: paraderoinicio.lng },
         travelMode: 'WALKING'
     };
-    var renderizadorInicio = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-            strokeColor: 'red'
-        },
-        suppressMarkers: true
-    });
-
-    renderizadorInicio.setMap(mapa);
-    servicioDirecciones.route(solicitudInicio, function (resultado, estado) {
-        if (estado === 'OK') {
-            renderizadorInicio.setDirections(resultado);
-        } else {
-            window.alert('Error al obtener la ruta de inicio: ' + estado);
-        }
-    });
-    renderizadores[nombreRuta].push(renderizadorInicio);
-
     let solicitudFinal = {
         origin: { lat: paraderofinal.lat, lng: paraderofinal.lng },
         destination: { lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng() },
         travelMode: 'WALKING'
     };
-
-    var renderizadorFinal = new google.maps.DirectionsRenderer({
-        polylineOptions: {
-            strokeColor: 'red'
-        },
-        suppressMarkers: true
-    });
-
-    renderizadorFinal.setMap(mapa);
-    servicioDirecciones.route(solicitudFinal, function (resultado, estado) {
-        if (estado === 'OK') {
-            renderizadorFinal.setDirections(resultado);
-            //marcadores[nombreRuta].push(createMarker(coordenadasFinales));
-        } else {
-            window.alert('Error al obtener la ruta final: ' + estado);
-        }
-    });
-    renderizadores[nombreRuta].push(renderizadorFinal);
+    return [solicitudInicio, solicitudFinal];
 }
 
-function mostrarNombreRutaEnInterfaz(nombreRuta, streetName1, streetName2) {
-    let rutaAmostrar = null;
-    switch (nombreRuta) {
-        case 'Ruta1':
-            rutaAmostrar = 'COTUM A';
-            break;
-        case 'Ruta2':
-            rutaAmostrar = 'Dolores San Martin';
-            break;
-        case 'Ruta3':
-            rutaAmostrar = ' A15-Miraflores';
-            break;
-        case 'Ruta4':
-            rutaAmostrar = 'Alto Selva Alegre';
-            break;
-        case 'Ruta5':
-            rutaAmostrar = 'C2-4D(Cono Norte)';
-            break;
-        case 'Ruta6':
-            rutaAmostrar = 'BJUANXXIII';
-            break;
-        case 'Ruta7':
-            rutaAmostrar = 'C7-5 AQP Masivo Alto Libertad ';
-            break;
-        case 'Ruta8':
-            rutaAmostrar = 'C11 COTUM B';
-            break;
-        case 'Ruta9':
-            rutaAmostrar = 'C - 3 de octubre';
-            break;
-        case 'Ruta10':
-            rutaAmostrar = 'C7 AqpMasivo 7-09';
-            break;
-        case 'Ruta11':
-            rutaAmostrar = 'A-Mariano Melgar';
-            break;
-        case 'Ruta12':
-            rutaAmostrar = 'B-Polanco';
-            break;
-        case 'Ruta13':
-            rutaAmostrar = 'B - 3 de octubre';
-            break;
-        case 'Ruta14':
-            rutaAmostrar = 'Cayma Enace';
-            break;
-        case 'Ruta15':
-            rutaAmostrar = 'La Perla S.R.L.T.D.A';
-            break;
-        case 'Ruta16':
-            rutaAmostrar = '15 de agosto';
-            break;
-        case 'Ruta17':
-            rutaAmostrar = 'ORIOL - A';
-            break;
-        case 'Ruta18':
-            rutaAmostrar = 'Uchumayo';
-            break;
-        default:
-            break;
-    }
-    const rutaNombreContainer = document.getElementById('ruta-nombre-container');
-
-    const rutaNombreElement = document.createElement('p');
-    let nuevaRutaText = '';
-
-    if (!streetName1 && streetName2) {
-        nuevaRutaText = `Debes tomar la ruta ${rutaAmostrar} y bajarte en ${streetName2}`;
-    } else if (streetName1 && !streetName2) {
-        nuevaRutaText = `Debes ir a ${streetName1} tomar la ruta ${rutaAmostrar}`;
-    } else {
-        nuevaRutaText = `Debes ir a ${streetName1} tomar la ruta ${rutaAmostrar} y bajarte en ${streetName2}`;
+function Solicitudes_Caminando(ParadaInicio, ParadaFinal, ParadaIntermedia1, ParadaIntermedia2) {
+    let solicitudInicio = {
+        origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
+        destination: { lat: ParadaInicio.lat, lng: ParadaInicio.lng },
+        travelMode: 'WALKING'
     }
 
-    if (rutaNombreContainer.children.length > 0) {
-        let ultimoElemento = rutaNombreContainer.lastElementChild;
-        ultimoElemento.textContent += ' luego ' + nuevaRutaText;
-    } else {
-        rutaNombreElement.textContent = nuevaRutaText;
-        rutaNombreContainer.appendChild(rutaNombreElement);
+    let solicitudIntermedia = {
+        origin: { lat: ParadaIntermedia1.lat, lng: ParadaIntermedia1.lng },
+        destination: { ParadaIntermedia2 },
+        travelMode: 'WALKING'
     }
+
+    let solicitudFinal = {
+        origin: { lat: ParadaFinal.lat, lng: ParadaFinal.lng },
+        destination: { lat: destinoMarcador.getPosition().lat(), lng: destinoMarcador.getPosition().lng() },
+        travelMode: 'WALKING'
+    }
+    return [solicitudInicio, solicitudIntermedia, solicitudFinal];
 }
 
-
-function obtenerNombreCalle(lat, lng) {
-    return new Promise((resolve, reject) => {
-        var geocoder = new google.maps.Geocoder();
-        var latLng = new google.maps.LatLng(lat, lng);
-
-        geocoder.geocode({ 'location': latLng }, function (results, status) {
-            if (status === 'OK') {
-                if (results[0]) {
-                    var addressComponents = results[0].address_components;
-                    var streetName = "";
-
-                    for (var i = 0; i < addressComponents.length; i++) {
-                        if (addressComponents[i].types.includes("route")) {
-                            streetName = addressComponents[i].long_name;
-                            break;
-                        }
-                    }
-
-                    if (streetName) {
-                        resolve(streetName);
-                    } else {
-                        resolve("");
-                    }
-                } else {
-                    reject('No se encontraron resultados');
-                }
-            } else {
-                reject('Geocoder falló debido a: ' + status);
-            }
-        });
-    });
-}
 
 function borrarRutas() {
     const rutaNombreContainer = document.getElementById('ruta-nombre-container');
@@ -1526,20 +1323,20 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia , Miraflores ' }, 
-                { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'IEI Mi Amiguito Jesús' }, 
-                { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' A.h Villa la Pradera Miraflores' }, 
-                { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'PRONOEI- LOS CLAVELES, Miraflores ' }, 
-                { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Av.Goyeneche con Tacna y Arica' }, 
-                { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245 con Av. Tarapaca, Miraflores ' }, 
-                { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores, PARQUE LEONCIO MEDINA MORANTE' }, 
-                { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'Plaza Mayta Cápac' }, 
-                { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700,D´HAMUY Restaurante especializado en barbacoa' }, 
-                { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982,Estación de Servicio Repsol' }, 
-                { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Palacios con Sepúlveda , Miraflores ' }, 
-                { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Av. Vidaurrazaga Angel Caballero 2700 ' }, 
-                { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' }, 
-                { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'Polleria Cariocos' }
+            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia , Miraflores ' },
+            { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'IEI Mi Amiguito Jesús' },
+            { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' A.h Villa la Pradera Miraflores' },
+            { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'PRONOEI- LOS CLAVELES, Miraflores ' },
+            { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Av.Goyeneche con Tacna y Arica' },
+            { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245 con Av. Tarapaca, Miraflores ' },
+            { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores, PARQUE LEONCIO MEDINA MORANTE' },
+            { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'Plaza Mayta Cápac' },
+            { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700,D´HAMUY Restaurante especializado en barbacoa' },
+            { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982,Estación de Servicio Repsol' },
+            { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Palacios con Sepúlveda , Miraflores ' },
+            { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Av. Vidaurrazaga Angel Caballero 2700 ' },
+            { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'Polleria Cariocos' }
         ],
 
         recorrido: 'Ida',
@@ -2142,7 +1939,7 @@ var Rutas = {
             { coordenadas: { lat: -16.364530, lng: -71.515414 }, nombre: 'C. 7, Arequipa ' },
             { coordenadas: { lat: -16.367270, lng: -71.519366 }, nombre: 'C. Elias Aguirre 645-585, Arequipa ' },
             { coordenadas: { lat: -16.368882, lng: -71.519305 }, nombre: 'A.h Villa Independiente Zona B, Arequipa ' },
-            { coordenadas: { lat: -16.371222, lng: -71.516691 }, nombre: 'Leticia 803, Alto Selva Alegre '},
+            { coordenadas: { lat: -16.371222, lng: -71.516691 }, nombre: 'Leticia 803, Alto Selva Alegre ' },
             { coordenadas: { lat: -16.374671, lng: -71.522629 }, nombre: 'Av. las Torres 13, Alto Selva Alegre ' },
             { coordenadas: { lat: -16.378040, lng: -71.524532 }, nombre: 'Pl. Mayor de Alto Selva Alegre, Arequipa ' },
             { coordenadas: { lat: -16.378157, lng: -71.521353 }, nombre: 'Coop Ramiro Priale Priale, Arequipa ' },
@@ -2593,25 +2390,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.405880, lng: -71.531609 }, nombre: '' },
-            { coordenadas: { lat: -16.406972, lng: -71.530688 }, nombre: '' },
-            { coordenadas: { lat: -16.404405, lng: -71.527465 }, nombre: '' },
-            { coordenadas: { lat: -16.408085, lng: -71.526767 }, nombre: '' },
-            { coordenadas: { lat: -16.404361, lng: -71.519511 }, nombre: '' },
-            { coordenadas: { lat: -16.402466, lng: -71.517523 }, nombre: '' },
-            { coordenadas: { lat: -16.405498, lng: -71.515520 }, nombre: '' },
-            { coordenadas: { lat: -16.404548, lng: -71.513906 }, nombre: '' },
-            { coordenadas: { lat: -16.406530, lng: -71.510884 }, nombre: '' },
-            { coordenadas: { lat: -16.407595, lng: -71.509244 }, nombre: '' },
-            { coordenadas: { lat: -16.409440, lng: -71.506484 }, nombre: '' },
-            { coordenadas: { lat: -16.410225, lng: -71.505253 }, nombre: '' },
-            { coordenadas: { lat: -16.410972, lng: -71.504035 }, nombre: '' },
-            { coordenadas: { lat: -16.412086, lng: -71.502399 }, nombre: '' },
-            { coordenadas: { lat: -16.413010, lng: -71.500945 }, nombre: '' },
-            { coordenadas: { lat: -16.414211, lng: -71.499164 }, nombre: '' },
-            { coordenadas: { lat: -16.416856, lng: -71.496647 }, nombre: '' },
-            { coordenadas: { lat: -16.415251, lng: -71.494262 }, nombre: '' },
-            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: '' }
+            { coordenadas: { lat: -16.405880, lng: -71.531609 }, nombre: 'Victor Lira y C. Castilla' },
+            { coordenadas: { lat: -16.406972, lng: -71.530688 }, nombre: 'Av. Independencia y Victor Lira' },
+            { coordenadas: { lat: -16.404405, lng: -71.527465 }, nombre: 'Av. Independencia y Paucarpata' },
+            { coordenadas: { lat: -16.408085, lng: -71.526767 }, nombre: 'Via Rapida Venezuela y C. Ventura Mojarras' },
+            { coordenadas: { lat: -16.405475, lng: -71.521031 }, nombre: 'Virgen del Pilar y Puerta UNSA Sociales' },
+            { coordenadas: { lat: -16.404361, lng: -71.519511 }, nombre: 'Virgen del Pilar y Cooperativa Universitaria' },
+            { coordenadas: { lat: -16.402466, lng: -71.517523 }, nombre: 'Via Rapida Venezuela y Av. Mariscal Castilla' },
+            { coordenadas: { lat: -16.404548, lng: -71.513906 }, nombre: 'Av. Mariscal Castilla y Av. Lima' },
+            { coordenadas: { lat: -16.406530, lng: -71.510884 }, nombre: 'Av. Mariscal Castilla y Comandante Canga' },
+            { coordenadas: { lat: -16.407595, lng: -71.509244 }, nombre: 'Av. Mariscal Castilla y Praga' },
+            { coordenadas: { lat: -16.409440, lng: -71.506484 }, nombre: 'Av. Mariscal Castilla y Londres' },
+            { coordenadas: { lat: -16.410225, lng: -71.505253 }, nombre: 'Puente Santa Rosa' },
+            { coordenadas: { lat: -16.410972, lng: -71.504035 }, nombre: 'Av. Mariscal Castilla y De Febrero' },
+            { coordenadas: { lat: -16.412086, lng: -71.502399 }, nombre: 'Parque 15 de Agosto' },
+            { coordenadas: { lat: -16.413010, lng: -71.500945 }, nombre: 'Av. Mariscal Castilla y Salaverry' },
+            { coordenadas: { lat: -16.414211, lng: -71.499164 }, nombre: 'Av. Mariscal Castilla y Tupac Amaru' },
+            { coordenadas: { lat: -16.416856, lng: -71.496647 }, nombre: 'Av. Mariscal Castilla y Roma' },
+            { coordenadas: { lat: -16.415251, lng: -71.494262 }, nombre: 'Los Alpes y Cusco' },
+            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: 'Cusco y Sta. Clara' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta15'
@@ -2648,26 +2445,26 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' },
-            { coordenadas: { lat: -16.414957, lng: -71.482207 }, nombre: '' },
-            { coordenadas: { lat: -16.416374, lng: -71.491533 }, nombre: '' },
-            { coordenadas: { lat: -16.417192, lng: -71.490997 }, nombre: '' },
-            { coordenadas: { lat: -16.419366, lng: -71.494388 }, nombre: '' },
-            { coordenadas: { lat: -16.421863, lng: -71.498269 }, nombre: '' },
-            { coordenadas: { lat: -16.421304, lng: -71.499081 }, nombre: '' },
-            { coordenadas: { lat: -16.419748, lng: -71.501452 }, nombre: '' },
-            { coordenadas: { lat: -16.418202, lng: -71.503757 }, nombre: '' },
-            { coordenadas: { lat: -16.416961, lng: -71.505599 }, nombre: '' },
-            { coordenadas: { lat: -16.413997, lng: -71.510035 }, nombre: '' },
-            { coordenadas: { lat: -16.411856, lng: -71.512615 }, nombre: '' },
-            { coordenadas: { lat: -16.407584, lng: -71.514463 }, nombre: '' },
-            { coordenadas: { lat: -16.401931, lng: -71.517658 }, nombre: '' },
-            { coordenadas: { lat: -16.401852, lng: -71.524443 }, nombre: '' },
-            { coordenadas: { lat: -16.404277, lng: -71.527423 }, nombre: '' },
-            { coordenadas: { lat: -16.416436, lng: -71.533493 }, nombre: '' },
-            { coordenadas: { lat: -16.425214, lng: -71.533381 }, nombre: '' },
-            { coordenadas: { lat: -16.424623, lng: -71.537356 }, nombre: '' },
-            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' }
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: 'Mariano Melgar y C. 10' },
+            { coordenadas: { lat: -16.414957, lng: -71.482207 }, nombre: 'Av. Los Incas y La Cultura' },
+            { coordenadas: { lat: -16.416374, lng: -71.491533 }, nombre: 'Av. Los Incas y Martires de Chicago' },
+            { coordenadas: { lat: -16.417192, lng: -71.490997 }, nombre: 'Av. Revolucion y Martires de Chicago' },
+            { coordenadas: { lat: -16.419366, lng: -71.494388 }, nombre: 'Av. Revolucion y Mariscal Castilla' },
+            { coordenadas: { lat: -16.421863, lng: -71.498269 }, nombre: 'Av. Revolucion y Av. Jesus' },
+            { coordenadas: { lat: -16.421304, lng: -71.499081 }, nombre: 'Av. Jesus y Tupac Amaru' },
+            { coordenadas: { lat: -16.419748, lng: -71.501452 }, nombre: 'Av. Jesus y Porongoche' },
+            { coordenadas: { lat: -16.418202, lng: -71.503757 }, nombre: 'Av. Jesus y C. 3' },
+            { coordenadas: { lat: -16.416961, lng: -71.505599 }, nombre: 'Av. Jesus y Av. Amauta' },
+            { coordenadas: { lat: -16.413997, lng: -71.510035 }, nombre: 'Av. Jesus y Av. Industrial' },
+            { coordenadas: { lat: -16.411856, lng: -71.512615 }, nombre: 'Av. Jesus y Av. Argentina' },
+            { coordenadas: { lat: -16.407584, lng: -71.514463 }, nombre: 'Av. Jesus y Comandante Canga' },
+            { coordenadas: { lat: -16.401931, lng: -71.517658 }, nombre: 'Av. Mariscal Castilla y Via Rapida Venezuela' },
+            { coordenadas: { lat: -16.401852, lng: -71.524443 }, nombre: 'Av. Independencia y La Salle' },
+            { coordenadas: { lat: -16.404277, lng: -71.527423 }, nombre: 'Av. Independencia y Paucarpata' },
+            { coordenadas: { lat: -16.416436, lng: -71.533493 }, nombre: 'Av. Daniel Alcides Carrion y Jose Gomez' },
+            { coordenadas: { lat: -16.425214, lng: -71.533381 }, nombre: 'Av. Daniel Alcides Carrion y Av. Andres Avelino Caceres' },
+            { coordenadas: { lat: -16.424623, lng: -71.537356 }, nombre: 'Av. Andres Avelino Caceres y Av. Vidaurrazaga' },
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: 'Av. Andres Avelino Caceres y Av. Los Incas' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta16'
@@ -2700,25 +2497,25 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' },
-            { coordenadas: { lat: -16.420349, lng: -71.538283 }, nombre: '' },
-            { coordenadas: { lat: -16.416409, lng: -71.533253 }, nombre: '' },
-            { coordenadas: { lat: -16.410877, lng: -71.533310 }, nombre: '' },
-            { coordenadas: { lat: -16.408833, lng: -71.532856 }, nombre: '' },
-            { coordenadas: { lat: -16.404901, lng: -71.532332 }, nombre: '' },
-            { coordenadas: { lat: -16.402540, lng: -71.529401 }, nombre: '' },
-            { coordenadas: { lat: -16.400045, lng: -71.526315 }, nombre: '' },
-            { coordenadas: { lat: -16.398129, lng: -71.523925 }, nombre: '' },
-            { coordenadas: { lat: -16.401035, lng: -71.519330 }, nombre: '' },
-            { coordenadas: { lat: -16.402709, lng: -71.516916 }, nombre: '' },
-            { coordenadas: { lat: -16.411832, lng: -71.512658 }, nombre: '' },
-            { coordenadas: { lat: -16.416808, lng: -71.505883 }, nombre: '' },
-            { coordenadas: { lat: -16.419231, lng: -71.502285 }, nombre: '' },
-            { coordenadas: { lat: -16.420963, lng: -71.499699 }, nombre: '' },
-            { coordenadas: { lat: -16.421904, lng: -71.498309 }, nombre: '' },
-            { coordenadas: { lat: -16.417192, lng: -71.490994 }, nombre: '' },
-            { coordenadas: { lat: -16.414970, lng: -71.482243 }, nombre: '' },
-            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' }
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: 'Av. Andres Avelino Caceres y Av. Los Incas' },
+            { coordenadas: { lat: -16.420349, lng: -71.538283 }, nombre: 'Av. Los Incas y Av. Vidaurrazaga' },
+            { coordenadas: { lat: -16.416409, lng: -71.533253 }, nombre: 'Hospital Regional Honorio Delgado' },
+            { coordenadas: { lat: -16.410877, lng: -71.533310 }, nombre: 'Sedapar' },
+            { coordenadas: { lat: -16.408833, lng: -71.532856 }, nombre: 'Av. Independencia y Garci de Carbajal' },
+            { coordenadas: { lat: -16.404901, lng: -71.532332 }, nombre: 'Av. Jorge Chavez y Victor Lira' },
+            { coordenadas: { lat: -16.402540, lng: -71.529401 }, nombre: 'Av. Jorge Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.400045, lng: -71.526315 }, nombre: 'Av. Goyeneche y La Salle' },
+            { coordenadas: { lat: -16.398129, lng: -71.523925 }, nombre: 'Av. Goyeneche y Manuel Muñoz Najar' },
+            { coordenadas: { lat: -16.401035, lng: -71.519330 }, nombre: 'Av. Mariscal Castilla y Republica de Chile' },
+            { coordenadas: { lat: -16.402709, lng: -71.516916 }, nombre: 'Ovalo de Mariscal Castilla' },
+            { coordenadas: { lat: -16.411832, lng: -71.512658 }, nombre: 'Av. Jesus y Av. Argentina' },
+            { coordenadas: { lat: -16.416808, lng: -71.505883 }, nombre: 'Av. Jesus y Los Ideales' },
+            { coordenadas: { lat: -16.419231, lng: -71.502285 }, nombre: 'Av. Jesus y Av. Javier de Luna Pizarro' },
+            { coordenadas: { lat: -16.420963, lng: -71.499699 }, nombre: 'Av. Jesus y Ricardo Palma' },
+            { coordenadas: { lat: -16.421904, lng: -71.498309 }, nombre: 'Av. Jesus y Av. Revolucion' },
+            { coordenadas: { lat: -16.417192, lng: -71.490994 }, nombre: 'Av. Revolucion y Martires de Chicago' },
+            { coordenadas: { lat: -16.414970, lng: -71.482243 }, nombre: 'Av. Los Incas y La Cultura' },
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: 'Mariano Melgar y C. 10' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta16'
@@ -2755,29 +2552,29 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.457495, lng: -71.553456 }, nombre: '' },
-            { coordenadas: { lat: -16.454059, lng: -71.551968 }, nombre: '' },
-            { coordenadas: { lat: -16.451625, lng: -71.554773 }, nombre: '' },
-            { coordenadas: { lat: -16.449373, lng: -71.552765 }, nombre: '' },
-            { coordenadas: { lat: -16.447824, lng: -71.551574 }, nombre: '' },
-            { coordenadas: { lat: -16.445044, lng: -71.553789 }, nombre: '' },
-            { coordenadas: { lat: -16.443232, lng: -71.555744 }, nombre: '' },
-            { coordenadas: { lat: -16.440109, lng: -71.558928 }, nombre: '' },
-            { coordenadas: { lat: -16.438159, lng: -71.561045 }, nombre: '' },
-            { coordenadas: { lat: -16.435799, lng: -71.562146 }, nombre: '' },
-            { coordenadas: { lat: -16.433926, lng: -71.561266 }, nombre: '' },
-            { coordenadas: { lat: -16.431596, lng: -71.561566 }, nombre: '' },
-            { coordenadas: { lat: -16.425467, lng: -71.556556 }, nombre: '' },
-            { coordenadas: { lat: -16.417991, lng: -71.550118 }, nombre: '' },
-            { coordenadas: { lat: -16.408094, lng: -71.541803 }, nombre: '' },
-            { coordenadas: { lat: -16.405833, lng: -71.540123 }, nombre: '' },
-            { coordenadas: { lat: -16.407579, lng: -71.538789 }, nombre: '' },
-            { coordenadas: { lat: -16.408788, lng: -71.537813 }, nombre: '' },
-            { coordenadas: { lat: -16.407687, lng: -71.535737 }, nombre: '' },
-            { coordenadas: { lat: -16.406086, lng: -71.5337799 }, nombre: '' },
-            { coordenadas: { lat: -16.404857, lng: -71.532234 }, nombre: '' },
-            { coordenadas: { lat: -16.402557, lng: -71.529376 }, nombre: '' },
-            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' }
+            { coordenadas: { lat: -16.457495, lng: -71.553456 }, nombre: 'Andres Avelino Caceres y Putre' },
+            { coordenadas: { lat: -16.454059, lng: -71.551968 }, nombre: 'Andres Avelino Caceres y Revolucion' },
+            { coordenadas: { lat: -16.451625, lng: -71.554773 }, nombre: 'Estadio Juan Velasco Alvarado' },
+            { coordenadas: { lat: -16.449373, lng: -71.552765 }, nombre: 'Av. Marical Ureta y Av. San Miguel de Piura' },
+            { coordenadas: { lat: -16.447824, lng: -71.551574 }, nombre: 'Av. Marical Ureta y Viña del Mar' },
+            { coordenadas: { lat: -16.445044, lng: -71.553789 }, nombre: 'Viña del Mar y Costa Rica' },
+            { coordenadas: { lat: -16.443232, lng: -71.555744 }, nombre: 'Viña del Mar y Av. Brasilia' },
+            { coordenadas: { lat: -16.440109, lng: -71.558928 }, nombre: 'Ovalo de Hunter' },
+            { coordenadas: { lat: -16.438159, lng: -71.561045 }, nombre: 'Americas y C. Pedro P. Diaz' },
+            { coordenadas: { lat: -16.435799, lng: -71.562146 }, nombre: 'Grifo Primax Hunter' },
+            { coordenadas: { lat: -16.433926, lng: -71.561266 }, nombre: 'Santa Paula School' },
+            { coordenadas: { lat: -16.431596, lng: -71.561566 }, nombre: 'Americas y Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.425467, lng: -71.556556 }, nombre: 'Universidad La Salle' },
+            { coordenadas: { lat: -16.417991, lng: -71.550118 }, nombre: 'Parque By Pass Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.408094, lng: -71.541803 }, nombre: 'Av. Parra y Andrés Martinez' },
+            { coordenadas: { lat: -16.405833, lng: -71.540123 }, nombre: 'Av. Parra y Salaverry' },
+            { coordenadas: { lat: -16.407579, lng: -71.538789 }, nombre: 'Salaverry y Quiroz' },
+            { coordenadas: { lat: -16.408788, lng: -71.537813 }, nombre: 'Av. Mariscal Caceres y Av. Jorge Chavez' },
+            { coordenadas: { lat: -16.407687, lng: -71.535737 }, nombre: 'Av. Jorge Chavez y Calle Gutierrez de la Fuente' },
+            { coordenadas: { lat: -16.406086, lng: -71.5337799 }, nombre: 'Av. Jorge Chavez y   C. 15 de Agosto' },
+            { coordenadas: { lat: -16.404857, lng: -71.532234 }, nombre: 'Av. Jorge Chavez y Victor Lira' },
+            { coordenadas: { lat: -16.402557, lng: -71.529376 }, nombre: 'Av. Jorge Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: 'Paucarpata y Av. Independencia' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta17'
@@ -2811,28 +2608,27 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' },
-            { coordenadas: { lat: -16.407302, lng: -71.531077 }, nombre: '' },
-            { coordenadas: { lat: -16.408759, lng: -71.532887 }, nombre: '' },
-            { coordenadas: { lat: -16.409945, lng: -71.534394 }, nombre: '' },
-            { coordenadas: { lat: -16.409031, lng: -71.537289 }, nombre: '' },
-            { coordenadas: { lat: -16.407880, lng: -71.538376 }, nombre: '' },
-            { coordenadas: { lat: -16.405765, lng: -71.540001 }, nombre: '' },
-            { coordenadas: { lat: -16.408011, lng: -71.541922 }, nombre: '' },
-            { coordenadas: { lat: -16.416775, lng: -71.549205 }, nombre: '' },
-            { coordenadas: { lat: -16.424112, lng: -71.555641 }, nombre: '' },
-            { coordenadas: { lat: -16.431679, lng: -71.561626 }, nombre: '' },
-            { coordenadas: { lat: -16.435113, lng: -71.562212 }, nombre: '' },
-            { coordenadas: { lat: -16.438143, lng: -71.561196 }, nombre: '' },
-            { coordenadas: { lat: -16.440143, lng: -71.559143 }, nombre: '' },
-            { coordenadas: { lat: -16.443101, lng: -71.555940 }, nombre: '' },
-            { coordenadas: { lat: -16.447744, lng: -71.551620 }, nombre: '' },
-            { coordenadas: { lat: -16.448796, lng: -71.552552 }, nombre: '' },
-            { coordenadas: { lat: -16.449967, lng: -71.553328 }, nombre: '' },
-            { coordenadas: { lat: -16.451293, lng: -71.554598 }, nombre: '' },
-            { coordenadas: { lat: -16.453984, lng: -71.552040 }, nombre: '' },
-            { coordenadas: { lat: -16.457464, lng: -71.553470 }, nombre: '' }
-
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: 'Paucarpata y Av. Independencia' },
+            { coordenadas: { lat: -16.407302, lng: -71.531077 }, nombre: 'Av. Independencia y C. 2 de Mayo' },
+            { coordenadas: { lat: -16.408759, lng: -71.532887 }, nombre: 'Av. Independencia y Garci de Carbajal' },
+            { coordenadas: { lat: -16.409945, lng: -71.534394 }, nombre: 'Estadio Melgar' },
+            { coordenadas: { lat: -16.409031, lng: -71.537289 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.407880, lng: -71.538376 }, nombre: 'Av. Mariscal Caceres y C. San Juan de Dios' },
+            { coordenadas: { lat: -16.405765, lng: -71.540001 }, nombre: 'Salaverry y C. La Merced' },
+            { coordenadas: { lat: -16.408011, lng: -71.541922 }, nombre: 'Av. Parra y Rda. Tarapaca' },
+            { coordenadas: { lat: -16.416775, lng: -71.549205 }, nombre: 'Av. Parra y Pje San Isidro' },
+            { coordenadas: { lat: -16.424112, lng: -71.555641 }, nombre: 'Colegio San Jose' },
+            { coordenadas: { lat: -16.431679, lng: -71.561626 }, nombre: 'Americas y Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.435113, lng: -71.562212 }, nombre: 'Grifo Primax Hunter' },
+            { coordenadas: { lat: -16.438143, lng: -71.561196 }, nombre: 'Americas y C. Pedro P. Diaz' },
+            { coordenadas: { lat: -16.440143, lng: -71.559143 }, nombre: 'Ovalo de Hunter' },
+            { coordenadas: { lat: -16.443101, lng: -71.555940 }, nombre: 'Viña del Mar y Av. Brasilia' },
+            { coordenadas: { lat: -16.447744, lng: -71.551620 }, nombre: 'Viña del Mar y Av. Marical Ureta' },
+            { coordenadas: { lat: -16.448796, lng: -71.552552 }, nombre: 'Av. Marical Ureta y Teniente Nestor Bataneros' },
+            { coordenadas: { lat: -16.449967, lng: -71.553328 }, nombre: 'Av. Marical Ureta y Av. San Miguel de Piura' },
+            { coordenadas: { lat: -16.451293, lng: -71.554598 }, nombre: 'Estadio Juan Velasco Alvarado' },
+            { coordenadas: { lat: -16.453984, lng: -71.552040 }, nombre: 'Andres Avelino Caceres y Revolucion' },
+            { coordenadas: { lat: -16.457464, lng: -71.553470 }, nombre: 'Andres Avelino Caceres y Putre' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta17'
@@ -2863,24 +2659,24 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
-            { coordenadas: { lat: -16.412088, lng: -71.632504 }, nombre: '' },
-            { coordenadas: { lat: -16.407951, lng: -71.608429 }, nombre: '' },
-            { coordenadas: { lat: -16.406695, lng: -71.600124 }, nombre: '' },
-            { coordenadas: { lat: -16.405934, lng: -71.587915 }, nombre: '' },
-            { coordenadas: { lat: -16.404796, lng: -71.573517 }, nombre: '' },
-            { coordenadas: { lat: -16.404445, lng: -71.568290 }, nombre: '' },
-            { coordenadas: { lat: -16.406437, lng: -71.563684 }, nombre: '' },
-            { coordenadas: { lat: -16.410773, lng: -71.557252 }, nombre: '' },
-            { coordenadas: { lat: -16.417835, lng: -71.549945 }, nombre: '' },
-            { coordenadas: { lat: -16.412769, lng: -71.545555 }, nombre: '' },
-            { coordenadas: { lat: -16.408253, lng: -71.541921 }, nombre: '' },
-            { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: '' },
-            { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: '' },
-            { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: '' },
-            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: '' },
-            { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: '' },
-            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' }
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: 'Plaza de Uchumayo' },
+            { coordenadas: { lat: -16.412088, lng: -71.632504 }, nombre: 'Variante de Uchumayo y Sub-lateral 5' },
+            { coordenadas: { lat: -16.407951, lng: -71.608429 }, nombre: 'Variante de Uchumayo y Lateral 3' },
+            { coordenadas: { lat: -16.406695, lng: -71.600124 }, nombre: 'Variante de Uchumayo y Lateral A' },
+            { coordenadas: { lat: -16.405934, lng: -71.587915 }, nombre: 'Ovalo del Condor' },
+            { coordenadas: { lat: -16.404796, lng: -71.573517 }, nombre: 'Variante de Uchumayo y Av. Circunvalacion' },
+            { coordenadas: { lat: -16.404445, lng: -71.568290 }, nombre: 'Variante de Uchumayo y Juan Santos Atahualpa' },
+            { coordenadas: { lat: -16.406437, lng: -71.563684 }, nombre: 'Ovalo de Camarones' },
+            { coordenadas: { lat: -16.410773, lng: -71.557252 }, nombre: 'Planta Backus' },
+            { coordenadas: { lat: -16.417835, lng: -71.549945 }, nombre: 'Parque By Pass Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.412769, lng: -71.545555 }, nombre: 'Av. Parra y Pje. Mariategui' },
+            { coordenadas: { lat: -16.408253, lng: -71.541921 }, nombre: 'Av. Parra y Andrés Martinez' },
+            { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: 'Av. Parra y Salaverry' },
+            { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: 'Av. Jorge Chavez y Av. Garci de Carbajal' },
+            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: 'Av. Jorde Chavez y Victor Lira' }, 
+            { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: 'Av. Jorde Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: 'Av. Goyeneche y La Salle' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta18'
@@ -2916,33 +2712,54 @@ var Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' },
-            { coordenadas: { lat: -16.401924, lng: -71.524605 }, nombre: '' },
-            { coordenadas: { lat: -16.404779, lng: -71.528059 }, nombre: '' },
-            { coordenadas: { lat: -16.406833, lng: -71.530515 }, nombre: '' },
-            { coordenadas: { lat: -16.408721, lng: -71.532890 }, nombre: '' },
-            { coordenadas: { lat: -16.408973, lng: -71.537310 }, nombre: '' },
-            { coordenadas: { lat: -16.407595, lng: -71.538597 }, nombre: '' },
-            { coordenadas: { lat: -16.405720, lng: -71.540101 }, nombre: '' },
-            { coordenadas: { lat: -16.408170, lng: -71.542015 }, nombre: '' },
-            { coordenadas: { lat: -16.412778, lng: -71.545521 }, nombre: '' },
-            { coordenadas: { lat: -16.415272, lng: -71.542435 }, nombre: '' },
-            { coordenadas: { lat: -16.419220, lng: -71.543721 }, nombre: '' },
-            { coordenadas: { lat: -16.418218, lng: -71.548446 }, nombre: '' },
-            { coordenadas: { lat: -16.411204, lng: -71.556279 }, nombre: '' },
-            { coordenadas: { lat: -16.406368, lng: -71.563135 }, nombre: '' },
-            { coordenadas: { lat: -16.404111, lng: -71.568179 }, nombre: '' },
-            { coordenadas: { lat: -16.404428, lng: -71.573264 }, nombre: '' },
-            { coordenadas: { lat: -16.405620, lng: -71.588551 }, nombre: '' },
-            { coordenadas: { lat: -16.406624, lng: -71.599973 }, nombre: '' },
-            { coordenadas: { lat: -16.407802, lng: -71.608172 }, nombre: '' },
-            { coordenadas: { lat: -16.411978, lng: -71.632483 }, nombre: '' },
-            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: 'Av. Goyeneche y La Salle' },
+            { coordenadas: { lat: -16.401924, lng: -71.524605 }, nombre: 'Av. Independencia y La Salle' },
+            { coordenadas: { lat: -16.404779, lng: -71.528059 }, nombre: 'Av. Independencia y Arevalo' },
+            { coordenadas: { lat: -16.406833, lng: -71.530515 }, nombre: 'Av. Independencia y Victor Lira' },
+            { coordenadas: { lat: -16.408721, lng: -71.532890 }, nombre: 'Av. Independencia y Av. Garci de Carbajal' },
+            { coordenadas: { lat: -16.408973, lng: -71.537310 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.407595, lng: -71.538597 }, nombre: 'Av. Mariscal Caceres y C. San Juan de Dios' },
+            { coordenadas: { lat: -16.405720, lng: -71.540101 }, nombre: 'Salaverry y C. La Merced' },
+            { coordenadas: { lat: -16.408170, lng: -71.542015 }, nombre: 'Av. Parra y Rda. Tarapaca' },
+            { coordenadas: { lat: -16.412778, lng: -71.545521 }, nombre: 'Av. Parra y Pje. Mariategui' },
+            { coordenadas: { lat: -16.415272, lng: -71.542435 }, nombre: 'Av. Vidaurrazaga y Ca. Jacinto Ibañez' },
+            { coordenadas: { lat: -16.419220, lng: -71.543721 }, nombre: 'Ca. Jacinto Ibañez y Juan Barcleay' },
+            { coordenadas: { lat: -16.418218, lng: -71.548446 }, nombre: 'Av. Miguel Forga' },
+            { coordenadas: { lat: -16.411204, lng: -71.556279 }, nombre: 'Planta Backus' },
+            { coordenadas: { lat: -16.406368, lng: -71.563135 }, nombre: 'Ovalo de Camarones' },
+            { coordenadas: { lat: -16.404111, lng: -71.568179 }, nombre: 'Variante de Uchumayo y Juan Santos Atahualpa' },
+            { coordenadas: { lat: -16.404428, lng: -71.573264 }, nombre: 'Variante de Uchumayo y Av. Circunvalacion' },
+            { coordenadas: { lat: -16.405620, lng: -71.588551 }, nombre: 'Ovalo del Condor' },
+            { coordenadas: { lat: -16.406624, lng: -71.599973 }, nombre: 'Variante de Uchumayo y Lateral A' },
+            { coordenadas: { lat: -16.407802, lng: -71.608172 }, nombre: 'Variante de Uchumayo y Lateral 3' },
+            { coordenadas: { lat: -16.411978, lng: -71.632483 }, nombre: 'Variante de Uchumayo y Sub-lateral 5' },
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: 'Plaza de Uchumayo' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta18'
     }
 }
+
+const Nombre_Rutas = {
+    'Ruta1': 'COTUM A',
+    'Ruta2': 'Dolores San Martin',
+    'Ruta3': 'A15-Miraflores',
+    'Ruta4': 'Alto Selva Alegre',
+    'Ruta5': 'C2-4D(Cono Norte)',
+    'Ruta6': 'BJUANXXIII',
+    'Ruta7': 'C7-5 AQP Masivo Alto Libertad',
+    'Ruta8': 'C11 COTUM B',
+    'Ruta9': 'C - 3 de octubre',
+    'Ruta10': 'C7 AqpMasivo 7-09',
+    'Ruta11': 'A-Mariano Melgar',
+    'Ruta12': 'B-Polanco',
+    'Ruta13': 'B - 3 de octubre',
+    'Ruta14': 'Cayma Enace',
+    'Ruta15': 'La Perla S.R.L.T.D.A',
+    'Ruta16': '15 de agosto',
+    'Ruta17': 'ORIOL - A',
+    'Ruta18': 'Uchumayo'
+};
 
 function toggleDropdown() {
     const dropdownContent = document.getElementById('dropdownContent');
