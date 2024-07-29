@@ -5,7 +5,8 @@ var renderizadores = {};
 var marcadores = {};
 var paraderos = {};
 var destinoMarcador;
-let searchBox1, searchBox2;
+let searchBox1, searchBox2, searchBox3, searchBox4;
+let PuntoB, PuntoC;
 function loadGoogleMaps() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -63,13 +64,21 @@ function initMap() {
 
     const input1 = document.getElementById("pac-input");
     input1.style.display = 'inline-block';
+
     searchBox1 = new google.maps.places.SearchBox(input1);
     const input2 = document.getElementById("pac-input-2");
     searchBox2 = new google.maps.places.SearchBox(input2);
+    const input3 = document.getElementById("pac-input-3");
+    searchBox3 = new google.maps.places.SearchBox(input3);
+    const input4 = document.getElementById("pac-input-4");
+    searchBox4 = new google.maps.places.SearchBox(input4);
+
 
     mapa.addListener("bounds_changed", () => {
         searchBox1.setBounds(mapa.getBounds());
         searchBox2.setBounds(mapa.getBounds());
+        searchBox3.setBounds(mapa.getBounds());
+        searchBox4.setBounds(mapa.getBounds());
     });
 
     searchBox1.addListener("places_changed", () => {
@@ -79,6 +88,15 @@ function initMap() {
     searchBox2.addListener("places_changed", () => {
         handlePlacesChanged(searchBox2, false);
     });
+
+    searchBox3.addEventListener("places_changed", () => {
+        handleBCChange(searchBox3,true);
+    });
+
+    searchBox4.addEventListener("places_changes", () => {
+        handleBCChange(searchBox4,true);
+    })
+
     document.getElementById('checkbox').addEventListener('change', (event) => {
         if (!event.target.checked) {
             navigator.geolocation.getCurrentPosition(function (position) {
@@ -93,6 +111,7 @@ function initMap() {
         }
 
     });
+
     document.getElementById('borrar').addEventListener('click', function () {
         limpiarRutas();
     });
@@ -128,6 +147,34 @@ function handlePlacesChanged(searchBox, isPrimary) {
     mapa.fitBounds(bounds);
 }
 
+function handleBCChange(searchBox, isPrimary) {
+    const places = searchBox.getPlaces();
+
+    if (places.length == 0) {
+        return;
+    }
+
+    const bounds = new google.maps.LatLngBounds();
+    places.forEach((place) => {
+        if (!place.geometry || !place.geometry.location) {
+            console.log("Returned place contains no geometry");
+            return;
+        }
+
+        if (place.geometry.viewport) {
+            bounds.union(place.geometry.viewport);
+        } else {
+            bounds.extend(place.geometry.location);
+        }
+
+        if (isPrimary) {
+            agregarDestino(place.geometry.location);
+        } else {
+            actualizarUbicacion(place.geometry.location);
+        }
+    });
+    mapa.fitBounds(bounds);
+}
 
 function actualizarUbicacion(latLng) {
     if (ubicacion) {
@@ -384,9 +431,9 @@ function OneRoute() {
                 let paradaDest = GetNearStop(solicitud.paradas, Destino);
                 let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
                 estaciones[ruta] = paradasFiltradas;
-                instrucciones[ruta] = Get_Instrucctions(solicitud, paradaUbi, paradaDest);
+                instrucciones[ruta] = Get_Instrucctions1(solicitud, paradaUbi, paradaDest);
                 let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
-                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando(paradaUbi, paradaDest);
+                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1(paradaUbi, paradaDest);
                 let arraySolicitudes = [];
                 arraySolicitudes.push(solicitudPParada);
                 arraySolicitudes.push(solicitudfiltrada);
@@ -405,7 +452,7 @@ function Get_Stop(Paraderos, Coordenada) {
     );
 }
 
-function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
+function Get_Instrucctions1(Ruta, Parada_1, Parada_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
@@ -422,7 +469,7 @@ function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
     return instrucciones;
 }
 
-function Get_Instrucctions(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
+function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
@@ -527,7 +574,7 @@ function TwoRoutes() {
         nombres = nombres.filter(ruta => ruta !== undefined);
 
         let nombreresult = {};
-        let estaciones= {};
+        let estaciones = {};
         let solicitudes = {};
         let instrucciones = {};
 
@@ -545,22 +592,19 @@ function TwoRoutes() {
                 let paradasRuta_2 = GetFilteredStops(ruta2Objeto.paradas, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
                 let solicitudRuta1 = GetFilteredRequest(ruta1Objeto.solicitud, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
                 let solicitudRuta2 = GetFilteredRequest(ruta2Objeto.solicitud, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
-                let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando(GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada);
-                
+                let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando2(GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada);
+
                 solicitudes[index] = [
                     { [ruta1]: solicitudRuta1 },
                     { [ruta2]: solicitudRuta2 },
                     { 'Caminando': [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] }
                 ];
                 estaciones[index] = [{ [ruta1]: paradasRuta_1, [ruta2]: paradasRuta_2 }];
-                instrucciones[index] = Get_Instrucctions(ruta1Objeto,ruta2Objeto,GetNearStop(ruta1Objeto.paradas, Inicial),Objeto[ruta1].parada,GetNearStop(ruta2Objeto.paradas, Destino),Objeto[ruta2].parada);
+                instrucciones[index] = Get_Instrucctions2(ruta1Objeto, ruta2Objeto, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada, GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta2].parada);
             }
         });
-        console.log(nombreresult);
-        console.log(estaciones);
-        console.log(solicitudes);
-        console.log(instrucciones);
         result = { nombres: nombreresult, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
+        return result;
     }
 }
 
@@ -742,7 +786,7 @@ function GetFilteredRequest(solicitud, paraderoinicio, paraderofinal) {
     return nuevasolicitud;
 }
 
-function Solicitudes_Caminando(paraderoinicio, paraderofinal) {
+function Solicitudes_Caminando1(paraderoinicio, paraderofinal) {
     let solicitudInicio = {
         origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
         destination: { lat: paraderoinicio.lat, lng: paraderoinicio.lng },
@@ -756,7 +800,7 @@ function Solicitudes_Caminando(paraderoinicio, paraderofinal) {
     return [solicitudInicio, solicitudFinal];
 }
 
-function Solicitudes_Caminando(ParadaInicio, ParadaFinal, ParadaIntermedia1, ParadaIntermedia2) {
+function Solicitudes_Caminando2(ParadaInicio, ParadaFinal, ParadaIntermedia1, ParadaIntermedia2) {
     let solicitudInicio = {
         origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
         destination: { lat: ParadaInicio.lat, lng: ParadaInicio.lng },
@@ -865,7 +909,7 @@ function createMarker(parada, color) {
 }
 
 var Rutas = {
-   Ruta1_Ida: {
+    Ruta1_Ida: {
         solicitud: {
             origin: { lat: -16.386904, lng: -71.574997 },
             destination: { lat: -16.430473, lng: -71.532604 },
@@ -920,7 +964,7 @@ var Rutas = {
             { coordenadas: { lat: -16.415587, lng: -71.515251 }, nombre: 'Mall aventura Plaza' },
             { coordenadas: { lat: -16.425626, lng: -71.514997 }, nombre: 'Reservorio guardia civil' },
             { coordenadas: { lat: -16.430518, lng: -71.532659 }, nombre: 'Ovalo la Pacheta' }
-            
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta1'
@@ -957,13 +1001,13 @@ var Rutas = {
             ]
         },
         paradas: [
-	        { coordenadas: { lat: -16.430527, lng: -71.532679 }, nombre: 'Ovalo La Pacheta' },
+            { coordenadas: { lat: -16.430527, lng: -71.532679 }, nombre: 'Ovalo La Pacheta' },
             { coordenadas: { lat: -16.427114, lng: -71.532986 }, nombre: 'Banco de la nacion' },
             { coordenadas: { lat: -16.424915, lng: -71.533111 }, nombre: 'Ovalo avelino-Interbank' },
-            { coordenadas: { lat: -16.415159, lng: -71.534085 }, nombre: 'Hospital Regional Honorio Delgado Espinoza'},
-            { coordenadas: { lat: -16.412616, lng: -71.535115 },nombre: 'unsa biomedicas' },
+            { coordenadas: { lat: -16.415159, lng: -71.534085 }, nombre: 'Hospital Regional Honorio Delgado Espinoza' },
+            { coordenadas: { lat: -16.412616, lng: -71.535115 }, nombre: 'unsa biomedicas' },
             { coordenadas: { lat: -16.407739, lng: -71.538476 }, nombre: 'estacion ormeño' },
-            { coordenadas: { lat: -16.405759, lng: -71.540041 }, nombre: 'estacion salaverry'},
+            { coordenadas: { lat: -16.405759, lng: -71.540041 }, nombre: 'estacion salaverry' },
             { coordenadas: { lat: -16.399888, lng: -71.542147 }, nombre: 'av la marina-plaza vea' },
             { coordenadas: { lat: -16.396656, lng: -71.545229 }, nombre: 'hospital yanahuara' },
             { coordenadas: { lat: -16.395865, lng: -71.546869 }, nombre: 'Belaunde - Comandante Ruiz' },
@@ -978,12 +1022,12 @@ var Rutas = {
             { coordenadas: { lat: -16.393332, lng: -71.568197 }, nombre: 'Colegio Divino Niño Jesus' },
             { coordenadas: { lat: -16.399972, lng: -71.570582 }, nombre: 'Coliseo Gallos la calle' },
             { coordenadas: { lat: -16.403192, lng: -71.568371 }, nombre: 'Alamos - Ayacucho' },
-            { coordenadas: { lat: -16.404418, lng: -71.572806 }, nombre: 'Variante Uchumayo' }, 
+            { coordenadas: { lat: -16.404418, lng: -71.572806 }, nombre: 'Variante Uchumayo' },
             { coordenadas: { lat: -16.397689, lng: -71.575074 }, nombre: 'Grifo COPAR' },
-            { coordenadas: { lat: -16.389262, lng: -71.574952 }, nombre: 'Reservorio semirural Pacahcutec'} 
+            { coordenadas: { lat: -16.389262, lng: -71.574952 }, nombre: 'Reservorio semirural Pacahcutec' }
 
 
-          
+
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta1'
@@ -1036,9 +1080,9 @@ var Rutas = {
             { coordenadas: { lat: -16.407074, lng: -71.524655 }, nombre: 'Av Venezuela' },
             { coordenadas: { lat: -16.404354, lng: -71.527389 }, nombre: 'Paucarpata con Indepenencia' },
             { coordenadas: { lat: -16.405586, lng: -71.528926 }, nombre: 'Coliseo' },
-            { coordenadas: { lat: -16.404357, lng: -71.531680 },nombre: 'Jorge Chavez - Bogota' },
-            { coordenadas: { lat:-16.4017290, lng: -71.528457 },  nombre: 'Hospital Goyeneche' }
-            
+            { coordenadas: { lat: -16.404357, lng: -71.531680 }, nombre: 'Jorge Chavez - Bogota' },
+            { coordenadas: { lat: -16.4017290, lng: -71.528457 }, nombre: 'Hospital Goyeneche' }
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta2'
@@ -1091,7 +1135,7 @@ var Rutas = {
             { coordenadas: { lat: -16.452495, lng: -71.531095 }, nombre: 'Grifo Milagritos' },
             { coordenadas: { lat: -16.461431, lng: -71.526400 }, nombre: 'Lara Tradicional' },
             { coordenadas: { lat: -16.458100, lng: -71.523867 }, nombre: 'Parque Mickey I' },
-            { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: 'la Palizada' }            
+            { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: 'la Palizada' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta2'
@@ -1181,7 +1225,7 @@ var Rutas = {
             { coordenadas: { lat: -16.3980897, lng: -71.5239162 }, nombre: 'Av. Mariscal Castilla' },
             { coordenadas: { lat: -16.396695, lng: -71.522204 }, nombre: 'Calle Puno' },
             { coordenadas: { lat: -16.395268, lng: -71.520426 }, nombre: 'Av. Progreso' },
-            { coordenadas: { lat: -16.394342, lng: -71.521385 },nombre: 'Parque mayta capac' },
+            { coordenadas: { lat: -16.394342, lng: -71.521385 }, nombre: 'Parque mayta capac' },
             { coordenadas: { lat: -16.393311, lng: -71.520566 }, nombre: 'I.E. Jose Galvez' },
             { coordenadas: { lat: -16.3909377, lng: -71.5185623 }, nombre: 'Iglesia Chapi chico' },
             { coordenadas: { lat: -16.388088, lng: -71.516188 }, nombre: 'Comisaria AltoMisti' },
@@ -1193,7 +1237,7 @@ var Rutas = {
             { coordenadas: { lat: -16.373088, lng: -71.502763 }, nombre: 'Grifo porvenir' },
             { coordenadas: { lat: -16.373672, lng: -71.501234 }, nombre: 'Torre de control' },
             { coordenadas: { lat: -16.375471, lng: -71.499743 }, nombre: 'I.E. padre Eloy' },
-            { coordenadas: { lat: -16.376776, lng: -71.498764 }, nombre: 'Terminal Mariategui' }           
+            { coordenadas: { lat: -16.376776, lng: -71.498764 }, nombre: 'Terminal Mariategui' }
 
         ],
         recorrido: 'Vuelta',
@@ -1247,7 +1291,7 @@ var Rutas = {
             { coordenadas: { lat: -16.399281, lng: -71.539981 }, nombre: 'Cruz Verde' },
             { coordenadas: { lat: -16.402460, lng: -71.538958 }, nombre: 'Calle Merced' },
             { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Salaverry' },
-            { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Parra' }           
+            { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Parra' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta4'
@@ -1302,7 +1346,7 @@ var Rutas = {
             { coordenadas: { lat: -16.369784, lng: -71.503754 }, nombre: 'Av Circunvalación' },
             { coordenadas: { lat: -16.369636, lng: -71.502064 }, nombre: 'San Luis C' },
             { coordenadas: { lat: -16.366831, lng: -71.499585 }, nombre: 'Huayro Restaurante' },
-            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO'}           
+            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO' }
 
         ],
         recorrido: 'Vuelta',
@@ -2682,7 +2726,7 @@ var Rutas = {
             { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: 'Av. Parra y Salaverry' },
             { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
             { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: 'Av. Jorge Chavez y Av. Garci de Carbajal' },
-            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: 'Av. Jorde Chavez y Victor Lira' }, 
+            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: 'Av. Jorde Chavez y Victor Lira' },
             { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: 'Av. Jorde Chavez y Paucarpata' },
             { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: 'Av. Goyeneche y La Salle' }
         ],
