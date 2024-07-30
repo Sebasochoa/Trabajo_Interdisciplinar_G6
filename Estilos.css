@@ -31,9 +31,10 @@
     box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del contenedor */
     color: white;
     width: 90%;
-    height: 30vh;
-    display: flex;
+    min-height: 30vh; /* Altura mínima para la caja */
+    max-height: 60vh; /* Altura máxima para la caja */
     margin: 0 auto;
+    overflow-y: auto; /* Añade scroll vertical si el contenido excede la altura máxima */
 }
 
 .nav-buttons {
@@ -162,7 +163,7 @@ header h1 {
     background-color: rgb(137, 37, 40);
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 10px;
     cursor: pointer;
     border-radius: 5px;
     font-size: 16px;
@@ -215,6 +216,7 @@ main {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    margin: 5px;
 }
 
 .map-container {
