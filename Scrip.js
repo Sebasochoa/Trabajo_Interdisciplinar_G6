@@ -54,6 +54,20 @@ function initMap() {
     mapa.addListener('click', function (event) {
         agregarDestino(event.latLng);
     });
+
+    const Boton_1_Ruta = document.getElementById("btn_ruta1");
+    const Boton_2_Ruta = document.getElementById("btn_ruta2");
+    const Boton_Funcion = document.getElementById("funcion");
+    Boton_1_Ruta.addEventListener('click', function () {
+        AddCheckboxOneRoute();
+    });
+    Boton_2_Ruta.addEventListener('click', function () {
+        AddCheckboxTwoRoute();
+    });
+    Boton_Funcion.addEventListener('click', function () {
+        findRoutesThroughPoints();
+    })
+
     for (const key in Rutas) {
         if (Rutas.hasOwnProperty(key)) {
             const ruta = Rutas[key];
@@ -117,6 +131,240 @@ function initMap() {
     });
 }
 
+function AddCheckboxOneRoute() {
+    let result = OneRoute();
+    if (result !== null) {
+        result.nombres.forEach(nombre => {
+            const container = document.getElementById('ruta-nombre-container');
+            // Create checkbox element
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'dynamic-checkbox';
+
+            const checkboxLabel = document.createElement('label');
+            checkboxLabel.htmlFor = 'dynamic-checkbox';
+            checkboxLabel.appendChild(document.createTextNode(Nombre_Rutas[nombre]));
+
+            container.appendChild(checkbox);
+            container.appendChild(checkboxLabel);
+
+            // Add event listener to checkbox
+            checkbox.addEventListener('change', function (event) {
+                if (event.target.checked) {
+                    onChangeHandlerOneRoute(result, nombre);
+                } else {
+                    limpiarRuta(nombre);
+                    const instruccionesContainer = document.getElementById('intruciones-container');
+                    instruccionesContainer.innerHTML = '';
+                    const paraderosContainer = document.getElementById('paraderos-container');
+                    paraderosContainer.innerHTML = '';
+                }
+
+            });
+        });
+    }
+    else {
+        const instruccionesContainer = document.getElementById('intruciones-container');
+        instruccionesContainer.innerHTML = '<h3>No se puede calcular en una sola ruta desde tu Ubicacion al Destino</h3>';
+    }
+}
+
+function AddCheckboxTwoRoute() {
+    let result = TwoRoutes();
+    if (result !== null) {
+        for (let indice in result.nombres) {
+            const container = document.getElementById('ruta-nombre-container');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = 'dynamic-checkbox';
+
+            const checkboxLabel = document.createElement('label');
+            checkboxLabel.htmlFor = 'dynamic-checkbox';
+            checkboxLabel.appendChild(document.createTextNode(`${Nombre_Rutas[result.nombres[indice][0]]} y ${Nombre_Rutas[result.nombres[indice][1]]}`));
+
+            container.appendChild(checkbox);
+            container.appendChild(checkboxLabel);
+
+            // Add event listener to checkbox
+            checkbox.addEventListener('change', function (event) {
+                if (event.target.checked) {
+                    onChangeHandlerTwoRoute(result, indice);
+                } else {
+                    limpiarRuta(indice);
+                    const instruccionesContainer = document.getElementById('intruciones-container');
+                    instruccionesContainer.innerHTML = '';
+                    const paraderosContainer = document.getElementById('paraderos-container');
+                    paraderosContainer.innerHTML = '';
+                }
+
+            });
+        }
+
+    }
+    else {
+        const instruccionesContainer = document.getElementById('intruciones-container');
+        instruccionesContainer.innerHTML = '<h3>No se puede calcular en 2 rutas desde tu Ubicacion al Destino</h3>';
+    }
+
+}
+
+
+
+function onChangeHandlerOneRoute(Objeto, RutaSeleccionada) {
+    if (!renderizadores[RutaSeleccionada]) {
+        renderizadores[RutaSeleccionada] = [];
+    }
+
+    if (!marcadores[RutaSeleccionada]) {
+        marcadores[RutaSeleccionada] = [];
+    }
+
+
+    Objeto.solicitudes[RutaSeleccionada].forEach(solicitud => {
+        if (solicitud.travelMode === 'DRIVING') {
+            var renderizador = new google.maps.DirectionsRenderer({
+                polylineOptions: {
+                    strokeColor: '#007BFF'
+                },
+                suppressMarkers: true
+            });
+
+            renderizador.setMap(mapa);
+            servicioDirecciones.route(solicitud, function (resultado, estado) {
+                if (estado === 'OK') {
+                    renderizador.setDirections(resultado);
+                    Objeto.paradas[RutaSeleccionada].forEach(function (parada) {
+                        var marcador = createMarker(parada.coordenadas, '#007BFF');
+                        marcadores[RutaSeleccionada].push(marcador);
+                    });
+                } else {
+                    window.alert('Error al obtener la ruta: ' + estado);
+                }
+            });
+            renderizadores[RutaSeleccionada].push(renderizador);
+        }
+        else {
+            var renderizador = new google.maps.DirectionsRenderer({
+                polylineOptions: {
+                    strokeColor: '#892528'
+                },
+                suppressMarkers: true
+            });
+
+            renderizador.setMap(mapa);
+            servicioDirecciones.route(solicitud, function (resultado, estado) {
+                if (estado === 'OK') {
+                    renderizador.setDirections(resultado);
+                } else {
+                    window.alert('Error al obtener la ruta: ' + estado);
+                }
+            });
+            renderizadores[RutaSeleccionada].push(renderizador);
+        }
+    });
+
+    const instruccionesContainer = document.getElementById('intruciones-container');
+    instruccionesContainer.innerHTML = Objeto.instrucciones[RutaSeleccionada];
+    let textParadas = `<h3>Pasaras por los paraderos:</h3>`;
+    Objeto.paradas[RutaSeleccionada].forEach((parada, indice) => {
+        textParadas += `<h4>${indice + 1}. ${parada.nombre}</h4>`;
+    });
+    const paraderosContainer = document.getElementById('paraderos-container');
+    paraderosContainer.innerHTML = textParadas;
+
+}
+function onChangeHandlerTwoRoute(Objeto, IndiceSeleccionado) {
+    if (!renderizadores[IndiceSeleccionado]) {
+        renderizadores[IndiceSeleccionado] = [];
+    }
+
+    if (!marcadores[IndiceSeleccionado]) {
+        marcadores[IndiceSeleccionado] = [];
+    }
+
+    let colores = ['#007BFF', '#79B088'];
+
+    function eliminarColor(codigoColor) {
+        colores = colores.filter(color => color !== codigoColor);
+    }
+
+    for (let indice in Objeto.solicitudes[IndiceSeleccionado]) {
+        let valores = Object.values(Objeto.solicitudes[IndiceSeleccionado][indice]);
+        for (let indiceValores in valores) {
+            if (Array.isArray(valores[indiceValores])) {
+                for (let indiceCaminar in valores[indiceValores]) {
+                    ShowRouteWalking(valores[indiceValores][indiceCaminar], IndiceSeleccionado);
+                }
+            }
+            else {
+                let valoresParadas = Object.values(Objeto.paradas[IndiceSeleccionado][0]);
+                ShowRouteDriving(valores[indiceValores], IndiceSeleccionado, valoresParadas[indice], colores[0]);
+                eliminarColor(colores[0]);
+            }
+        }
+    }
+    const instruccionesContainer = document.getElementById('intruciones-container');
+    instruccionesContainer.innerHTML = Objeto.instrucciones[IndiceSeleccionado];
+
+    let claves = Object.keys(Objeto.paradas[IndiceSeleccionado][0]);
+    let paradas = Object.values(Objeto.paradas[IndiceSeleccionado][0]);
+    let textParadas = `<h3>Pasaras por los paraderos:</h3>`;
+
+    for (indice in claves) {
+        textParadas += `<h4>En la ruta ${Nombre_Rutas[claves[indice]]}:<br>`
+        paradas[indice].forEach((parada, indice) => {
+            textParadas += `<h4>${indice + 1}. ${parada.nombre}</h4>`;
+        });
+    }
+
+    const paraderosContainer = document.getElementById('paraderos-container');
+    paraderosContainer.innerHTML = textParadas;
+}
+
+function ShowRouteWalking(solicitud, IndiceSeleccionado) {
+    var renderizador = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: '#892528'
+        },
+        suppressMarkers: true
+    });
+
+    renderizador.setMap(mapa);
+    servicioDirecciones.route(solicitud, function (resultado, estado) {
+        if (estado === 'OK') {
+            renderizador.setDirections(resultado);
+        } else {
+            window.alert('Error al obtener la ruta: ' + estado);
+        }
+    });
+    renderizadores[IndiceSeleccionado].push(renderizador);
+}
+
+function ShowRouteDriving(solicitud, IndiceSeleccionado, Paradas, color) {
+    var renderizador = new google.maps.DirectionsRenderer({
+        polylineOptions: {
+            strokeColor: color
+        },
+        suppressMarkers: true
+    });
+
+    renderizador.setMap(mapa);
+    servicioDirecciones.route(solicitud, function (resultado, estado) {
+        if (estado === 'OK') {
+            renderizador.setDirections(resultado);
+
+            Paradas.forEach(function (parada) {
+                var marcador = createMarker(parada.coordenadas, color);
+                marcadores[IndiceSeleccionado].push(marcador);
+            });
+            renderizadores[IndiceSeleccionado].push(renderizador);
+        } else {
+            window.alert('Error al obtener la ruta: ' + estado);
+        }
+    });
+}
+
+
 
 function handlePlacesChanged(searchBox, isPrimary) {
     const places = searchBox.getPlaces();
@@ -176,7 +424,7 @@ function handleBCChange(searchBox, isPrimary) {
                 map: mapa,
                 title: 'Destino',
                 icon: {
-                    url: 'destino.png',
+                    url: 'PuntoB.png',
                     scaledSize: new google.maps.Size(30, 30)
                 }
             });
@@ -189,7 +437,7 @@ function handleBCChange(searchBox, isPrimary) {
                 map: mapa,
                 title: 'Destino',
                 icon: {
-                    url: 'destino.png',
+                    url: 'PuntoC.png',
                     scaledSize: new google.maps.Size(30, 30)
                 }
             });
@@ -210,6 +458,8 @@ function actualizarUbicacion(latLng) {
         });
     }
     mapa.setCenter(latLng);
+    limpiarRutas();
+    borrarRutas();
 }
 
 function limpiarRutas() {
@@ -227,7 +477,7 @@ function limpiarRutas() {
         marcadores[ruta] = [];
     });
 }
-// Manejo de errores de geolocalización
+
 function handleLocationError(browserHasGeolocation, pos) {
     var infoWindow = new google.maps.InfoWindow({ map: pos });
     infoWindow.setPosition(pos);
@@ -289,8 +539,37 @@ function findStops(Position, Map, ComparativeDistance) {
 }
 
 function findRoutesThroughPoints() {
+    limpiarRutas();
     if (ubicacion && PuntoB && PuntoC) {
-        OneRouteD(ubicacion,PuntoB);
+        let RutaA_B = OneRouteD(ubicacion, PuntoB) || TwoRoutesD(ubicacion, PuntoB);
+        let RutaB_C = OneRouteD(PuntoB, PuntoC) || TwoRoutesD(PuntoB, PuntoC);
+        let RutaC_A = OneRouteD(PuntoC, ubicacion) || TwoRoutesD(PuntoC, PuntoA);
+        console.log(RutaA_B);
+        console.log(RutaB_C);
+        console.log(RutaC_A);
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+        function getRandomFloat(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+        if (Array.isArray(RutaA_B.nombres)) {
+            onChangeHandlerOneRoute(RutaA_B,getRandomElement(RutaA_B.nombres));
+        } else {
+            onChangeHandlerTwoRoute(RutaA_B, 0);
+        }
+
+        if (Array.isArray(RutaB_C.nombres)) {
+            onChangeHandlerOneRoute(RutaB_C,getRandomElement(RutaB_C.nombres));
+        } else {
+            onChangeHandlerTwoRoute(RutaB_C, 0);
+        }
+
+        if (Array.isArray(RutaC_A.nombres)) {
+            onChangeHandlerOneRoute(RutaC_A,getRandomElement(RutaC_A.nombres));
+        } else {
+            onChangeHandlerTwoRoute(RutaC_A, 0);
+        }
     }
 }
 
@@ -429,48 +708,51 @@ function OneRoute() {
 
         let rutaCercana = containsAny(rutasCercanasAUbicacion, rutasCercanasADestino);
 
-        let nombres = [];
-        let estaciones = {};
-        let solicitudes = {};
-        let instrucciones = {};
+        if (rutaCercana !== null) {
+            let nombres = [];
+            let estaciones = {};
+            let solicitudes = {};
+            let instrucciones = {};
 
-        for (let ruta in rutaCercana) {
-            if (rutaCercana.hasOwnProperty(ruta)) {
-                let recorrido = rutaCercana[ruta];
-                if (Array.isArray(recorrido) && recorrido.length > 1) {
-                    let DobleRecorrido = {};
-                    DobleRecorrido[ruta] = recorrido;
-                    EraseWay(DobleRecorrido, Inicial, Destino);
-                }
-                let solicitud = GetRoute(ruta, recorrido[0]);
-                if (IsApproaching(solicitud.paradas, Inicial, Destino)) {
-                    nombres.push(ruta);
-                } else {
-                    delete rutaCercana[ruta];
+            for (let ruta in rutaCercana) {
+                if (rutaCercana.hasOwnProperty(ruta)) {
+                    let recorrido = rutaCercana[ruta];
+                    if (Array.isArray(recorrido) && recorrido.length > 1) {
+                        let DobleRecorrido = {};
+                        DobleRecorrido[ruta] = recorrido;
+                        EraseWay(DobleRecorrido, Inicial, Destino);
+                    }
+                    let solicitud = GetRoute(ruta, recorrido[0]);
+                    if (IsApproaching(solicitud.paradas, Inicial, Destino)) {
+                        nombres.push(ruta);
+                    } else {
+                        delete rutaCercana[ruta];
+                    }
                 }
             }
-        }
 
-        for (let ruta in rutaCercana) {
-            if (rutaCercana.hasOwnProperty(ruta)) {
-                let recorrido = rutaCercana[ruta];
-                let solicitud = GetRoute(ruta, recorrido[0]);
-                let paradaUbi = GetNearStop(solicitud.paradas, Inicial);
-                let paradaDest = GetNearStop(solicitud.paradas, Destino);
-                let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
-                estaciones[ruta] = paradasFiltradas;
-                instrucciones[ruta] = Get_Instrucctions1(solicitud, paradaUbi, paradaDest);
-                let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
-                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1(paradaUbi, paradaDest);
-                let arraySolicitudes = [];
-                arraySolicitudes.push(solicitudPParada);
-                arraySolicitudes.push(solicitudfiltrada);
-                arraySolicitudes.push(solicitudSParada);
-                solicitudes[ruta] = arraySolicitudes;
+            for (let ruta in rutaCercana) {
+                if (rutaCercana.hasOwnProperty(ruta)) {
+                    let recorrido = rutaCercana[ruta];
+                    let solicitud = GetRoute(ruta, recorrido[0]);
+                    let paradaUbi = GetNearStop(solicitud.paradas, Inicial);
+                    let paradaDest = GetNearStop(solicitud.paradas, Destino);
+                    let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
+                    estaciones[ruta] = paradasFiltradas;
+                    instrucciones[ruta] = Get_Instrucctions1(solicitud, paradaUbi, paradaDest);
+                    let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
+                    let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1(paradaUbi, paradaDest);
+                    let arraySolicitudes = [];
+                    arraySolicitudes.push(solicitudPParada);
+                    arraySolicitudes.push(solicitudfiltrada);
+                    arraySolicitudes.push(solicitudSParada);
+                    solicitudes[ruta] = arraySolicitudes;
+                }
             }
+            result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
+            return result;
         }
-        result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
-        return result;
+        return null;
     }
 }
 
@@ -520,9 +802,9 @@ function OneRouteD(Coordenada1, Coordenada2) {
                 let paradaDest = GetNearStop(solicitud.paradas, Destino);
                 let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
                 estaciones[ruta] = paradasFiltradas;
-                instrucciones[ruta] = Get_Instrucctions1(solicitud, paradaUbi, paradaDest);
+                instrucciones[ruta] = Get_Instrucctions1D(solicitud, paradaUbi, paradaDest, Coordenada1, Coordenada2);
                 let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
-                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1(paradaUbi, paradaDest);
+                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1D(Coordenada1, paradaUbi, paradaDest, Coordenada2);
                 let arraySolicitudes = [];
                 arraySolicitudes.push(solicitudPParada);
                 arraySolicitudes.push(solicitudfiltrada);
@@ -548,6 +830,23 @@ function Get_Stop(Paraderos, Coordenada) {
 function Get_Instrucctions1(Ruta, Parada_1, Parada_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
+
+    const Inicio = { lat: InicioPos.lat(), lng: InicioPos.lng() };
+    const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
+    let oparada_1 = Get_Stop(Ruta.paradas, Parada_1);
+    let oparada_2 = Get_Stop(Ruta.paradas, Parada_2);
+    let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
+    let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
+    let instrucciones = `<h4>1. Debes caminar ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</h4>
+    <h4>2.Espera el bus:<b> ${Nombre_Rutas[Ruta.nombre]}</b> en el recorrido: <b> ${Ruta.recorrido}</b>.</h4>
+    <h4>3.Para luego bajarte en la Parada:<b> ${oparada_2.nombre}.</b></h4>
+    <h4>4.Y finalmente camina ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</h4>`;
+    return instrucciones;
+}
+
+function Get_Instrucctions1D(Ruta, Parada_1, Parada_2, Coordenada1, Coordenada2) {
+    let DestinoPos = Coordenada2.getPosition();
+    let InicioPos = Coordenada1.getPosition();
 
     const Inicio = { lat: InicioPos.lat(), lng: InicioPos.lng() };
     const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
@@ -589,6 +888,33 @@ function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parad
     return instrucciones;
 }
 
+function Get_Instrucctions2D(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2, Coordenada1, Coordenada2) {
+    let DestinoPos = Coordenada2.getPosition();
+    let InicioPos = Coordenada1.getPosition();
+
+    const Inicio = { lat: InicioPos.lat(), lng: InicioPos.lng() };
+    const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
+
+    let oparada_1 = Get_Stop(Ruta_1.paradas, Parada_1);
+    let oparada_Intermedia_1 = Get_Stop(Ruta_1.paradas, Parada_Intermedia_1);
+
+    let oparada_2 = Get_Stop(Ruta_2.paradas, Parada_2);
+    let oparada_Intermedia_2 = Get_Stop(Ruta_2.paradas, Parada_Intermedia_2);
+
+    let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
+    let distanciaParadasIntermedias = haversineDistance(oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat);
+    let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
+
+    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
+    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
+    <h4>3.</h4><p><b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
+    <h4>4.</h4><p><b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
+    <h4>5.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
+    <h4>6.</h4><p><b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
+    <h4>7.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
+    return instrucciones;
+}
+
 function TwoRoutes() {
     if (destinoMarcador && ubicacion) {
         let DestinoPos = destinoMarcador.getPosition();
@@ -603,105 +929,220 @@ function TwoRoutes() {
         findStops(DestinoPos, rutasCercanasADestino, 0.5);
         findStops(InicialPos, rutasCercanasAUbicacion, 0.5);
 
-        console.log(rutasCercanasADestino);
-        console.log(rutasCercanasAUbicacion);
         let [cercanasDestino, cercanasUbicacion] = findUniqueRoutes(rutasCercanasAUbicacion, rutasCercanasADestino);
-        console.log(cercanasDestino);
-        console.log(cercanasUbicacion);
 
-        let nombres = [];
+        if (Object.keys(cercanasUbicacion).length !== 0 || Object.keys(cercanasDestino).length !== 0) {
+            let nombres = [];
 
-        for (let ruta_1 in cercanasUbicacion) {
-            let array_1 = cercanasUbicacion[ruta_1];
-            for (let ruta_2 in cercanasDestino) {
-                let array_2 = cercanasDestino[ruta_2];
-                for (let recorrido_1 of array_1) {
-                    for (let recorrido_2 of array_2) {
-                        let objetoRuta_1 = GetRoute(ruta_1, recorrido_1);
-                        let objetoRuta_2 = GetRoute(ruta_2, recorrido_2);
-                        const paradasRuta_1 = objetoRuta_1.paradas;
-                        const paradasRuta_2 = objetoRuta_2.paradas;
-                        let distanciamascorta = Infinity;
-                        let obj = null;
-                        paradasRuta_1.forEach((parada_1 => {
-                            paradasRuta_2.forEach((parada_2 => {
-                                const distance = haversineDistance(parada_1.coordenadas.lat, parada_1.coordenadas.lng, parada_2.coordenadas.lat, parada_2.coordenadas.lng);
-                                if (distance < distanciamascorta && distance < 0.4) {
-                                    obj = {
-                                        [ruta_1]: { recorrido: recorrido_1, parada: parada_1.coordenadas },
-                                        [ruta_2]: { recorrido: recorrido_2, parada: parada_2.coordenadas }
-                                    };
-                                }
-                            }))
-                        }));
-                        if (obj) {
-                            nombres.push(obj);
+            for (let ruta_1 in cercanasUbicacion) {
+                let array_1 = cercanasUbicacion[ruta_1];
+                for (let ruta_2 in cercanasDestino) {
+                    let array_2 = cercanasDestino[ruta_2];
+                    for (let recorrido_1 of array_1) {
+                        for (let recorrido_2 of array_2) {
+                            let objetoRuta_1 = GetRoute(ruta_1, recorrido_1);
+                            let objetoRuta_2 = GetRoute(ruta_2, recorrido_2);
+                            const paradasRuta_1 = objetoRuta_1.paradas;
+                            const paradasRuta_2 = objetoRuta_2.paradas;
+                            let distanciamascorta = Infinity;
+                            let obj = null;
+                            paradasRuta_1.forEach((parada_1 => {
+                                paradasRuta_2.forEach((parada_2 => {
+                                    const distance = haversineDistance(parada_1.coordenadas.lat, parada_1.coordenadas.lng, parada_2.coordenadas.lat, parada_2.coordenadas.lng);
+                                    if (distance < distanciamascorta && distance < 0.4) {
+                                        obj = {
+                                            [ruta_1]: { recorrido: recorrido_1, parada: parada_1.coordenadas },
+                                            [ruta_2]: { recorrido: recorrido_2, parada: parada_2.coordenadas }
+                                        };
+                                    }
+                                }))
+                            }));
+                            if (obj) {
+                                nombres.push(obj);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        nombres.forEach((rutaObj, index) => {
-            let keys = Object.keys(rutaObj);
+            nombres.forEach((rutaObj, index) => {
+                let keys = Object.keys(rutaObj);
 
-            if (keys.length > 0) {
-                let ruta1 = keys[0];
-                let solicitudRuta1 = GetRoute(ruta1, rutaObj[ruta1].recorrido);
-                if (!IsApproaching(solicitudRuta1.paradas, Inicial, rutaObj[ruta1].parada)) {
-                    delete nombres[index];
-                    return;
-                }
-
-                if (keys.length > 1) {
-                    let ruta2 = keys[1];
-                    let solicitudRuta2 = GetRoute(ruta2, rutaObj[ruta2].recorrido);
-                    if (!IsApproaching(solicitudRuta2.paradas, rutaObj[ruta2].parada, Destino)) {
+                if (keys.length > 0) {
+                    let ruta1 = keys[0];
+                    let solicitudRuta1 = GetRoute(ruta1, rutaObj[ruta1].recorrido);
+                    if (!IsApproaching(solicitudRuta1.paradas, Inicial, rutaObj[ruta1].parada)) {
                         delete nombres[index];
                         return;
                     }
+
+                    if (keys.length > 1) {
+                        let ruta2 = keys[1];
+                        let solicitudRuta2 = GetRoute(ruta2, rutaObj[ruta2].recorrido);
+                        if (!IsApproaching(solicitudRuta2.paradas, rutaObj[ruta2].parada, Destino)) {
+                            delete nombres[index];
+                            return;
+                        }
+                    }
+                }
+                if (keys.length === 1) {
+                    delete nombres[index];
+                }
+            });
+
+            nombres = nombres.filter(ruta => ruta !== undefined);
+
+            let nombreresult = {};
+            let estaciones = {};
+            let solicitudes = {};
+            let instrucciones = {};
+
+
+            nombres.forEach((Objeto, index) => {
+                let keys = Object.keys(Objeto);
+                let arrayNombres = [keys[0], keys[1]];
+                nombreresult[index] = arrayNombres;
+                if (keys.length > 0) {
+                    let ruta1 = keys[0];
+                    let ruta2 = keys[1];
+                    let ruta1Objeto = GetRoute(ruta1, Objeto[ruta1].recorrido);
+                    let ruta2Objeto = GetRoute(ruta2, Objeto[ruta2].recorrido);
+                    let paradasRuta_1 = GetFilteredStops(ruta1Objeto.paradas, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+                    let paradasRuta_2 = GetFilteredStops(ruta2Objeto.paradas, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+                    let solicitudRuta1 = GetFilteredRequest(ruta1Objeto.solicitud, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+                    let solicitudRuta2 = GetFilteredRequest(ruta2Objeto.solicitud, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+                    let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando2(GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada);
+
+                    solicitudes[index] = [
+                        { [ruta1]: solicitudRuta1 },
+                        { [ruta2]: solicitudRuta2 },
+                        { 'Caminando': [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] }
+                    ];
+                    estaciones[index] = [{ [ruta1]: paradasRuta_1, [ruta2]: paradasRuta_2 }];
+                    instrucciones[index] = Get_Instrucctions2(ruta1Objeto, ruta2Objeto, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada, GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta2].parada);
+                }
+            });
+            result = { nombres: nombreresult, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
+            return result;
+        }
+        return null;
+    }
+}
+
+function TwoRoutesD(Coordenada1, Coordenada2) {
+    console.log(Coordenada1);
+    console.log(Coordenada2);
+    let DestinoPos = Coordenada2.getPosition();
+    let InicialPos = Coordenada1.getPosition();
+
+    const Inicial = { lat: InicialPos.lat(), lng: InicialPos.lng() };
+    const Destino = { lat: DestinoPos.lat(), lng: DestinoPos.lng() };
+
+    let rutasCercanasADestino = new Map();
+    let rutasCercanasAUbicacion = new Map();
+
+    findStops(DestinoPos, rutasCercanasADestino, 0.5);
+    findStops(InicialPos, rutasCercanasAUbicacion, 0.5);
+
+    console.log(rutasCercanasADestino);
+    console.log(rutasCercanasAUbicacion);
+    let [cercanasDestino, cercanasUbicacion] = findUniqueRoutes(rutasCercanasAUbicacion, rutasCercanasADestino);
+    console.log(cercanasDestino);
+    console.log(cercanasUbicacion);
+
+    let nombres = [];
+
+    for (let ruta_1 in cercanasUbicacion) {
+        let array_1 = cercanasUbicacion[ruta_1];
+        for (let ruta_2 in cercanasDestino) {
+            let array_2 = cercanasDestino[ruta_2];
+            for (let recorrido_1 of array_1) {
+                for (let recorrido_2 of array_2) {
+                    let objetoRuta_1 = GetRoute(ruta_1, recorrido_1);
+                    let objetoRuta_2 = GetRoute(ruta_2, recorrido_2);
+                    const paradasRuta_1 = objetoRuta_1.paradas;
+                    const paradasRuta_2 = objetoRuta_2.paradas;
+                    let distanciamascorta = Infinity;
+                    let obj = null;
+                    paradasRuta_1.forEach((parada_1 => {
+                        paradasRuta_2.forEach((parada_2 => {
+                            const distance = haversineDistance(parada_1.coordenadas.lat, parada_1.coordenadas.lng, parada_2.coordenadas.lat, parada_2.coordenadas.lng);
+                            if (distance < distanciamascorta && distance < 0.4) {
+                                obj = {
+                                    [ruta_1]: { recorrido: recorrido_1, parada: parada_1.coordenadas },
+                                    [ruta_2]: { recorrido: recorrido_2, parada: parada_2.coordenadas }
+                                };
+                            }
+                        }))
+                    }));
+                    if (obj) {
+                        nombres.push(obj);
+                    }
                 }
             }
-            if (keys.length === 1) {
-                delete nombres[index];
-            }
-        });
-
-        nombres = nombres.filter(ruta => ruta !== undefined);
-        console.log(nombres);
-        let nombreresult = {};
-        let estaciones = {};
-        let solicitudes = {};
-        let instrucciones = {};
-
-
-        nombres.forEach((Objeto, index) => {
-            let keys = Object.keys(Objeto);
-            let arrayNombres = [keys[0], keys[1]];
-            nombreresult[index] = arrayNombres;
-            if (keys.length > 0) {
-                let ruta1 = keys[0];
-                let ruta2 = keys[1];
-                let ruta1Objeto = GetRoute(ruta1, Objeto[ruta1].recorrido);
-                let ruta2Objeto = GetRoute(ruta2, Objeto[ruta2].recorrido);
-                let paradasRuta_1 = GetFilteredStops(ruta1Objeto.paradas, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
-                let paradasRuta_2 = GetFilteredStops(ruta2Objeto.paradas, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
-                let solicitudRuta1 = GetFilteredRequest(ruta1Objeto.solicitud, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
-                let solicitudRuta2 = GetFilteredRequest(ruta2Objeto.solicitud, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
-                let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando2(GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada);
-
-                solicitudes[index] = [
-                    { [ruta1]: solicitudRuta1 },
-                    { [ruta2]: solicitudRuta2 },
-                    { 'Caminando': [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] }
-                ];
-                estaciones[index] = [{ [ruta1]: paradasRuta_1, [ruta2]: paradasRuta_2 }];
-                instrucciones[index] = Get_Instrucctions2(ruta1Objeto, ruta2Objeto, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada, GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta2].parada);
-            }
-        });
-        result = { nombres: nombreresult, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
-        return result;
+        }
     }
+
+    nombres.forEach((rutaObj, index) => {
+        let keys = Object.keys(rutaObj);
+
+        if (keys.length > 0) {
+            let ruta1 = keys[0];
+            let solicitudRuta1 = GetRoute(ruta1, rutaObj[ruta1].recorrido);
+            if (!IsApproaching(solicitudRuta1.paradas, Inicial, rutaObj[ruta1].parada)) {
+                delete nombres[index];
+                return;
+            }
+
+            if (keys.length > 1) {
+                let ruta2 = keys[1];
+                let solicitudRuta2 = GetRoute(ruta2, rutaObj[ruta2].recorrido);
+                if (!IsApproaching(solicitudRuta2.paradas, rutaObj[ruta2].parada, Destino)) {
+                    delete nombres[index];
+                    return;
+                }
+            }
+        }
+        if (keys.length === 1) {
+            delete nombres[index];
+        }
+    });
+
+    nombres = nombres.filter(ruta => ruta !== undefined);
+    console.log(nombres);
+    let nombreresult = {};
+    let estaciones = {};
+    let solicitudes = {};
+    let instrucciones = {};
+
+
+    nombres.forEach((Objeto, index) => {
+        let keys = Object.keys(Objeto);
+        let arrayNombres = [keys[0], keys[1]];
+        nombreresult[index] = arrayNombres;
+        if (keys.length > 0) {
+            let ruta1 = keys[0];
+            let ruta2 = keys[1];
+            let ruta1Objeto = GetRoute(ruta1, Objeto[ruta1].recorrido);
+            let ruta2Objeto = GetRoute(ruta2, Objeto[ruta2].recorrido);
+            let paradasRuta_1 = GetFilteredStops(ruta1Objeto.paradas, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+            let paradasRuta_2 = GetFilteredStops(ruta2Objeto.paradas, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+            let solicitudRuta1 = GetFilteredRequest(ruta1Objeto.solicitud, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada);
+            let solicitudRuta2 = GetFilteredRequest(ruta2Objeto.solicitud, Objeto[ruta2].parada, GetNearStop(ruta2Objeto.paradas, Destino));
+            let [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] = Solicitudes_Caminando2D(Coordenada1, GetNearStop(ruta1Objeto.paradas, Inicial), GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta1].parada, Objeto[ruta2].parada, Coordenada2);
+
+            solicitudes[index] = [
+                { [ruta1]: solicitudRuta1 },
+                { [ruta2]: solicitudRuta2 },
+                { 'Caminando': [solicitudCaminandoInicio, solicitudCaminandoIntermedia, solicitudCaminandoFinal] }
+            ];
+            estaciones[index] = [{ [ruta1]: paradasRuta_1, [ruta2]: paradasRuta_2 }];
+            instrucciones[index] = Get_Instrucctions2D(ruta1Objeto, ruta2Objeto, GetNearStop(ruta1Objeto.paradas, Inicial), Objeto[ruta1].parada, GetNearStop(ruta2Objeto.paradas, Destino), Objeto[ruta2].parada, Coordenada1, Coordenada2);
+        }
+    });
+    result = { nombres: nombreresult, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
+    return result;
+
 }
 
 function mostrarRutapersonalizada(solicitud, color, nombreRuta, Paraderos, paraderoinicio, paraderofinal) {
@@ -896,6 +1337,20 @@ function Solicitudes_Caminando1(paraderoinicio, paraderofinal) {
     return [solicitudInicio, solicitudFinal];
 }
 
+function Solicitudes_Caminando1D(Punto1, paraderoinicio, paraderofinal, Punto2) {
+    let solicitudInicio = {
+        origin: { lat: Punto1.getPosition().lat(), lng: Punto1.getPosition().lng() },
+        destination: { lat: paraderoinicio.lat, lng: paraderoinicio.lng },
+        travelMode: 'WALKING'
+    };
+    let solicitudFinal = {
+        origin: { lat: paraderofinal.lat, lng: paraderofinal.lng },
+        destination: { lat: Punto2.getPosition().lat(), lng: Punto2.getPosition().lng() },
+        travelMode: 'WALKING'
+    };
+    return [solicitudInicio, solicitudFinal];
+}
+
 function Solicitudes_Caminando2(ParadaInicio, ParadaFinal, ParadaIntermedia1, ParadaIntermedia2) {
     let solicitudInicio = {
         origin: { lat: ubicacion.getPosition().lat(), lng: ubicacion.getPosition().lng() },
@@ -905,7 +1360,7 @@ function Solicitudes_Caminando2(ParadaInicio, ParadaFinal, ParadaIntermedia1, Pa
 
     let solicitudIntermedia = {
         origin: { lat: ParadaIntermedia1.lat, lng: ParadaIntermedia1.lng },
-        destination: { ParadaIntermedia2 },
+        destination: { lat: ParadaIntermedia2.lat, lng: ParadaIntermedia2.lng },
         travelMode: 'WALKING'
     }
 
@@ -917,10 +1372,36 @@ function Solicitudes_Caminando2(ParadaInicio, ParadaFinal, ParadaIntermedia1, Pa
     return [solicitudInicio, solicitudIntermedia, solicitudFinal];
 }
 
+function Solicitudes_Caminando2D(Punto1, ParadaInicio, ParadaFinal, ParadaIntermedia1, ParadaIntermedia2, Punto2) {
+    let solicitudInicio = {
+        origin: { lat: Punto1.getPosition().lat(), lng: Punto1.getPosition().lng() },
+        destination: { lat: ParadaInicio.lat, lng: ParadaInicio.lng },
+        travelMode: 'WALKING'
+    }
+
+    let solicitudIntermedia = {
+        origin: { lat: ParadaIntermedia1.lat, lng: ParadaIntermedia1.lng },
+        destination: { lat: ParadaIntermedia2.lat, lng: ParadaIntermedia2.lng },
+        travelMode: 'WALKING'
+    }
+
+    let solicitudFinal = {
+        origin: { lat: ParadaFinal.lat, lng: ParadaFinal.lng },
+        destination: { lat: Punto2.getPosition().lat(), lng: Punto2.getPosition().lng() },
+        travelMode: 'WALKING'
+    }
+    return [solicitudInicio, solicitudIntermedia, solicitudFinal];
+}
+
+
 
 function borrarRutas() {
     const rutaNombreContainer = document.getElementById('ruta-nombre-container');
     rutaNombreContainer.innerHTML = '';
+    const instruccionesContainer = document.getElementById('intruciones-container');
+    instruccionesContainer.innerHTML = '';
+    const paraderosContainer = document.getElementById('paraderos-container');
+    paraderosContainer.innerHTML = '';
 }
 
 

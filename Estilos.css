@@ -21,6 +21,19 @@
     padding: 20px; /* Espaciado interno para separar el contenido de los bordes */
     box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del contenedor */
     color: white;
+    margin-right: 20px;
+}
+
+.ruta-instrucciones-container {
+    display: flex;
+    background-color: rgb(137, 37, 40);
+    padding: 20px; /* Espaciado interno para separar el contenido de los bordes */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del contenedor */
+    color: white;
+    width: 90%;
+    height: 30vh;
+    display: flex;
+    margin: 0 auto;
 }
 
 .nav-buttons {
