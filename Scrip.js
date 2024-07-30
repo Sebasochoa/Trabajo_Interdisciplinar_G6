@@ -545,7 +545,7 @@ function Get_Stop(Paraderos, Coordenada) {
     );
 }
 
-function Get_Instrucctions1(Ruta, Parada_1, Parada_2) {
+function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
@@ -555,14 +555,14 @@ function Get_Instrucctions1(Ruta, Parada_1, Parada_2) {
     let oparada_2 = Get_Stop(Ruta.paradas, Parada_2);
     let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
     let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
-    let instrucciones = `<h4>1.</h4><p>Debes caminar ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
-    <h4>2.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta.nombre]} en el recorrido: ${Ruta.recorrido}.</p>
-    <h4>3.</h4><p>Para luego bajarte en la Parada: ${oparada_2.nombre}.</p>
-    <h4>4.</h4><p>Y finalmente camina ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino</p>`;
+    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
+    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta.nombre]} <b>en el recorrido:</b> ${Ruta.recorrido}.</p>
+    <h4>3.</h4><p><b>Para luego bajarte en la Parada:</b> ${oparada_2.nombre}.</p>
+    <h4>4.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
     return instrucciones;
 }
 
-function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
+function Get_Instrucctions(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
@@ -579,13 +579,13 @@ function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parad
     let distanciaParadasIntermedias = haversineDistance(oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat);
     let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
 
-    let instrucciones = `<h4>1.</h4><p>Debes caminar ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
-    <h4>2.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta_1.nombre]} en el recorrido: ${Ruta_1.recorrido}.</p>
-    <h4>3.</h4><p>Luego baja en la Parada: ${oparada_Intermedia_1.nombre}.</p>
-    <h4>4.</h4><p>Camina ${(distanciaParadasIntermedias * 1000).toFixed(0)} m hacia ${oparada_Intermedia_2.nombre}.</p>
-    <h4>5.</h4><p>Espera el bus: ${Nombre_Rutas[Ruta_2.nombre]} en el recorrido: ${Ruta_2.recorrido}.</p>
-    <h4>6.</h4><p>Tienes que bajar en la Parada: ${oparada_2.nombre}.</p>
-    <h4>7.</h4><p>Y finalmente camina ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino</p>`;
+    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
+    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
+    <h4>3.</h4><p><b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
+    <h4>4.</h4><p><b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
+    <h4>5.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
+    <h4>6.</h4><p><b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
+    <h4>7.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
     return instrucciones;
 }
 
