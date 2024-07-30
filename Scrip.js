@@ -89,12 +89,12 @@ function initMap() {
         handlePlacesChanged(searchBox2, false);
     });
 
-    searchBox3.addEventListener("places_changed", () => {
-        handleBCChange(searchBox3,true);
+    searchBox3.addListener("places_changed", () => {
+        handleBCChange(searchBox3, true);
     });
 
-    searchBox4.addEventListener("places_changes", () => {
-        handleBCChange(searchBox4,true);
+    searchBox4.addListener("places_changed", () => {
+        handleBCChange(searchBox4, false);
     })
 
     document.getElementById('checkbox').addEventListener('change', (event) => {
@@ -168,9 +168,31 @@ function handleBCChange(searchBox, isPrimary) {
         }
 
         if (isPrimary) {
-            agregarDestino(place.geometry.location);
+            if (PuntoB) {
+                PuntoB.setMap(null);
+            }
+            PuntoB = new google.maps.Marker({
+                position: place.geometry.location,
+                map: mapa,
+                title: 'Destino',
+                icon: {
+                    url: 'destino.png',
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+            });
         } else {
-            actualizarUbicacion(place.geometry.location);
+            if (PuntoC) {
+                PuntoC.setMap(null);
+            }
+            PuntoC = new google.maps.Marker({
+                position: place.geometry.location,
+                map: mapa,
+                title: 'Destino',
+                icon: {
+                    url: 'destino.png',
+                    scaledSize: new google.maps.Size(30, 30)
+                }
+            });
         }
     });
     mapa.fitBounds(bounds);
@@ -263,6 +285,12 @@ function findStops(Position, Map, ComparativeDistance) {
                 }
             });
         }
+    }
+}
+
+function findRoutesThroughPoints() {
+    if (ubicacion && PuntoB && PuntoC) {
+        OneRouteD(ubicacion,PuntoB);
     }
 }
 
@@ -446,6 +474,71 @@ function OneRoute() {
     }
 }
 
+function OneRouteD(Coordenada1, Coordenada2) {
+    let Coordenada1Pos = Coordenada1.getPosition();
+    let Coordenada2Pos = Coordenada2.getPosition();
+
+    const Inicial = { lat: Coordenada1Pos.lat(), lng: Coordenada1Pos.lng() };
+    const Destino = { lat: Coordenada2Pos.lat(), lng: Coordenada2Pos.lng() };
+
+    let rutasCercanasADestino = new Map();
+    let rutasCercanasAUbicacion = new Map();
+
+    findStops(Coordenada2Pos, rutasCercanasADestino, 0.5);
+    findStops(Coordenada1Pos, rutasCercanasAUbicacion, 0.5);
+
+    let rutaCercana = containsAny(rutasCercanasAUbicacion, rutasCercanasADestino);
+
+    if (rutaCercana !== null) {
+        let nombres = [];
+        let estaciones = {};
+        let solicitudes = {};
+        let instrucciones = {};
+
+        for (let ruta in rutaCercana) {
+            if (rutaCercana.hasOwnProperty(ruta)) {
+                let recorrido = rutaCercana[ruta];
+                if (Array.isArray(recorrido) && recorrido.length > 1) {
+                    let DobleRecorrido = {};
+                    DobleRecorrido[ruta] = recorrido;
+                    EraseWay(DobleRecorrido, Inicial, Destino);
+                }
+                let solicitud = GetRoute(ruta, recorrido[0]);
+                if (IsApproaching(solicitud.paradas, Inicial, Destino)) {
+                    nombres.push(ruta);
+                } else {
+                    delete rutaCercana[ruta];
+                }
+            }
+        }
+
+        for (let ruta in rutaCercana) {
+            if (rutaCercana.hasOwnProperty(ruta)) {
+                let recorrido = rutaCercana[ruta];
+                let solicitud = GetRoute(ruta, recorrido[0]);
+                let paradaUbi = GetNearStop(solicitud.paradas, Inicial);
+                let paradaDest = GetNearStop(solicitud.paradas, Destino);
+                let paradasFiltradas = GetFilteredStops(solicitud.paradas, paradaUbi, paradaDest);
+                estaciones[ruta] = paradasFiltradas;
+                instrucciones[ruta] = Get_Instrucctions1(solicitud, paradaUbi, paradaDest);
+                let solicitudfiltrada = GetFilteredRequest(solicitud.solicitud, paradaUbi, paradaDest);
+                let [solicitudPParada, solicitudSParada] = Solicitudes_Caminando1(paradaUbi, paradaDest);
+                let arraySolicitudes = [];
+                arraySolicitudes.push(solicitudPParada);
+                arraySolicitudes.push(solicitudfiltrada);
+                arraySolicitudes.push(solicitudSParada);
+                solicitudes[ruta] = arraySolicitudes;
+            }
+        }
+        result = { nombres: nombres, paradas: estaciones, solicitudes: solicitudes, instrucciones: instrucciones };
+        return result;
+    }
+    else {
+        return null;
+    }
+
+}
+
 function Get_Stop(Paraderos, Coordenada) {
     return Paraderos.find(location =>
         location.coordenadas.lat === Coordenada.lat && location.coordenadas.lng === Coordenada.lng
@@ -569,10 +662,13 @@ function TwoRoutes() {
                     }
                 }
             }
+            if (keys.length === 1) {
+                delete nombres[index];
+            }
         });
 
         nombres = nombres.filter(ruta => ruta !== undefined);
-
+        console.log(nombres);
         let nombreresult = {};
         let estaciones = {};
         let solicitudes = {};
