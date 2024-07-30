@@ -754,6 +754,9 @@ function OneRoute() {
         }
         return null;
     }
+    else{
+        alert('No hay ubicacion o destino');
+    }
 }
 
 function OneRouteD(Coordenada1, Coordenada2) {

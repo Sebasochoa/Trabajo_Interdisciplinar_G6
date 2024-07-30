@@ -5,21 +5,20 @@
 }
 
 #map {
-    flex: 0 0 80%; /* Ocupa el 80% del espacio disponible */
-    height: 100%;
+    flex: 0 0 80%; 
    
 }
 
 
 .side-container {
-    flex: 1; /* Ocupa el resto del espacio disponible */
+    flex: 1; 
     background-color: rgb(137, 37, 40);
     display: flex;
-    flex-direction: column; /* Alinear el contenido en columna */
-    justify-content: flex-start; /* Alinear el contenido al principio */
+    flex-direction: column; 
+    justify-content: flex-start; 
     align-items: center;
-    padding: 20px; /* Espaciado interno para separar el contenido de los bordes */
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del contenedor */
+    padding: 20px; 
+    box-sizing: border-box; 
     color: white;
     margin-right: 20px;
 }
@@ -27,8 +26,8 @@
 .ruta-instrucciones-container {
     display: flex;
     background-color: rgb(137, 37, 40);
-    padding: 20px; /* Espaciado interno para separar el contenido de los bordes */
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del contenedor */
+    padding: 20px; 
+    box-sizing: border-box;
     color: white;
     width: 90%;
     height: 30vh;
@@ -39,8 +38,8 @@
 .nav-buttons {
     display: flex;
     width: 100%;
-    justify-content: space-between; /* Espacio entre los botones */
-    margin-bottom: 20px; /* Espacio debajo de los botones */
+    justify-content: space-between; 
+    margin-bottom: 20px; 
 }
 
 .nav-button-R {
@@ -52,21 +51,21 @@
     border-radius: 5px;
     font-size: 16px;
     transition: background-color 0.3s ease;
-    flex: 1; /* Hacer que los botones ocupen todo el ancho disponible */
-    margin: 0 5px; /* Espacio entre los botones */
+    flex: 1; 
+    margin: 0 5px; 
 }
 
 .titulo {
-    margin: 0 0 20px 0; /* Márgenes: sin margen superior ni lateral, y 20px inferior */
-    text-align: center; /* Centrar el texto */
+    margin: 0 0 20px 0; 
+    text-align: center; 
 }
 
 .instrucciones {
-    width: 100%; /* Ocupa todo el ancho disponible */
-    background-color: lightgray; /* Solo para visualización */
-    text-align: left; /* Alinear el texto al centro */
-    padding: 20px; /* Espaciado interno opcional */
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total del div */
+    width: 100%; 
+    background-color: lightgray; 
+    text-align: left; 
+    padding: 20px; 
+    box-sizing: border-box;
     color: black;
 }
 
@@ -81,18 +80,14 @@
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    /* Añadir bordes redondeados */
     z-index: 1000;
-    /* Ajustar según sea necesario */
 }
 
 .legend-item {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    /* Aumentar el espacio entre elementos */
     color: #333;
-    /* Color de texto más oscuro para mejor legibilidad */
 }
 
 .legend-item:last-child {
@@ -104,7 +99,7 @@
     height: 20px;
     margin-left: 10px;
     border-radius: 50%;
-    /* Hacer el cuadro de color redondeado */
+    
 }
 
 
@@ -332,7 +327,6 @@ main {
     width: 100%;
 }
 
-/* Mostrar el segundo input cuando el checkbox esté marcado */
 #checkbox:checked~#pac-input-2 {
     display: inline-block;
 }

@@ -1,4 +1,4 @@
-const Rutas = {
+var Rutas = {
     Ruta1_Ida: {
         solicitud: {
             origin: { lat: -16.386904, lng: -71.574997 },
@@ -54,7 +54,7 @@ const Rutas = {
             { coordenadas: { lat: -16.415587, lng: -71.515251 }, nombre: 'Mall aventura Plaza' },
             { coordenadas: { lat: -16.425626, lng: -71.514997 }, nombre: 'Reservorio guardia civil' },
             { coordenadas: { lat: -16.430518, lng: -71.532659 }, nombre: 'Ovalo la Pacheta' }
-            
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta1'
@@ -91,13 +91,13 @@ const Rutas = {
             ]
         },
         paradas: [
-	        { coordenadas: { lat: -16.430527, lng: -71.532679 }, nombre: 'Ovalo La Pacheta' },
+            { coordenadas: { lat: -16.430527, lng: -71.532679 }, nombre: 'Ovalo La Pacheta' },
             { coordenadas: { lat: -16.427114, lng: -71.532986 }, nombre: 'Banco de la nacion' },
             { coordenadas: { lat: -16.424915, lng: -71.533111 }, nombre: 'Ovalo avelino-Interbank' },
-            { coordenadas: { lat: -16.415159, lng: -71.534085 }, nombre: 'Hospital Regional Honorio Delgado Espinoza'},
-            { coordenadas: { lat: -16.412616, lng: -71.535115 },nombre: 'unsa biomedicas' },
+            { coordenadas: { lat: -16.415159, lng: -71.534085 }, nombre: 'Hospital Regional Honorio Delgado Espinoza' },
+            { coordenadas: { lat: -16.412616, lng: -71.535115 }, nombre: 'unsa biomedicas' },
             { coordenadas: { lat: -16.407739, lng: -71.538476 }, nombre: 'estacion ormeño' },
-            { coordenadas: { lat: -16.405759, lng: -71.540041 }, nombre: 'estacion salaverry'},
+            { coordenadas: { lat: -16.405759, lng: -71.540041 }, nombre: 'estacion salaverry' },
             { coordenadas: { lat: -16.399888, lng: -71.542147 }, nombre: 'av la marina-plaza vea' },
             { coordenadas: { lat: -16.396656, lng: -71.545229 }, nombre: 'hospital yanahuara' },
             { coordenadas: { lat: -16.395865, lng: -71.546869 }, nombre: 'Belaunde - Comandante Ruiz' },
@@ -112,12 +112,12 @@ const Rutas = {
             { coordenadas: { lat: -16.393332, lng: -71.568197 }, nombre: 'Colegio Divino Niño Jesus' },
             { coordenadas: { lat: -16.399972, lng: -71.570582 }, nombre: 'Coliseo Gallos la calle' },
             { coordenadas: { lat: -16.403192, lng: -71.568371 }, nombre: 'Alamos - Ayacucho' },
-            { coordenadas: { lat: -16.404418, lng: -71.572806 }, nombre: 'Variante Uchumayo' }, 
+            { coordenadas: { lat: -16.404418, lng: -71.572806 }, nombre: 'Variante Uchumayo' },
             { coordenadas: { lat: -16.397689, lng: -71.575074 }, nombre: 'Grifo COPAR' },
-            { coordenadas: { lat: -16.389262, lng: -71.574952 }, nombre: 'Reservorio semirural Pacahcutec'} 
+            { coordenadas: { lat: -16.389262, lng: -71.574952 }, nombre: 'Reservorio semirural Pacahcutec' }
 
 
-          
+
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta1'
@@ -170,9 +170,9 @@ const Rutas = {
             { coordenadas: { lat: -16.407074, lng: -71.524655 }, nombre: 'Av Venezuela' },
             { coordenadas: { lat: -16.404354, lng: -71.527389 }, nombre: 'Paucarpata con Indepenencia' },
             { coordenadas: { lat: -16.405586, lng: -71.528926 }, nombre: 'Coliseo' },
-            { coordenadas: { lat: -16.404357, lng: -71.531680 },nombre: 'Jorge Chavez - Bogota' },
-            { coordenadas: { lat:-16.4017290, lng: -71.528457 },  nombre: 'Hospital Goyeneche' }
-            
+            { coordenadas: { lat: -16.404357, lng: -71.531680 }, nombre: 'Jorge Chavez - Bogota' },
+            { coordenadas: { lat: -16.4017290, lng: -71.528457 }, nombre: 'Hospital Goyeneche' }
+
         ],
         recorrido: 'Ida',
         nombre: 'Ruta2'
@@ -225,7 +225,7 @@ const Rutas = {
             { coordenadas: { lat: -16.452495, lng: -71.531095 }, nombre: 'Grifo Milagritos' },
             { coordenadas: { lat: -16.461431, lng: -71.526400 }, nombre: 'Lara Tradicional' },
             { coordenadas: { lat: -16.458100, lng: -71.523867 }, nombre: 'Parque Mickey I' },
-            { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: 'la Palizada' }            
+            { coordenadas: { lat: -16.457587, lng: -71.522714 }, nombre: 'la Palizada' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta2'
@@ -315,7 +315,7 @@ const Rutas = {
             { coordenadas: { lat: -16.3980897, lng: -71.5239162 }, nombre: 'Av. Mariscal Castilla' },
             { coordenadas: { lat: -16.396695, lng: -71.522204 }, nombre: 'Calle Puno' },
             { coordenadas: { lat: -16.395268, lng: -71.520426 }, nombre: 'Av. Progreso' },
-            { coordenadas: { lat: -16.394342, lng: -71.521385 },nombre: 'Parque mayta capac' },
+            { coordenadas: { lat: -16.394342, lng: -71.521385 }, nombre: 'Parque mayta capac' },
             { coordenadas: { lat: -16.393311, lng: -71.520566 }, nombre: 'I.E. Jose Galvez' },
             { coordenadas: { lat: -16.3909377, lng: -71.5185623 }, nombre: 'Iglesia Chapi chico' },
             { coordenadas: { lat: -16.388088, lng: -71.516188 }, nombre: 'Comisaria AltoMisti' },
@@ -327,7 +327,7 @@ const Rutas = {
             { coordenadas: { lat: -16.373088, lng: -71.502763 }, nombre: 'Grifo porvenir' },
             { coordenadas: { lat: -16.373672, lng: -71.501234 }, nombre: 'Torre de control' },
             { coordenadas: { lat: -16.375471, lng: -71.499743 }, nombre: 'I.E. padre Eloy' },
-            { coordenadas: { lat: -16.376776, lng: -71.498764 }, nombre: 'Terminal Mariategui' }           
+            { coordenadas: { lat: -16.376776, lng: -71.498764 }, nombre: 'Terminal Mariategui' }
 
         ],
         recorrido: 'Vuelta',
@@ -381,7 +381,7 @@ const Rutas = {
             { coordenadas: { lat: -16.399281, lng: -71.539981 }, nombre: 'Cruz Verde' },
             { coordenadas: { lat: -16.402460, lng: -71.538958 }, nombre: 'Calle Merced' },
             { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Salaverry' },
-            { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Parra' }           
+            { coordenadas: { lat: -16.405708, lng: -71.540099 }, nombre: 'Parra' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta4'
@@ -436,7 +436,7 @@ const Rutas = {
             { coordenadas: { lat: -16.369784, lng: -71.503754 }, nombre: 'Av Circunvalación' },
             { coordenadas: { lat: -16.369636, lng: -71.502064 }, nombre: 'San Luis C' },
             { coordenadas: { lat: -16.366831, lng: -71.499585 }, nombre: 'Huayro Restaurante' },
-            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO'}           
+            { coordenadas: { lat: -16.365748, lng: -71.501906 }, nombre: 'ESPIRITU SANTO' }
 
         ],
         recorrido: 'Vuelta',
@@ -465,20 +465,20 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia , Miraflores ' }, 
-                { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'IEI Mi Amiguito Jesús' }, 
-                { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' A.h Villa la Pradera Miraflores' }, 
-                { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'PRONOEI- LOS CLAVELES, Miraflores ' }, 
-                { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Av.Goyeneche con Tacna y Arica' }, 
-                { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245 con Av. Tarapaca, Miraflores ' }, 
-                { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores, PARQUE LEONCIO MEDINA MORANTE' }, 
-                { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'Plaza Mayta Cápac' }, 
-                { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700,D´HAMUY Restaurante especializado en barbacoa' }, 
-                { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982,Estación de Servicio Repsol' }, 
-                { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Palacios con Sepúlveda , Miraflores ' }, 
-                { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Av. Vidaurrazaga Angel Caballero 2700 ' }, 
-                { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' }, 
-                { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'Polleria Cariocos' }
+            { coordenadas: { lat: -16.378560, lng: -71.493560 }, nombre: 'La Galaxia , Miraflores ' },
+            { coordenadas: { lat: -16.378510, lng: -71.496630 }, nombre: 'IEI Mi Amiguito Jesús' },
+            { coordenadas: { lat: -16.382060, lng: -71.500450 }, nombre: ' A.h Villa la Pradera Miraflores' },
+            { coordenadas: { lat: -16.381270, lng: -71.505370 }, nombre: 'PRONOEI- LOS CLAVELES, Miraflores ' },
+            { coordenadas: { lat: -16.380960, lng: -71.508440 }, nombre: 'Av.Goyeneche con Tacna y Arica' },
+            { coordenadas: { lat: -16.380180, lng: -71.509590 }, nombre: 'Tacna Y Arica 245 con Av. Tarapaca, Miraflores ' },
+            { coordenadas: { lat: -16.391050, lng: -71.518790 }, nombre: 'Av. Pro Hogar 1001, Miraflores, PARQUE LEONCIO MEDINA MORANTE' },
+            { coordenadas: { lat: -16.394250, lng: -71.521530 }, nombre: 'Plaza Mayta Cápac' },
+            { coordenadas: { lat: -16.394360, lng: -71.521460 }, nombre: 'Av. Progreso 700,D´HAMUY Restaurante especializado en barbacoa' },
+            { coordenadas: { lat: -16.396470, lng: -71.518750 }, nombre: 'Av. Progreso 982,Estación de Servicio Repsol' },
+            { coordenadas: { lat: -16.399500, lng: -71.516820 }, nombre: 'Palacios con Sepúlveda , Miraflores ' },
+            { coordenadas: { lat: -16.414260, lng: -71.543610 }, nombre: 'Av. Vidaurrazaga Angel Caballero 2700 ' },
+            { coordenadas: { lat: -16.420170, lng: -71.538210 }, nombre: 'Av. los Incas 34, Arequipa 04001, Peru' },
+            { coordenadas: { lat: -16.423100, lng: -71.541820 }, nombre: 'Polleria Cariocos' }
         ],
 
         recorrido: 'Ida',
@@ -1081,7 +1081,7 @@ const Rutas = {
             { coordenadas: { lat: -16.364530, lng: -71.515414 }, nombre: 'C. 7, Arequipa ' },
             { coordenadas: { lat: -16.367270, lng: -71.519366 }, nombre: 'C. Elias Aguirre 645-585, Arequipa ' },
             { coordenadas: { lat: -16.368882, lng: -71.519305 }, nombre: 'A.h Villa Independiente Zona B, Arequipa ' },
-            { coordenadas: { lat: -16.371222, lng: -71.516691 }, nombre: 'Leticia 803, Alto Selva Alegre '},
+            { coordenadas: { lat: -16.371222, lng: -71.516691 }, nombre: 'Leticia 803, Alto Selva Alegre ' },
             { coordenadas: { lat: -16.374671, lng: -71.522629 }, nombre: 'Av. las Torres 13, Alto Selva Alegre ' },
             { coordenadas: { lat: -16.378040, lng: -71.524532 }, nombre: 'Pl. Mayor de Alto Selva Alegre, Arequipa ' },
             { coordenadas: { lat: -16.378157, lng: -71.521353 }, nombre: 'Coop Ramiro Priale Priale, Arequipa ' },
@@ -1532,25 +1532,25 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.405880, lng: -71.531609 }, nombre: '' },
-            { coordenadas: { lat: -16.406972, lng: -71.530688 }, nombre: '' },
-            { coordenadas: { lat: -16.404405, lng: -71.527465 }, nombre: '' },
-            { coordenadas: { lat: -16.408085, lng: -71.526767 }, nombre: '' },
-            { coordenadas: { lat: -16.404361, lng: -71.519511 }, nombre: '' },
-            { coordenadas: { lat: -16.402466, lng: -71.517523 }, nombre: '' },
-            { coordenadas: { lat: -16.405498, lng: -71.515520 }, nombre: '' },
-            { coordenadas: { lat: -16.404548, lng: -71.513906 }, nombre: '' },
-            { coordenadas: { lat: -16.406530, lng: -71.510884 }, nombre: '' },
-            { coordenadas: { lat: -16.407595, lng: -71.509244 }, nombre: '' },
-            { coordenadas: { lat: -16.409440, lng: -71.506484 }, nombre: '' },
-            { coordenadas: { lat: -16.410225, lng: -71.505253 }, nombre: '' },
-            { coordenadas: { lat: -16.410972, lng: -71.504035 }, nombre: '' },
-            { coordenadas: { lat: -16.412086, lng: -71.502399 }, nombre: '' },
-            { coordenadas: { lat: -16.413010, lng: -71.500945 }, nombre: '' },
-            { coordenadas: { lat: -16.414211, lng: -71.499164 }, nombre: '' },
-            { coordenadas: { lat: -16.416856, lng: -71.496647 }, nombre: '' },
-            { coordenadas: { lat: -16.415251, lng: -71.494262 }, nombre: '' },
-            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: '' }
+            { coordenadas: { lat: -16.405880, lng: -71.531609 }, nombre: 'Victor Lira y C. Castilla' },
+            { coordenadas: { lat: -16.406972, lng: -71.530688 }, nombre: 'Av. Independencia y Victor Lira' },
+            { coordenadas: { lat: -16.404405, lng: -71.527465 }, nombre: 'Av. Independencia y Paucarpata' },
+            { coordenadas: { lat: -16.408085, lng: -71.526767 }, nombre: 'Via Rapida Venezuela y C. Ventura Mojarras' },
+            { coordenadas: { lat: -16.405475, lng: -71.521031 }, nombre: 'Virgen del Pilar y Puerta UNSA Sociales' },
+            { coordenadas: { lat: -16.404361, lng: -71.519511 }, nombre: 'Virgen del Pilar y Cooperativa Universitaria' },
+            { coordenadas: { lat: -16.402466, lng: -71.517523 }, nombre: 'Via Rapida Venezuela y Av. Mariscal Castilla' },
+            { coordenadas: { lat: -16.404548, lng: -71.513906 }, nombre: 'Av. Mariscal Castilla y Av. Lima' },
+            { coordenadas: { lat: -16.406530, lng: -71.510884 }, nombre: 'Av. Mariscal Castilla y Comandante Canga' },
+            { coordenadas: { lat: -16.407595, lng: -71.509244 }, nombre: 'Av. Mariscal Castilla y Praga' },
+            { coordenadas: { lat: -16.409440, lng: -71.506484 }, nombre: 'Av. Mariscal Castilla y Londres' },
+            { coordenadas: { lat: -16.410225, lng: -71.505253 }, nombre: 'Puente Santa Rosa' },
+            { coordenadas: { lat: -16.410972, lng: -71.504035 }, nombre: 'Av. Mariscal Castilla y De Febrero' },
+            { coordenadas: { lat: -16.412086, lng: -71.502399 }, nombre: 'Parque 15 de Agosto' },
+            { coordenadas: { lat: -16.413010, lng: -71.500945 }, nombre: 'Av. Mariscal Castilla y Salaverry' },
+            { coordenadas: { lat: -16.414211, lng: -71.499164 }, nombre: 'Av. Mariscal Castilla y Tupac Amaru' },
+            { coordenadas: { lat: -16.416856, lng: -71.496647 }, nombre: 'Av. Mariscal Castilla y Roma' },
+            { coordenadas: { lat: -16.415251, lng: -71.494262 }, nombre: 'Los Alpes y Cusco' },
+            { coordenadas: { lat: -16.414941, lng: -71.492484 }, nombre: 'Cusco y Sta. Clara' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta15'
@@ -1587,26 +1587,26 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' },
-            { coordenadas: { lat: -16.414957, lng: -71.482207 }, nombre: '' },
-            { coordenadas: { lat: -16.416374, lng: -71.491533 }, nombre: '' },
-            { coordenadas: { lat: -16.417192, lng: -71.490997 }, nombre: '' },
-            { coordenadas: { lat: -16.419366, lng: -71.494388 }, nombre: '' },
-            { coordenadas: { lat: -16.421863, lng: -71.498269 }, nombre: '' },
-            { coordenadas: { lat: -16.421304, lng: -71.499081 }, nombre: '' },
-            { coordenadas: { lat: -16.419748, lng: -71.501452 }, nombre: '' },
-            { coordenadas: { lat: -16.418202, lng: -71.503757 }, nombre: '' },
-            { coordenadas: { lat: -16.416961, lng: -71.505599 }, nombre: '' },
-            { coordenadas: { lat: -16.413997, lng: -71.510035 }, nombre: '' },
-            { coordenadas: { lat: -16.411856, lng: -71.512615 }, nombre: '' },
-            { coordenadas: { lat: -16.407584, lng: -71.514463 }, nombre: '' },
-            { coordenadas: { lat: -16.401931, lng: -71.517658 }, nombre: '' },
-            { coordenadas: { lat: -16.401852, lng: -71.524443 }, nombre: '' },
-            { coordenadas: { lat: -16.404277, lng: -71.527423 }, nombre: '' },
-            { coordenadas: { lat: -16.416436, lng: -71.533493 }, nombre: '' },
-            { coordenadas: { lat: -16.425214, lng: -71.533381 }, nombre: '' },
-            { coordenadas: { lat: -16.424623, lng: -71.537356 }, nombre: '' },
-            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' }
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: 'Mariano Melgar y C. 10' },
+            { coordenadas: { lat: -16.414957, lng: -71.482207 }, nombre: 'Av. Los Incas y La Cultura' },
+            { coordenadas: { lat: -16.416374, lng: -71.491533 }, nombre: 'Av. Los Incas y Martires de Chicago' },
+            { coordenadas: { lat: -16.417192, lng: -71.490997 }, nombre: 'Av. Revolucion y Martires de Chicago' },
+            { coordenadas: { lat: -16.419366, lng: -71.494388 }, nombre: 'Av. Revolucion y Mariscal Castilla' },
+            { coordenadas: { lat: -16.421863, lng: -71.498269 }, nombre: 'Av. Revolucion y Av. Jesus' },
+            { coordenadas: { lat: -16.421304, lng: -71.499081 }, nombre: 'Av. Jesus y Tupac Amaru' },
+            { coordenadas: { lat: -16.419748, lng: -71.501452 }, nombre: 'Av. Jesus y Porongoche' },
+            { coordenadas: { lat: -16.418202, lng: -71.503757 }, nombre: 'Av. Jesus y C. 3' },
+            { coordenadas: { lat: -16.416961, lng: -71.505599 }, nombre: 'Av. Jesus y Av. Amauta' },
+            { coordenadas: { lat: -16.413997, lng: -71.510035 }, nombre: 'Av. Jesus y Av. Industrial' },
+            { coordenadas: { lat: -16.411856, lng: -71.512615 }, nombre: 'Av. Jesus y Av. Argentina' },
+            { coordenadas: { lat: -16.407584, lng: -71.514463 }, nombre: 'Av. Jesus y Comandante Canga' },
+            { coordenadas: { lat: -16.401931, lng: -71.517658 }, nombre: 'Av. Mariscal Castilla y Via Rapida Venezuela' },
+            { coordenadas: { lat: -16.401852, lng: -71.524443 }, nombre: 'Av. Independencia y La Salle' },
+            { coordenadas: { lat: -16.404277, lng: -71.527423 }, nombre: 'Av. Independencia y Paucarpata' },
+            { coordenadas: { lat: -16.416436, lng: -71.533493 }, nombre: 'Av. Daniel Alcides Carrion y Jose Gomez' },
+            { coordenadas: { lat: -16.425214, lng: -71.533381 }, nombre: 'Av. Daniel Alcides Carrion y Av. Andres Avelino Caceres' },
+            { coordenadas: { lat: -16.424623, lng: -71.537356 }, nombre: 'Av. Andres Avelino Caceres y Av. Vidaurrazaga' },
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: 'Av. Andres Avelino Caceres y Av. Los Incas' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta16'
@@ -1639,25 +1639,25 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: '' },
-            { coordenadas: { lat: -16.420349, lng: -71.538283 }, nombre: '' },
-            { coordenadas: { lat: -16.416409, lng: -71.533253 }, nombre: '' },
-            { coordenadas: { lat: -16.410877, lng: -71.533310 }, nombre: '' },
-            { coordenadas: { lat: -16.408833, lng: -71.532856 }, nombre: '' },
-            { coordenadas: { lat: -16.404901, lng: -71.532332 }, nombre: '' },
-            { coordenadas: { lat: -16.402540, lng: -71.529401 }, nombre: '' },
-            { coordenadas: { lat: -16.400045, lng: -71.526315 }, nombre: '' },
-            { coordenadas: { lat: -16.398129, lng: -71.523925 }, nombre: '' },
-            { coordenadas: { lat: -16.401035, lng: -71.519330 }, nombre: '' },
-            { coordenadas: { lat: -16.402709, lng: -71.516916 }, nombre: '' },
-            { coordenadas: { lat: -16.411832, lng: -71.512658 }, nombre: '' },
-            { coordenadas: { lat: -16.416808, lng: -71.505883 }, nombre: '' },
-            { coordenadas: { lat: -16.419231, lng: -71.502285 }, nombre: '' },
-            { coordenadas: { lat: -16.420963, lng: -71.499699 }, nombre: '' },
-            { coordenadas: { lat: -16.421904, lng: -71.498309 }, nombre: '' },
-            { coordenadas: { lat: -16.417192, lng: -71.490994 }, nombre: '' },
-            { coordenadas: { lat: -16.414970, lng: -71.482243 }, nombre: '' },
-            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: '' }
+            { coordenadas: { lat: -16.422482, lng: -71.543998 }, nombre: 'Av. Andres Avelino Caceres y Av. Los Incas' },
+            { coordenadas: { lat: -16.420349, lng: -71.538283 }, nombre: 'Av. Los Incas y Av. Vidaurrazaga' },
+            { coordenadas: { lat: -16.416409, lng: -71.533253 }, nombre: 'Hospital Regional Honorio Delgado' },
+            { coordenadas: { lat: -16.410877, lng: -71.533310 }, nombre: 'Sedapar' },
+            { coordenadas: { lat: -16.408833, lng: -71.532856 }, nombre: 'Av. Independencia y Garci de Carbajal' },
+            { coordenadas: { lat: -16.404901, lng: -71.532332 }, nombre: 'Av. Jorge Chavez y Victor Lira' },
+            { coordenadas: { lat: -16.402540, lng: -71.529401 }, nombre: 'Av. Jorge Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.400045, lng: -71.526315 }, nombre: 'Av. Goyeneche y La Salle' },
+            { coordenadas: { lat: -16.398129, lng: -71.523925 }, nombre: 'Av. Goyeneche y Manuel Muñoz Najar' },
+            { coordenadas: { lat: -16.401035, lng: -71.519330 }, nombre: 'Av. Mariscal Castilla y Republica de Chile' },
+            { coordenadas: { lat: -16.402709, lng: -71.516916 }, nombre: 'Ovalo de Mariscal Castilla' },
+            { coordenadas: { lat: -16.411832, lng: -71.512658 }, nombre: 'Av. Jesus y Av. Argentina' },
+            { coordenadas: { lat: -16.416808, lng: -71.505883 }, nombre: 'Av. Jesus y Los Ideales' },
+            { coordenadas: { lat: -16.419231, lng: -71.502285 }, nombre: 'Av. Jesus y Av. Javier de Luna Pizarro' },
+            { coordenadas: { lat: -16.420963, lng: -71.499699 }, nombre: 'Av. Jesus y Ricardo Palma' },
+            { coordenadas: { lat: -16.421904, lng: -71.498309 }, nombre: 'Av. Jesus y Av. Revolucion' },
+            { coordenadas: { lat: -16.417192, lng: -71.490994 }, nombre: 'Av. Revolucion y Martires de Chicago' },
+            { coordenadas: { lat: -16.414970, lng: -71.482243 }, nombre: 'Av. Los Incas y La Cultura' },
+            { coordenadas: { lat: -16.415687, lng: -71.481059 }, nombre: 'Mariano Melgar y C. 10' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta16'
@@ -1694,29 +1694,29 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.457495, lng: -71.553456 }, nombre: '' },
-            { coordenadas: { lat: -16.454059, lng: -71.551968 }, nombre: '' },
-            { coordenadas: { lat: -16.451625, lng: -71.554773 }, nombre: '' },
-            { coordenadas: { lat: -16.449373, lng: -71.552765 }, nombre: '' },
-            { coordenadas: { lat: -16.447824, lng: -71.551574 }, nombre: '' },
-            { coordenadas: { lat: -16.445044, lng: -71.553789 }, nombre: '' },
-            { coordenadas: { lat: -16.443232, lng: -71.555744 }, nombre: '' },
-            { coordenadas: { lat: -16.440109, lng: -71.558928 }, nombre: '' },
-            { coordenadas: { lat: -16.438159, lng: -71.561045 }, nombre: '' },
-            { coordenadas: { lat: -16.435799, lng: -71.562146 }, nombre: '' },
-            { coordenadas: { lat: -16.433926, lng: -71.561266 }, nombre: '' },
-            { coordenadas: { lat: -16.431596, lng: -71.561566 }, nombre: '' },
-            { coordenadas: { lat: -16.425467, lng: -71.556556 }, nombre: '' },
-            { coordenadas: { lat: -16.417991, lng: -71.550118 }, nombre: '' },
-            { coordenadas: { lat: -16.408094, lng: -71.541803 }, nombre: '' },
-            { coordenadas: { lat: -16.405833, lng: -71.540123 }, nombre: '' },
-            { coordenadas: { lat: -16.407579, lng: -71.538789 }, nombre: '' },
-            { coordenadas: { lat: -16.408788, lng: -71.537813 }, nombre: '' },
-            { coordenadas: { lat: -16.407687, lng: -71.535737 }, nombre: '' },
-            { coordenadas: { lat: -16.406086, lng: -71.5337799 }, nombre: '' },
-            { coordenadas: { lat: -16.404857, lng: -71.532234 }, nombre: '' },
-            { coordenadas: { lat: -16.402557, lng: -71.529376 }, nombre: '' },
-            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' }
+            { coordenadas: { lat: -16.457495, lng: -71.553456 }, nombre: 'Andres Avelino Caceres y Putre' },
+            { coordenadas: { lat: -16.454059, lng: -71.551968 }, nombre: 'Andres Avelino Caceres y Revolucion' },
+            { coordenadas: { lat: -16.451625, lng: -71.554773 }, nombre: 'Estadio Juan Velasco Alvarado' },
+            { coordenadas: { lat: -16.449373, lng: -71.552765 }, nombre: 'Av. Marical Ureta y Av. San Miguel de Piura' },
+            { coordenadas: { lat: -16.447824, lng: -71.551574 }, nombre: 'Av. Marical Ureta y Viña del Mar' },
+            { coordenadas: { lat: -16.445044, lng: -71.553789 }, nombre: 'Viña del Mar y Costa Rica' },
+            { coordenadas: { lat: -16.443232, lng: -71.555744 }, nombre: 'Viña del Mar y Av. Brasilia' },
+            { coordenadas: { lat: -16.440109, lng: -71.558928 }, nombre: 'Ovalo de Hunter' },
+            { coordenadas: { lat: -16.438159, lng: -71.561045 }, nombre: 'Americas y C. Pedro P. Diaz' },
+            { coordenadas: { lat: -16.435799, lng: -71.562146 }, nombre: 'Grifo Primax Hunter' },
+            { coordenadas: { lat: -16.433926, lng: -71.561266 }, nombre: 'Santa Paula School' },
+            { coordenadas: { lat: -16.431596, lng: -71.561566 }, nombre: 'Americas y Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.425467, lng: -71.556556 }, nombre: 'Universidad La Salle' },
+            { coordenadas: { lat: -16.417991, lng: -71.550118 }, nombre: 'Parque By Pass Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.408094, lng: -71.541803 }, nombre: 'Av. Parra y Andrés Martinez' },
+            { coordenadas: { lat: -16.405833, lng: -71.540123 }, nombre: 'Av. Parra y Salaverry' },
+            { coordenadas: { lat: -16.407579, lng: -71.538789 }, nombre: 'Salaverry y Quiroz' },
+            { coordenadas: { lat: -16.408788, lng: -71.537813 }, nombre: 'Av. Mariscal Caceres y Av. Jorge Chavez' },
+            { coordenadas: { lat: -16.407687, lng: -71.535737 }, nombre: 'Av. Jorge Chavez y Calle Gutierrez de la Fuente' },
+            { coordenadas: { lat: -16.406086, lng: -71.5337799 }, nombre: 'Av. Jorge Chavez y   C. 15 de Agosto' },
+            { coordenadas: { lat: -16.404857, lng: -71.532234 }, nombre: 'Av. Jorge Chavez y Victor Lira' },
+            { coordenadas: { lat: -16.402557, lng: -71.529376 }, nombre: 'Av. Jorge Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: 'Paucarpata y Av. Independencia' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta17'
@@ -1750,28 +1750,27 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: '' },
-            { coordenadas: { lat: -16.407302, lng: -71.531077 }, nombre: '' },
-            { coordenadas: { lat: -16.408759, lng: -71.532887 }, nombre: '' },
-            { coordenadas: { lat: -16.409945, lng: -71.534394 }, nombre: '' },
-            { coordenadas: { lat: -16.409031, lng: -71.537289 }, nombre: '' },
-            { coordenadas: { lat: -16.407880, lng: -71.538376 }, nombre: '' },
-            { coordenadas: { lat: -16.405765, lng: -71.540001 }, nombre: '' },
-            { coordenadas: { lat: -16.408011, lng: -71.541922 }, nombre: '' },
-            { coordenadas: { lat: -16.416775, lng: -71.549205 }, nombre: '' },
-            { coordenadas: { lat: -16.424112, lng: -71.555641 }, nombre: '' },
-            { coordenadas: { lat: -16.431679, lng: -71.561626 }, nombre: '' },
-            { coordenadas: { lat: -16.435113, lng: -71.562212 }, nombre: '' },
-            { coordenadas: { lat: -16.438143, lng: -71.561196 }, nombre: '' },
-            { coordenadas: { lat: -16.440143, lng: -71.559143 }, nombre: '' },
-            { coordenadas: { lat: -16.443101, lng: -71.555940 }, nombre: '' },
-            { coordenadas: { lat: -16.447744, lng: -71.551620 }, nombre: '' },
-            { coordenadas: { lat: -16.448796, lng: -71.552552 }, nombre: '' },
-            { coordenadas: { lat: -16.449967, lng: -71.553328 }, nombre: '' },
-            { coordenadas: { lat: -16.451293, lng: -71.554598 }, nombre: '' },
-            { coordenadas: { lat: -16.453984, lng: -71.552040 }, nombre: '' },
-            { coordenadas: { lat: -16.457464, lng: -71.553470 }, nombre: '' }
-
+            { coordenadas: { lat: -16.404298, lng: -71.527483 }, nombre: 'Paucarpata y Av. Independencia' },
+            { coordenadas: { lat: -16.407302, lng: -71.531077 }, nombre: 'Av. Independencia y C. 2 de Mayo' },
+            { coordenadas: { lat: -16.408759, lng: -71.532887 }, nombre: 'Av. Independencia y Garci de Carbajal' },
+            { coordenadas: { lat: -16.409945, lng: -71.534394 }, nombre: 'Estadio Melgar' },
+            { coordenadas: { lat: -16.409031, lng: -71.537289 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.407880, lng: -71.538376 }, nombre: 'Av. Mariscal Caceres y C. San Juan de Dios' },
+            { coordenadas: { lat: -16.405765, lng: -71.540001 }, nombre: 'Salaverry y C. La Merced' },
+            { coordenadas: { lat: -16.408011, lng: -71.541922 }, nombre: 'Av. Parra y Rda. Tarapaca' },
+            { coordenadas: { lat: -16.416775, lng: -71.549205 }, nombre: 'Av. Parra y Pje San Isidro' },
+            { coordenadas: { lat: -16.424112, lng: -71.555641 }, nombre: 'Colegio San Jose' },
+            { coordenadas: { lat: -16.431679, lng: -71.561626 }, nombre: 'Americas y Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.435113, lng: -71.562212 }, nombre: 'Grifo Primax Hunter' },
+            { coordenadas: { lat: -16.438143, lng: -71.561196 }, nombre: 'Americas y C. Pedro P. Diaz' },
+            { coordenadas: { lat: -16.440143, lng: -71.559143 }, nombre: 'Ovalo de Hunter' },
+            { coordenadas: { lat: -16.443101, lng: -71.555940 }, nombre: 'Viña del Mar y Av. Brasilia' },
+            { coordenadas: { lat: -16.447744, lng: -71.551620 }, nombre: 'Viña del Mar y Av. Marical Ureta' },
+            { coordenadas: { lat: -16.448796, lng: -71.552552 }, nombre: 'Av. Marical Ureta y Teniente Nestor Bataneros' },
+            { coordenadas: { lat: -16.449967, lng: -71.553328 }, nombre: 'Av. Marical Ureta y Av. San Miguel de Piura' },
+            { coordenadas: { lat: -16.451293, lng: -71.554598 }, nombre: 'Estadio Juan Velasco Alvarado' },
+            { coordenadas: { lat: -16.453984, lng: -71.552040 }, nombre: 'Andres Avelino Caceres y Revolucion' },
+            { coordenadas: { lat: -16.457464, lng: -71.553470 }, nombre: 'Andres Avelino Caceres y Putre' }
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta17'
@@ -1802,24 +1801,24 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
-            { coordenadas: { lat: -16.412088, lng: -71.632504 }, nombre: '' },
-            { coordenadas: { lat: -16.407951, lng: -71.608429 }, nombre: '' },
-            { coordenadas: { lat: -16.406695, lng: -71.600124 }, nombre: '' },
-            { coordenadas: { lat: -16.405934, lng: -71.587915 }, nombre: '' },
-            { coordenadas: { lat: -16.404796, lng: -71.573517 }, nombre: '' },
-            { coordenadas: { lat: -16.404445, lng: -71.568290 }, nombre: '' },
-            { coordenadas: { lat: -16.406437, lng: -71.563684 }, nombre: '' },
-            { coordenadas: { lat: -16.410773, lng: -71.557252 }, nombre: '' },
-            { coordenadas: { lat: -16.417835, lng: -71.549945 }, nombre: '' },
-            { coordenadas: { lat: -16.412769, lng: -71.545555 }, nombre: '' },
-            { coordenadas: { lat: -16.408253, lng: -71.541921 }, nombre: '' },
-            { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: '' },
-            { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: '' },
-            { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: '' },
-            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: '' },
-            { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: '' },
-            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' }
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: 'Plaza de Uchumayo' },
+            { coordenadas: { lat: -16.412088, lng: -71.632504 }, nombre: 'Variante de Uchumayo y Sub-lateral 5' },
+            { coordenadas: { lat: -16.407951, lng: -71.608429 }, nombre: 'Variante de Uchumayo y Lateral 3' },
+            { coordenadas: { lat: -16.406695, lng: -71.600124 }, nombre: 'Variante de Uchumayo y Lateral A' },
+            { coordenadas: { lat: -16.405934, lng: -71.587915 }, nombre: 'Ovalo del Condor' },
+            { coordenadas: { lat: -16.404796, lng: -71.573517 }, nombre: 'Variante de Uchumayo y Av. Circunvalacion' },
+            { coordenadas: { lat: -16.404445, lng: -71.568290 }, nombre: 'Variante de Uchumayo y Juan Santos Atahualpa' },
+            { coordenadas: { lat: -16.406437, lng: -71.563684 }, nombre: 'Ovalo de Camarones' },
+            { coordenadas: { lat: -16.410773, lng: -71.557252 }, nombre: 'Planta Backus' },
+            { coordenadas: { lat: -16.417835, lng: -71.549945 }, nombre: 'Parque By Pass Av. Alfonso Ugarte' },
+            { coordenadas: { lat: -16.412769, lng: -71.545555 }, nombre: 'Av. Parra y Pje. Mariategui' },
+            { coordenadas: { lat: -16.408253, lng: -71.541921 }, nombre: 'Av. Parra y Andrés Martinez' },
+            { coordenadas: { lat: -16.405878, lng: -71.540138 }, nombre: 'Av. Parra y Salaverry' },
+            { coordenadas: { lat: -16.408849, lng: -71.537155 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.406880, lng: -71.534738 }, nombre: 'Av. Jorge Chavez y Av. Garci de Carbajal' },
+            { coordenadas: { lat: -16.404960, lng: -71.532303 }, nombre: 'Av. Jorde Chavez y Victor Lira' },
+            { coordenadas: { lat: -16.402629, lng: -71.529443 }, nombre: 'Av. Jorde Chavez y Paucarpata' },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: 'Av. Goyeneche y La Salle' }
         ],
         recorrido: 'Ida',
         nombre: 'Ruta18'
@@ -1855,33 +1854,34 @@ const Rutas = {
             ]
         },
         paradas: [
-            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: '' },
-            { coordenadas: { lat: -16.401924, lng: -71.524605 }, nombre: '' },
-            { coordenadas: { lat: -16.404779, lng: -71.528059 }, nombre: '' },
-            { coordenadas: { lat: -16.406833, lng: -71.530515 }, nombre: '' },
-            { coordenadas: { lat: -16.408721, lng: -71.532890 }, nombre: '' },
-            { coordenadas: { lat: -16.408973, lng: -71.537310 }, nombre: '' },
-            { coordenadas: { lat: -16.407595, lng: -71.538597 }, nombre: '' },
-            { coordenadas: { lat: -16.405720, lng: -71.540101 }, nombre: '' },
-            { coordenadas: { lat: -16.408170, lng: -71.542015 }, nombre: '' },
-            { coordenadas: { lat: -16.412778, lng: -71.545521 }, nombre: '' },
-            { coordenadas: { lat: -16.415272, lng: -71.542435 }, nombre: '' },
-            { coordenadas: { lat: -16.419220, lng: -71.543721 }, nombre: '' },
-            { coordenadas: { lat: -16.418218, lng: -71.548446 }, nombre: '' },
-            { coordenadas: { lat: -16.411204, lng: -71.556279 }, nombre: '' },
-            { coordenadas: { lat: -16.406368, lng: -71.563135 }, nombre: '' },
-            { coordenadas: { lat: -16.404111, lng: -71.568179 }, nombre: '' },
-            { coordenadas: { lat: -16.404428, lng: -71.573264 }, nombre: '' },
-            { coordenadas: { lat: -16.405620, lng: -71.588551 }, nombre: '' },
-            { coordenadas: { lat: -16.406624, lng: -71.599973 }, nombre: '' },
-            { coordenadas: { lat: -16.407802, lng: -71.608172 }, nombre: '' },
-            { coordenadas: { lat: -16.411978, lng: -71.632483 }, nombre: '' },
-            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: '' },
+            { coordenadas: { lat: -16.400118, lng: -71.526278 }, nombre: 'Av. Goyeneche y La Salle' },
+            { coordenadas: { lat: -16.401924, lng: -71.524605 }, nombre: 'Av. Independencia y La Salle' },
+            { coordenadas: { lat: -16.404779, lng: -71.528059 }, nombre: 'Av. Independencia y Arevalo' },
+            { coordenadas: { lat: -16.406833, lng: -71.530515 }, nombre: 'Av. Independencia y Victor Lira' },
+            { coordenadas: { lat: -16.408721, lng: -71.532890 }, nombre: 'Av. Independencia y Av. Garci de Carbajal' },
+            { coordenadas: { lat: -16.408973, lng: -71.537310 }, nombre: 'Parroquia Nuestra Señora Del Pilar' },
+            { coordenadas: { lat: -16.407595, lng: -71.538597 }, nombre: 'Av. Mariscal Caceres y C. San Juan de Dios' },
+            { coordenadas: { lat: -16.405720, lng: -71.540101 }, nombre: 'Salaverry y C. La Merced' },
+            { coordenadas: { lat: -16.408170, lng: -71.542015 }, nombre: 'Av. Parra y Rda. Tarapaca' },
+            { coordenadas: { lat: -16.412778, lng: -71.545521 }, nombre: 'Av. Parra y Pje. Mariategui' },
+            { coordenadas: { lat: -16.415272, lng: -71.542435 }, nombre: 'Av. Vidaurrazaga y Ca. Jacinto Ibañez' },
+            { coordenadas: { lat: -16.419220, lng: -71.543721 }, nombre: 'Ca. Jacinto Ibañez y Juan Barcleay' },
+            { coordenadas: { lat: -16.418218, lng: -71.548446 }, nombre: 'Av. Miguel Forga' },
+            { coordenadas: { lat: -16.411204, lng: -71.556279 }, nombre: 'Planta Backus' },
+            { coordenadas: { lat: -16.406368, lng: -71.563135 }, nombre: 'Ovalo de Camarones' },
+            { coordenadas: { lat: -16.404111, lng: -71.568179 }, nombre: 'Variante de Uchumayo y Juan Santos Atahualpa' },
+            { coordenadas: { lat: -16.404428, lng: -71.573264 }, nombre: 'Variante de Uchumayo y Av. Circunvalacion' },
+            { coordenadas: { lat: -16.405620, lng: -71.588551 }, nombre: 'Ovalo del Condor' },
+            { coordenadas: { lat: -16.406624, lng: -71.599973 }, nombre: 'Variante de Uchumayo y Lateral A' },
+            { coordenadas: { lat: -16.407802, lng: -71.608172 }, nombre: 'Variante de Uchumayo y Lateral 3' },
+            { coordenadas: { lat: -16.411978, lng: -71.632483 }, nombre: 'Variante de Uchumayo y Sub-lateral 5' },
+            { coordenadas: { lat: -16.424818, lng: -71.672601 }, nombre: 'Plaza de Uchumayo' },
         ],
         recorrido: 'Vuelta',
         nombre: 'Ruta18'
     }
-};
+}
+
 
 function initMap() {
     const map = new google.maps.Map(document.getElementById('map'), {
