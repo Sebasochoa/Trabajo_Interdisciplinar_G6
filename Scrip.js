@@ -545,7 +545,7 @@ function Get_Stop(Paraderos, Coordenada) {
     );
 }
 
-function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
+function Get_Instrucctions1(Ruta, Parada_1, Parada_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
@@ -562,7 +562,7 @@ function Get_Instrucctions(Ruta, Parada_1, Parada_2) {
     return instrucciones;
 }
 
-function Get_Instrucctions(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
+function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parada_2, Parada_Intermedia_2) {
     let DestinoPos = destinoMarcador.getPosition();
     let InicioPos = ubicacion.getPosition();
 
