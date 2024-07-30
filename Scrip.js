@@ -59,12 +59,15 @@ function initMap() {
     const Boton_2_Ruta = document.getElementById("btn_ruta2");
     const Boton_Funcion = document.getElementById("funcion");
     Boton_1_Ruta.addEventListener('click', function () {
+        borrarRutas();
         AddCheckboxOneRoute();
     });
     Boton_2_Ruta.addEventListener('click', function () {
+        borrarRutas();
         AddCheckboxTwoRoute();
     });
     Boton_Funcion.addEventListener('click', function () {
+        borrarRutas();
         findRoutesThroughPoints();
     })
 
@@ -143,10 +146,12 @@ function AddCheckboxOneRoute() {
 
             const checkboxLabel = document.createElement('label');
             checkboxLabel.htmlFor = 'dynamic-checkbox';
+            const saltoLinea =document.createElement('br');
             checkboxLabel.appendChild(document.createTextNode(Nombre_Rutas[nombre]));
 
             container.appendChild(checkbox);
             container.appendChild(checkboxLabel);
+            container.appendChild(saltoLinea);
 
             // Add event listener to checkbox
             checkbox.addEventListener('change', function (event) {
@@ -181,9 +186,11 @@ function AddCheckboxTwoRoute() {
             const checkboxLabel = document.createElement('label');
             checkboxLabel.htmlFor = 'dynamic-checkbox';
             checkboxLabel.appendChild(document.createTextNode(`${Nombre_Rutas[result.nombres[indice][0]]} y ${Nombre_Rutas[result.nombres[indice][1]]}`));
+            const saltoLinea =document.createElement('br');
 
             container.appendChild(checkbox);
             container.appendChild(checkboxLabel);
+            container.appendChild(saltoLinea);
 
             // Add event listener to checkbox
             checkbox.addEventListener('change', function (event) {
@@ -857,10 +864,10 @@ function Get_Instrucctions1D(Ruta, Parada_1, Parada_2, Coordenada1, Coordenada2)
     let oparada_2 = Get_Stop(Ruta.paradas, Parada_2);
     let distanciaParada1 = haversineDistance(oparada_1.coordenadas.lat, oparada_1.coordenadas.lng, Inicio.lat, Inicio.lng);
     let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
-    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
-    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta.nombre]} <b>en el recorrido:</b> ${Ruta.recorrido}.</p>
-    <h4>3.</h4><p><b>Para luego bajarte en la Parada:</b> ${oparada_2.nombre}.</p>
-    <h4>4.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
+    let instrucciones = `<p>1.<b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m hacia ${oparada_1.nombre}.</p>
+    <p>2.<b>Espera el bus:</b> ${Nombre_Rutas[Ruta.nombre]} <b>en el recorrido:</b> ${Ruta.recorrido}.</p>
+    <p>3.<b>Para luego bajarte en la Parada:</b> ${oparada_2.nombre}.</p>
+    <p>4.<b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
     return instrucciones;
 }
 
@@ -881,13 +888,13 @@ function Get_Instrucctions2(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Parad
     let distanciaParadasIntermedias = haversineDistance(oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat);
     let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
 
-    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
-    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
-    <h4>3.</h4><p><b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
-    <h4>4.</h4><p><b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
-    <h4>5.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
-    <h4>6.</h4><p><b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
-    <h4>7.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
+    let instrucciones = `<p>1.<b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
+    <p>2.<b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
+    <p>3.<b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
+    <p>4.<b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
+    <p>5.<b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
+    <p>6.<b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
+    <p>7.<b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
     return instrucciones;
 }
 
@@ -908,13 +915,13 @@ function Get_Instrucctions2D(Ruta_1, Ruta_2, Parada_1, Parada_Intermedia_1, Para
     let distanciaParadasIntermedias = haversineDistance(oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_1.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat, oparada_Intermedia_2.coordenadas.lat);
     let distanciaParada2 = haversineDistance(oparada_2.coordenadas.lat, oparada_2.coordenadas.lng, Destino.lat, Destino.lng);
 
-    let instrucciones = `<h4>1.</h4><p><b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
-    <h4>2.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
-    <h4>3.</h4><p><b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
-    <h4>4.</h4><p><b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
-    <h4>5.</h4><p><b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
-    <h4>6.</h4><p><b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
-    <h4>7.</h4><p><b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
+    let instrucciones = `<p>1.<b>Debes caminar</b> ${(distanciaParada1 * 1000).toFixed(0)} m <b>hacia</b> ${oparada_1.nombre}.</p>
+    <p>2.<b>Espera el bus:</b> ${Nombre_Rutas[Ruta_1.nombre]} <b>en el recorrido:</b> ${Ruta_1.recorrido}.</p>
+    <p>3.<b>Luego baja en la Parada:</b> ${oparada_Intermedia_1.nombre}.</p>
+    <p>4.<b>Camina</b> ${(distanciaParadasIntermedias * 1000).toFixed(0)} m <b>hacia</b> ${oparada_Intermedia_2.nombre}.</p>
+    <p>5.<b>Espera el bus:</b> ${Nombre_Rutas[Ruta_2.nombre]} <b>en el recorrido:</b> ${Ruta_2.recorrido}.</p>
+    <p>6.<b>Tienes que bajar en la Parada:</b> ${oparada_2.nombre}.</p>
+    <p>7.<b>Y finalmente camina</b> ${(distanciaParada2 * 1000).toFixed(0)} m hacia tu destino.</p>`;
     return instrucciones;
 }
 
